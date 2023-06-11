@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>eC_QualityApp: Password recovery</title>
+  {% load staticfiles %}
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'base/images/favicon_pp.ico' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap-theme.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/signin.css' %}" />
+  <link rel="stylesheet" type="text/css" href="https://euroc-static.s3.eu-west-1.amazonaws.com/media/login_images/style.css">
+
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" />
+  <script src="{% static 'base/js/jquery-1.11.2.min.js' %}"></script>
+  <script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'base/js/bootstrap.js' %}"></script>
+  <style>
+    #company_logo{
+       width: 120px;
+    }
+    .image_text a{
+       color: white;
+       font-size:20px;
+    }
+    .image_text a:hover{
+       color: white;
+       font-size:20px;
+    }
+    .image_text{
+       margin-top: 20px;
+    }
+    .sp_login-head h1{
+       font-weight: 500;
+       line-height: 0;
+       font-size: 25px;
+    }
+    .btn-block{
+      margin-top: 20px;
+    }
+    .sp_lable{
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body class="background-login">
+  <span id="loading-image" class="ele-center loader loader-double"></span>
+  <section class="sp_login-section">
+    <div class="container-sp_login">
+      {% load widget_tweaks %}
+      <div class="box-s">
+        <div class="row col-rev">
+          <div class="col-md-6 padd-n-1">
+            <div class="pcb-bg_g sp_slider-main">
+              <div id="myCarousel" class="carousel slide poss-slide" data-ride="carousel" data-interval="3000"
+                data-pause="false">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                  <li data-target="#myCarousel" data-slide-to="1"></li>
+                  <li data-target="#myCarousel" data-slide-to="2"></li>
+               </ol>
+               <div class="carousel-inner carousel-viss" role="listbox">
+                  {% for item in crousel_image|slice:":3" %}
+                      {% if forloop.first %}
+                          <div class="active item">
+                      {% else %}
+                          <div class="item">
+                      {% endif %}
+                      <div class="carousel-img">
+                        <a target="_blank" href="{{item.image_url}}"><img class="frame image_size" src="{{item.image_path}}"></a>
+                      </div>
+                     <div class="carousel-caption">
+                        <span class="image_text_span" >{{item.image_text | safe}}</span>
+                     </div>
+                    </div>
+                  {% endfor %}
+               </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 padd-n">
+            <div class="sp_bg_w">
+            <div class="sp-main-heading">
+              <div class="sp_login-head">
+                <img id="company_logo" src="{{company_logo}}">
+                <h1 style="text-align:center;">Reset your password</h1>
+                <p class="welcome_title_disc">Enter your email address and we will send you a link to <br> reset your password.</p>
+              </div>
+              <form id="frmPasswrecovery" action="/accounts/passwrecv/" method="POST" role="form" class="form-horizontal form-signin sp-login-form">
+                {% csrf_token %}
+                {% for field in form %}
+                  {{ field.errors }}
+                  {% if field.help_text %}
+                  <span>{{ field.help_text|safe }}</span>
+                  {% endif %}
+                  {% if field.field.required == True %}
+                  <span class="required"></span>
+                  {% endif %}
+                  {% if field|field_type != 'booleanfield' %}
+                  <div class="sp_dis" >
+                      {{ field|add_class:"form-control" }}
+                      <i class="fa fa-envelope poss-icon" aria-hidden="true"></i>
+                  </div>
+                  {% else %}
+                  {{ field }}
+                  {% endif %}
+
+                {% endfor %}
+                <div class="checkbox sp_login-check">
+                  <label style="padding-left: 0px;">
+                    <div class="alert-danger" style="display:none;" id="msg"></div>
+                    <div class="alert-success" style="display:none;" id="successmsg"></div>
+                  </label>
+                  <div>
+                  <label class="sp_lable">
+                    <a href="/accounts/signin/">Back to sign-in</a>
+                  </label>
+                  </div>
+                </div>
+                <input class="btn btn-lg btn-block btn-block_g" type="submit" id="btnSignin" value="Send password reset email">
+              </form>
+              <div>
+                <script type="text/javascript">
+                  var dt = new Date();
+                  document.write("<p style = 'padding-left: 126px;margin-top:40px;color:black;'> ©" + dt.getFullYear());
+                </script> All Rights Reserved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    //callback handler for form submit
+    $("#frmPasswrecovery").submit(function (e) {
+      var postData = $(this).serializeArray();
+      var formURL = $(this).attr("action");
+      $.ajax({
+        dataType: "json",
+        type: "POST",
+        url: formURL,
+        data: postData,
+        beforeSend: function () {
+          $('#loading-image').show();
+        },
+        complete: function () {
+          $('#loading-image').hide();
+        },
+        success: function (data) {
+          success = data.code == 0 ? false : true;
+          if (success == true) {
+            $('#successmsg').show().text(data.msg);
+            $('#msg').hide()
+          }
+          else {
+            $('#successmsg').hide();
+            $('#msg').show().text(data.msg);
+          }
+        },
+        error: function (data) {
+          callback({ msg: "Error occurred" }, false);
+          console.log(data);
+        }
+      });
+      e.preventDefault();
+    });
+
+    $("#ajaxform").submit(); //Submit  the FORM
+
+
+  </script>
+
+
+</body>
+
+</html>

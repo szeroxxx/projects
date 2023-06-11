@@ -1,0 +1,838 @@
+<style>
+    .matrix{
+        overflow: auto;
+        max-height:156px;
+        width:100%;
+        margin-top:35px;
+    }
+    .matrixname{
+        white-space: nowrap;
+        width: 90%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 5px;
+        cursor: pointer;
+    }
+    th{
+        text-align: center;
+    }
+    .company{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 160px;
+    }
+    .operator_{
+        display: flex;
+    }
+    .table-wrap {
+        height:auto;
+        width: 100%;
+        margin-top:15px;
+    }
+    .table_skill{
+        width:100%;
+        border: 1px solid #ccc;
+    }
+    .table_skill th{
+        width:10.28%;
+        border: 1px solid #ccc;
+    }
+    .table_skill td{
+        width:10.28%;
+        border: 1px solid #ccc;
+    }
+
+    .login{
+        color: #2a9f00;
+        margin-right: 5px;
+        padding-top: 3px;
+        margin-left:-5px;
+    }
+    .logout{
+        color: gray;
+        margin-right: 5px;
+        padding-top: 3px;
+        margin-left:-5px;
+    }
+    .login_{
+        color: #2a9f00;
+        margin-right: 5px;
+        margin-top: -5px;
+    }
+    .logout_{
+        color: gray;
+        margin-right: 5px;
+        margin-top: -5px;
+    }
+    .addoperatorlist{
+        margin: 7px;
+        height: 27px;
+    }
+    .delet_btn{
+        display: flex;
+    }
+    .dropdown_oper{
+        float: left;
+        cursor: pointer;
+    }
+    .save_oper_list{
+        width: 100%;
+        margin-bottom: -9px;
+        overflow-wrap: break-word;
+    }
+    .label_save_oper_list{
+        overflow-x:auto;
+        max-height:155px;
+        width:100%
+    }
+    .add_oper_btn{
+        width:100%;
+    }
+    .del-oper{
+        cursor: pointer;
+    }
+    .list-oper-span{
+        width:90%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .save-skill-button{
+        width: 100%;
+        height: 32px;
+        text-align: center;
+    }
+    .skill-button-top{
+        margin-top:15px;
+    }
+    .tabledata-panel-pre{
+        width: 40%;
+    }
+</style>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar skill-button-top">
+    <button class="btn-primary btn-sm btn" data-dismiss="modal" aria-hidden="true" id="btncloseskill" title="Back">Back</button>
+     <button class="btn-primary btn-sm btn" id="btndeleteskill" title="Delete {{customer_name}} data" {% if is_operators %} unbled {% else %} disabled {% endif %}><u>D</u>elete</button>
+  </div>
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+<div id="id_process" class="table-wrap">
+    <h4>Design:</h4>
+    <table class="table table-striped tabledata table_skill" >
+    <thead>
+        <tr>
+            <th scope="col"><b>Schematic</b></th>
+            <th scope="col"><b>Footprint</b></th>
+            <th scope="col"><b>Placement</b></th>
+            <th scope="col"><b>Routing</b></th>
+            <th scope="col"><b>Gerber release</b></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for data_ in skillmatrix %}
+            {% for key,data in data_.items %}
+            <tr>
+                <form id="frmSkillMatrix" action="/pws/save_skill_matrix_company/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_schematic' name="schematic" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="schmatic{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operschmatic{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorschematic" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="schmatic{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="schmatic{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operschmatic{{key}}','schematic');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "schematic" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_footprint' name="footprint" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="footprint{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operfootprint{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorfootprint" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="footprint{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="footprint{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operfootprint{{key}}','footprint');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "footprint" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_placement' name="placement" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="placement{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operplacement{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorplacement" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="placement{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="placement{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operplacement{{key}}','placement');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "placement" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_routing' name="routing" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="routing{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operrouting{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorrouting" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="routing{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="routing{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operrouting{{key}}','routing');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "routing" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_gerber_release' name="gerber_release" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="gerber_release{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="opergerber_release{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorgerber_release" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="gerber_release{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="gerber_release{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','opergerber_release{{key}}','gerber_release');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "gerber_release" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+    </table>
+    <h4>Preparation:</h4>
+    <table class="table table-striped tabledata table_skill" >
+        <thead >
+            <tr>
+                <th scope="col"><b>Analysis</b></th>
+                <th scope="col"><b>Incoming</b></th>
+                <th scope="col"><b>BOM incoming</b></th>
+                <th scope="col"><b>SI</b></th>
+                <th scope="col"><b>SICC</b></th>
+                <th scope="col"><b>BOM CC</b></th>
+                <th scope="col"><b>FQC</b></th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for data_ in skillmatrix %}
+                {% for key,data in data_.items %}
+                <tr>
+                    <form id="frmSkillMatrix" action="/pws/save_skill_matrix_company/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_analysis' name="analysis" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="analysis{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operanalysis{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatoranalysis" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="analysis{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="analysis{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operanalysis{{key}}','analysis');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "analysis" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_incoming' name="incoming" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="incoming{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operincoming{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatorincoming" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="incoming{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="incoming{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operincoming{{key}}','incoming');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "incoming" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_bom_incoming' name="bom_incoming" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="bom_incoming{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operbom_incoming{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatorBOM_incoming" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="bom_incoming{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="bom_incoming{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operbom_incoming{{key}}','BOM_incoming');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "BOM_incoming" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_si' name="si" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="si{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="opersi{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatorSI" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="si{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="si{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','opersi{{key}}','SI');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "SI" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_sicc' name="sicc" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="sicc{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="opersicc{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatorSICC" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="sicc{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="sicc{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','opersicc{{key}}','SICC');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "SICC" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_bomcc' name="bomcc" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="bomcc{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operbomcc{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatorBOM_CC" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="bomcc{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="bomcc{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operbomcc{{key}}','BOM_CC');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "BOM_CC" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                                <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_fqc' name="fqc" aria-labelledby="dropdownMenu1">
+                                    {% for operkey, operator in operatorlist.items %}
+                                        {% if key == operkey %}
+                                            {% for oper in operator %}
+                                                <li class="addoperatorlist">
+                                                    <input type="checkbox" id="fqc{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operfqc{{key}}"
+                                                    {% for processdata in data %}
+                                                        {% for prockey, procedata in processdata.items %}
+                                                            {% if prockey == "selectedoperatorFQC" %}
+                                                                    {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}>
+                                                    {% if oper.user__username in logging_operator %}
+                                                        <label class="matrixname" for="fqc{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                    {% else %}
+                                                        <label class="matrixname" for="fqc{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operfqc{{key}}','FQC');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                            </div>
+                            <label class="label_save_oper_list">
+                                {% for processdata in data %}
+                                    {% for prockey, procedata in processdata.items %}
+                                        {% if prockey == "FQC" %}
+                                            {% for oper in procedata %}
+                                                <div class="save_oper_list">
+                                                    {% if oper in logging_operator %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% else %}
+                                                        <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </label>
+                        </td>
+
+                    </form>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+        </table>
+    <h4>Panel Preparation:</h4>
+    <table class="table table-striped tabledata-panel-pre table_skill">
+    <thead >
+        <tr>
+            <th scope="col"><b>Panel</b></th>
+            <th scope="col"><b>Upload panel</b></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data_ in skillmatrix %}
+            {% for key,data in data_.items %}
+            <tr>
+                <form id="frmSkillMatrix" action="/pws/save_skill_matrix_company/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_panel' name="panel" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="panel{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operpanel{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorpanel" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="panel{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="panel{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operpanel{{key}}','panel');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "panel" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button  class="btn btn-default dropdown-toggle add_oper_btn" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Add operators <span class="caret"></span></button>
+                            <ul class="dropdown-menu checkbox-menu allow-focus matrix" id='id_upload_panel' name="upload_panel" aria-labelledby="dropdownMenu1">
+                                {% for operkey, operator in operatorlist.items %}
+                                    {% if key == operkey %}
+                                        {% for oper in operator %}
+                                            <li class="addoperatorlist">
+                                                <input type="checkbox" id="upload_panel{{key}}{{oper.user_id}}" class="dropdown_oper" value="{{oper.user_id}}" name="operupload_panel{{key}}"
+                                                {% for processdata in data %}
+                                                    {% for prockey, procedata in processdata.items %}
+                                                        {% if prockey == "selectedoperatorupload_panel" %}
+                                                                {% if oper.user_id in procedata %} checked {% else %} unchecked {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}>
+                                                {% if oper.user__username in logging_operator %}
+                                                    <label class="matrixname" for="upload_panel{{key}}{{oper.user_id}}"><i class="fa fa-circle login_"></i>{{oper.user__username}}</label>
+                                                {% else %}
+                                                    <label class="matrixname" for="upload_panel{{key}}{{oper.user_id}}"><i class="fa fa-circle logout_"></i>{{oper.user__username}}</label>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <button class="dropdown-menu checkbox-menu allow-focus btn-primary btn-sm save-skill-button" ng-click="saveSkillMatrix('{{key}}','operupload_panel{{key}}','upload_panel');" ng-disabled="btnDisabled" edit-mode="true">Add</button>
+                        </div>
+                        <label class="label_save_oper_list">
+                            {% for processdata in data %}
+                                {% for prockey, procedata in processdata.items %}
+                                    {% if prockey == "upload_panel" %}
+                                        {% for oper in procedata %}
+                                            <div class="save_oper_list">
+                                                {% if oper in logging_operator %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle login"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% else %}
+                                                    <p class="form-control operator_" readonly><i class="fa fa-circle logout"></i><span class="list-oper-span">{{oper}}</span><i class="fa fa-trash-o del-oper" ng-click="removeSkillMatrixOper('{{key}}','{{oper}}','{{prockey}}');" title="Remove operator"></i></p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </label>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    var data = {'customer_name' : '{{customer_name}}'};
+    var skill_matrixJs = skill_matrixInit(data);
+</script>

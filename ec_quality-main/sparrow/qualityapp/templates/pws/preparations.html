@@ -1,0 +1,340 @@
+<style>
+.operator{
+    overflow-wrap: break-word;
+}
+.remarks span {
+    width: 225px;
+    max-height: 3.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+}
+
+@media only screen and (max-width:1309px) {
+    .btn-group{
+        float: right;
+    }
+    .btn{
+        margin-top: 2px;
+    }
+}
+.preparations-search{
+    min-width: 350px !important;
+    width: auto !important;
+}
+.send-to-next-model, .back-to-previous-model{
+    width: 650px;
+    margin-top:30px;
+    margin-left:18%;
+}
+.msg-show{
+    color:#a94442;
+    display: none;
+}
+.generate-exception-model{
+    margin-left: 10%
+}
+.generate-exception-model-title{
+    font-size: 20px
+}
+.mlr-10{
+    margin: 0px 10px !important;
+}
+.custom-body p{
+    max-height:500px;
+    overflow-wrap: break-word;
+    overflow:auto;
+}
+</style>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <button class="btn btn-primary btn-sm" id="btnReserve" ng-disabled="btnReserveDisable"><u>R</u>eserve</button>
+      <button class="btn btn-primary btn-sm" id="btnRelease" ng-disabled="btnReleaseDisable">Re<u>l</u>ease</button>
+      <button class="btn btn-primary btn-sm" id="btnSendtonext" ng-disabled="btnSendtonextDisable">Send to <u>n</u>ext stage</button>
+      <button class="btn btn-primary btn-sm" id="btnBackToprevious" ng-disabled="btnBackTopreviousDisable">Back to <u>p</u>revious stage</button>
+      <button class="btn btn-primary btn-sm" id="btnFiles" ng-disabled="btnFilesDisable"><u>F</u>iles</button>
+      <button class="btn btn-primary btn-sm" id="btnGenerateException" ng-disabled="btnGenerateException">Reg̲ister exception</button>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory"></input>
+          </li>
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" value="Ex̲port" id="btnExport"></input>
+          </li>
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" value="Export all data" id="btnAllDataExport"></input>
+          </li>
+        </ul>
+      </div>
+  </div>
+</script>
+<div class="modal-body details-body" id = "">
+    <ul class="nav nav-tabs">
+        <li {% if type == 'analysis' %} class="active" {% endif %}>
+            <a class="show-tab" href="#analysis" index="1" id="tab1" ng-click="onTabChange('analysis',1)"><i id="analysis-fav" {% if type == 'analysis' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Analysis</a>
+        </li>
+        <li {% if type == 'incoming' %} class="active" {% endif %}>
+            <a class="show-tab" href="#incoming" index="2" id="tab2" ng-click="onTabChange('incoming',2)"><i id="incoming-fav" {% if type == 'incoming' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Incoming</a>
+        </li>
+        <li {% if type == 'BOM_incoming' %} class="active" {% endif %}>
+            <a class="show-tab" href="#BOM_incoming" index="3" id="tab3" ng-click="onTabChange('BOM_incoming',3)"><i id="BOM_incoming-fav" {% if type == 'BOM_incoming' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>BOM incoming</a>
+        </li>
+        <li {% if type == 'SI' %} class="active" {% endif %}>
+            <a class="show-tab" href="#SI" index="4" id="tab4" ng-click="onTabChange('SI',4)"><i id="SI-fav" {% if type == 'SI' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>SI</a>
+        </li>
+        <li {% if type == 'SICC' %} class="active" {% endif %}>
+            <a class="show-tab" href="#SICC" index="5" id="tab5" ng-click="onTabChange('SICC',5)"><i id="SICC-fav" {% if type == 'SICC' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>SI CC</a>
+        </li>
+        <li {% if type == 'BOM_CC' %} class="active" {% endif %}>
+            <a class="show-tab" href="#BOM_CC" index="6" id="tab6" ng-click="onTabChange('BOM_CC',6)"><i id="BOM_CC-fav" {% if type == 'BOM_CC' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>BOM CC</a>
+        </li>
+        <li {% if type == 'FQC' %} class="active" {% endif %}>
+            <a class="show-tab" href="#FQC" index="7" id="tab7" ng-click="onTabChange('FQC',7)"><i id="FQC-fav" {% if type == 'FQC' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>FQC</a>
+        </li>
+        <li class="mn-listing tab-search preparations-search">
+            <div {% if type == 'analysis' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="analysis-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index ="1"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'incoming' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="incoming-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams2" parameters="availableSearchParams2" index ="2"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'BOM_incoming' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="BOM_incoming-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams3" parameters="availableSearchParams3" index ="3"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'SI' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="SI-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams4" parameters="availableSearchParams4" index ="4"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'SICC' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="SICC-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams5" parameters="availableSearchParams5" index ="5"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'BOM_CC' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="BOM_CC-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams6" parameters="availableSearchParams6" index ="6"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'FQC' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="FQC-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams7" parameters="availableSearchParams7" index ="7"></nit-advanced-searchbox>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div {% if type == 'analysis' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="analysis">
+            <div class="lst-container analysis">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'incoming' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="incoming">
+            <div class="lst-container incoming">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'BOM_incoming' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="BOM_incoming">
+            <div class="lst-container BOM_incoming">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions3" dt-columns="dtColumns3" dt-instance="dtInstance3" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'SI' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="SI">
+            <div class="lst-container SI">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions4" dt-columns="dtColumns4" dt-instance="dtInstance4" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'SICC' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="SICC">
+            <div class="lst-container sicc">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions5" dt-columns="dtColumns5" dt-instance="dtInstance5" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'BOM_CC' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="BOM_CC">
+            <div class="lst-container BOM_CC">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions6" dt-columns="dtColumns6" dt-instance="dtInstance6" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'FQC' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="FQC">
+            <div class="lst-container FQC">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions7" dt-columns="dtColumns7" dt-instance="dtInstance7" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewReserveModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveModel($event);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title" id="viewReserveTitle" ng-bind="sourcingTitle"></h5>
+            </div>
+            <div class="modal-body">
+                <div id="viewReserveBody" class="my-custom-scrollbar">
+                    <form id="frmSaveReserve" action="/qualityapp/reserve_operator/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label required for="id_operator" class="control-label col-sm-2 required">Operator : </label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="id_operator" name="operator" value=""/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" role="tablist">
+                <button type="submit" class="btn btn-primary btn-sm" id="btnSaveReserve" ng-click="saveReserve($event);" ng-disabled="btnDisabled"  edit-mode="true">Reserve</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewSendToNextModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content send-to-next-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewSendToNextTitle" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="send_to_next_form_"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="btnSaveSendToNext" ng-click="saveSendToNext($event);" ng-disabled="btnDisabled"  edit-mode="true">Save & Send to next</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewBackToPreviousModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content back-to-previous-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewBackToPreviousTitle" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="back_to_previous_form"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="btnBackToPrevious" ng-click="saveBackToPrevious($event);" ng-disabled="btnDisabled"  edit-mode="true">Save & Send back to previous</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="generateException" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content generate-exception-model">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h4>Generate Exception</h4>
+        <span class="modal-title generate-exception-model-title" id="user_header"></span>
+      </div>
+      <div class="modal-body tab-data-content">
+        <div class="modal-body details-body">
+            <form id="frmSaveExceptionProblem" action="/qualityapp/generate_exception_problem_save/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
+                <div class="container">
+                    <div class="form-group">
+                        <label for="id_problem_department" class="control-label col-sm-3 required">Problem department :</label>
+                        <div class="col-sm-6">
+                        <input class="form-control" id="id_problem_department" name="problem_department" type="text" required readonly/>
+                        </div>
+                    </div>
+                    <br>
+                        <div class="form-group">
+                        <label for="id_order_number" class="control-label col-sm-3 required">Order number :</label>
+                        <div class="col-sm-6">
+                        <input class="form-control" id="id_order_number" name="order_number" type="text" required readonly/>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="id_pre_defined_problem" class="control-label col-sm-3 required">Pre-defined problem :</label>
+                        <div class="col-sm-6">
+                        <input class="form-control" id="id_pre_defined_problem" name="pre_defined_problem" type="text" required/>
+                        <span class= "msg-show" id="id_message_pre_defined_problem">This field is required.</span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group internal_remark">
+                        <label for="id_internal_remark" class="control-label col-sm-3 required">Internal remark :</label>
+                        <div class="col-sm-6">
+                        <textarea
+                            class="form-control"
+                            id="id_internal_remark"
+                            name="internal_remark"
+                            type="text"
+                            required
+                        ></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" id="upload_image">
+                        <label class="control-label col-sm-3" id="upload_image_label">Exception file :</label>
+                        <div class="col-sm-6">
+                            <input type="file" id="id_upload_image" name="upload_image">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" id="si_file">
+                        <label class="control-label col-sm-3" id="si_file_label">SI file :</label>
+                        <div class="col-sm-6">
+                            <input type="file" id="id_si_file" name="si_file" accept=".zip,">
+                        </div>
+                    </div>
+                    <input class="form-control" id="id_order_id"  name="order_id" type="hidden" required/>
+                </div>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" ng-click="$dismiss()" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button type="submit" class="btn btn-primary" id="btnSavePreDefineProblem" ng-click="SavePreDefineProblem($event)">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    var data = {'type' : '{{type}}','exception_problems_id':'{{exception_problems_id.id}}', 'permissions': {{ permissions| safe}}};
+    var preparationJs = preparationsInit(data);
+    setAutoLookup("id_operator", "/lookups/operators/", "", true, false, false, null, 1);
+</script>

@@ -1,0 +1,31 @@
+<div align="center" class="header">The First User: You</div>
+<div class="form-group" align="center">
+	<label class="imgThumbnail form-control" id="userShowImage" for="userImage"></label>
+	<input type="file" name="userImage" id="userImage" accept="image/*">
+</div>
+<div class="form-group form-inline">
+	<div class="row">
+		
+		<div class="col-sm-5">
+			<div style="color: grey">First Name</div>
+			<input type="text" class="form-control" name="firstName" ng-model="setupInfo.firstName" required>
+		</div>
+		<div class="col-sm-5">
+			<div style="color: grey">Last Name</div>
+			<input type="text" class="form-control" name="lastName" ng-model="setupInfo.lastName" required>
+		</div>
+		
+	</div>
+</div>
+<div class="form-group">
+	<div style="color: grey">Username (Email)</div>
+	<input type="text" class="form-control" name="username" minlength="3" ng-model="setupInfo.username" required>
+</div>
+<div class="form-group">
+	<div style="color: grey">Password</div>
+	<input type="password" class="form-control" id="password" name="password" minlength="6" ng-model="setupInfo.password" required>
+</div>
+<div class="form-group">
+	<div style="color: grey">Confirm Password</div>
+	<input type="password" class="form-control" id="confirmPasswrod" name="confirmPasswrod" minlength="6" ng-model="setupInfo.confirmPasswrod" required>
+</div>

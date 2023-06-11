@@ -1,0 +1,149 @@
+<style>
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 2px 5px;
+    line-height: 1.3;
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+    }
+</style>
+<form  id="idOrderScreenMaster" action="/qualityapp/save_order_screen_master/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
+    <input type="hidden" value="{{company_id}}" name="company_id" id="id_company">
+    <table class="table table-striped table-hover" id="setOrderScreenChild">
+        <thead>
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Parameter</th>
+                <th scope="col">Is compulsory</th>
+                <th scope="col">Default parameter</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in order_screen %}
+            <tr>
+                <th scope="row"><input type="checkbox" id="{{field.id}}" class="hrchy-dt-checkboxes" name="select" value="{{field.code}}" {% if field.orderscreen__id is not None and field.orderscreen__is_deleted is False %} checked {% endif %} {% if field.code == "cmb_service" %} onclick="return false;" style="pointer-events: none;" {% endif %}></th>
+                <td scope="row"> <input type="hidden" value="">{{field.name}}</td>
+                <td scope="row"><input type="checkbox" class="is_compulsory" id="{{field.id}}" name="is_compulsory" value="{{field.code}}" {% if field.orderscreen__is_compulsory is True %} checked {% endif %} {% if field.code == "cmb_service" %} onclick="return false;" style="pointer-events: none;" {% endif %}></td>
+                <td scope="row" id="{{field.id}}">
+                {% if field.orderscreen__default_value is not None %}
+                <p>{{field.default_display_value}}</p>
+                {% endif %}</td>
+                {% if field.code == 'order_file' %}
+                <td scope="row"><a class="check"></a>
+                </td>
+                {% else %}
+                <td scope="row"><a class="check" onclick="setScreenChild({{field.id}},`{{field.orderscreen__default_value}}`,code=`{{field.code}}`, name=`{{field.name}}`)">Select</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+
+<script type="text/javascript">
+     $(document).ready(function () {
+        var $chkboxes = $('.hrchy-dt-checkboxes');
+        var lastChecked = null;
+
+        $chkboxes.click(function (e) {
+            if (!lastChecked) {
+                lastChecked = this;
+                return;
+            }
+
+            if (e.ctrlKey) {
+                var start = $chkboxes.index(this);
+                var end = $chkboxes.index(lastChecked);
+
+                $chkboxes.slice(Math.min(start, end), Math.max(start, end) + 1).prop('checked', lastChecked.checked);
+            }
+
+            lastChecked = this;
+        });
+    });
+    $(document).ready(function () {
+        var $chkboxes = $('.is_compulsory');
+        var lastChecked = null;
+
+        $chkboxes.click(function (e) {
+            if (!lastChecked) {
+                lastChecked = this;
+                return;
+            }
+
+            if (e.ctrlKey) {
+                var start = $chkboxes.index(this);
+                var end = $chkboxes.index(lastChecked);
+
+                $chkboxes.slice(Math.min(start, end), Math.max(start, end) + 1).prop('checked', lastChecked.checked);
+            }
+
+            lastChecked = this;
+        });
+    });
+    $(function(){
+        $(".is_compulsory").on("click", function() {
+            var data = [];
+            if ($(this).parent().parent().find('.hrchy-dt-checkboxes').is(":checked") == false) {
+                $(this).parent().parent().find('.hrchy-dt-checkboxes').prop('checked',true)
+                }});
+        });
+    $(function(){
+        $(".hrchy-dt-checkboxes").on("click", function() {
+            var data = [];
+            $("table > tbody > tr").each(function () {
+                var $tr = $(this);
+                if ($tr.find(".hrchy-dt-checkboxes").is(":checked") == false) {
+
+                    $tr.find(".is_compulsory").prop('checked',false)
+                    }
+                });
+        });
+    });
+    function setScreenChild(parent_id, default_value, code=null, name=null) {
+        $("td").on('click', function () {
+            $(this).closest("tr").find(".hrchy-dt-checkboxes").attr('checked', true);
+        });
+        if(code=="cmb_service"){
+            $('#note_efficiency').show();
+        }
+        else{
+            $('#note_efficiency').hide();
+        }
+        $("#setScreenChildTitle").text("Set default parameter value - "+ name + "")
+            sparrow.post(
+                "/qualityapp/set_order_screen_params/",
+                { id: parent_id ,
+                    default_value : default_value,
+                    company_id:{{ company_id }},
+                    code: code,
+                },
+                false,
+                function (data) {
+                    $("#setScreenChildBody").html(data);
+                    $("#parent_id").val(parent_id)
+                    $("#setScreenChildModel").modal("show");
+                    if (code.startsWith("txt")) {
+                        $("#setDefualtTXTValue").show();
+                    }else if (code.startsWith("cmb")) {
+                        $("#setDefualtDropdownValue").show()
+                    } else if (code.startsWith("chk")) {
+                        $("#check_para_name").text(name)
+                        $("#setDefualtCheckBoxValue").show()
+                    }
+                },
+                "html"
+            );
+    }
+    $("button[data-dismiss-modal=modal2]").click(function () {
+            $('#setScreenChildModel').modal('hide');
+        });
+     $("button[data-dismiss-modal=modal3]").click(function () {
+            $('#setScreenChildModel1').modal('hide');
+        });
+
+</script>
+
+
+

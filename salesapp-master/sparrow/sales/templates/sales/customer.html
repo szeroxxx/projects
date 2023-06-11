@@ -1,0 +1,498 @@
+{% load staticfiles %}
+{% load app_filters %}
+<style type="text/css">
+    .addNewSymbol {
+        font-size: 20px;
+        float: left;
+        cursor: pointer;
+        padding: 3px;
+    }
+
+    .addNewLine {
+        font-weight: 700;
+        float: left;
+        margin-top: 6px;
+        margin-left: 3px;
+        cursor: pointer;
+    }
+
+    .btnImageLabel {
+        color: #266EBB;
+        cursor: pointer;
+    }
+
+    .rowImages {
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+    }
+
+    input[type="file"] {
+        display: none !important;
+    }
+
+    #DataTables_Table_0 .icon-trash,
+    #DataTables_Table_1 .icon-trash {
+        display: none;
+    }
+
+    .master_data {
+        border-top: none !important;
+    }
+
+    .table>thead>tr>th {
+        vertical-align: bottom;
+        border-bottom: 1px solid #ddd;
+        white-space: nowrap;
+    }
+    .addNewSymbol{
+            font-size: 20px;
+            cursor: pointer;
+            padding: 3px;
+        }
+    .emptyTable{
+        border-bottom: 1px solid #d3d3d3 ;
+        /*padding-bottom: 11px;*/
+        border-top:  1px solid #d3d3d3 ;
+        /*padding-top: 11px;*/
+
+    }
+</style>
+
+<div class="modal-body details-body" role="document">
+    <form id="frmCompany" action="/sales/customer_profile/" method="POST" role="form"
+        class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-3 col-sm-3">
+                <div class="form-group">
+                    <label for="id_mobile" class="control-label col-sm-4" >Customer name</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="id_name" value="{{customer.CompanyName}}"
+                            name="name" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4">Handling Company</label>
+                    <div class="col-sm-6">
+                        <select class="form-control salesReviewEnable" id="idHandlingcompany" disabled>
+                            {% for hc in CustomerData.HandlingCompany %}
+                            <option value="{{hc.CompanyId}}"
+                                {%if hc.CompanyId == CustomerData.Customer.HandlingCompId %} selected {% endif %}>
+                                {{hc.Name}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4">Account Type</label>
+                    <div class="col-sm-6">
+                        <select class="form-control salesReviewEnable" id="idAccType" disabled>
+                            {% for acc_type in CustomerData.AccountType %}
+                            <option value="{{acc_type.CodeId}}"
+                                {%if acc_type.CodeId == CustomerData.Customer.TypeId %} selected {% endif %}>
+                                {{acc_type.Code}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4">Status</label>
+                    <div class="col-sm-6">
+                        <select class="form-control salesReviewEnable" id="idStatus" disabled>
+                            {% for c_s in CustomerData.CompanyStatus %}
+                            <option value="{{c_s.CodeId}}"
+                                {%if c_s.CodeId == CustomerData.Customer.CompanyStatusId %} selected {% endif %}>
+                                {{c_s.Code}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="time_zone" class="control-label col-sm-4">Currency</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="time_zone" name="time_zone" type="text"
+                            value='{{customer.Currency}}'>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_website" class="control-label col-sm-4">Bindipool Enabled</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="id_website"
+                            value="{% if customer.Allowbindipool %}Yes{% else %}No{% endif %}" name="website"
+                            maxlength=100 data-rule-url="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="time_zone" class="control-label col-sm-4">Offer Expiry</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="time_zone" name="time_zone" type="text"
+                            value='{{customer.OfferExpiry}}'>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="time_zone" class="control-label col-sm-4">VAT number</label>
+                    <div class="col-sm-3">
+                        <select class="form-control salesReviewEnable " id="idVatNr" disabled>
+                            {% for vat_nr in CustomerData.VatNo %}
+                            <option value="{{vat_nr.CodeId}}"
+                                {%if vat_nr.CodeId == CustomerData.Customer.TaxNumberTypeId %} selected {% endif %}>
+                                {{vat_nr.Code}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="text" id="idVatNrText" value="{{CustomerData.Customer.VATNo}}" placeholder="Enter vat number" class="form-control salesReviewEnable" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="form-group">
+                    <label for="id_acc_manager" class="control-label col-sm-4">Account Manager</label>
+                    <div class="col-sm-6">
+                        <select class="form-control is_edit" id="id_acc_manager" name="acc_manager" disabled>
+                            <option value="0">--Select--</option>
+                            {% for acc_manager in CustomerData.AccountManager %}
+                            <option value="{{acc_manager.id}}"
+                                {%if acc_manager.id == CustomerData.Customer.AccountManagerId %} selected {%endif%}>
+                                {{acc_manager.data}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_def_transport" class="control-label col-sm-4">Default Transport</label>
+                    <div class="col-sm-6">
+                        <select class="form-control is_edit" id="id_def_transport" name="def_transport" disabled>
+                            <option value="0">--Select--</option>
+                            {% for transport in CustomerData.TransportCompany %}
+                            <option value="{{transport.id}}"
+                                {%if transport.id == CustomerData.Customer.TransportCompanyCode %} selected {%endif%}>
+                                {{transport.data}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_invoice_delivery" class="control-label col-sm-4">Invoice delivery</label>
+                    <div class="col-sm-6">
+                        <select class="form-control is_edit" id="id_invoice_delivery" name="invoice_delivery" disabled>
+                            <option value="0">--Select--</option>
+                            {% for invoice_delivery in CustomerData.InvoiceDelivery %}
+                            <option value="{{invoice_delivery.id}}"
+                                {%if invoice_delivery.id == CustomerData.Customer.InvoiceDelivery %} selected {%endif%}>
+                                {{invoice_delivery.data}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_vat" class="control-label col-sm-4">VAT Exempt</label>
+                    <div class="col-sm-6">
+                        <input id="id_vat_exampt" name="vat_exampt" class="magic-checkbox is_edit" type="checkbox"
+                            value="{% if CustomerData.Customer.IsExcludeVAT %}true{% else %}false{% endif %}"
+                            {% if CustomerData.Customer.IsExcludeVAT %}checked="checked"{% else %}{% endif %} disabled/>
+                            <label for="id_vat_exampt"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_invoice_lang" class="control-label col-sm-4">Invoice language</label>
+                    <div class="col-sm-6">
+                        <select class="form-control is_edit" id="id_invoice_lang" name="invoice_lang" disabled>
+                            <option value="0">--Select--</option>
+                            {% for invoice_lang in CustomerData.InvoiceLanguage %}
+                            <option value="{{invoice_lang.id}}"
+                                {%if invoice_lang.id == CustomerData.Customer.InvoiceLangId %} selected {%endif%}>
+                                {{invoice_lang.data}}
+                            </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="time_zone" class="control-label col-sm-4">Assembly enabled</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="time_zone" name="time_zone" type="text"
+                            value="{% if customer.IsAllowAssembly %}Yes{% else %}No{% endif %}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4">Other account types</label>
+                    <div class="col-sm-6 salesReviewEnable">
+                        {% for other_acc in CustomerData.OtherAccountType %}
+                        <label><input type="checkbox" value="{{other_acc.CodeId}}" id="idOtherAccount" {% if other_acc.CodeId == CustomerData.Customer.OtherTypeId %} checked {% endif %} class="chkbx " disabled> {{other_acc.Code}}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-5" style="overflow: auto;height: 300px;">
+                <div class="col-md-6 col-sm-6">
+                    <table id="confirm_quoatoin_status" class="table">
+                        <thead>
+                            <tr>
+                                <th><b>Company competence fields</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in MasterData.competence %}
+                            <tr role="row">
+                                <td class="master_data" style="white-space:nowrap;max-width:100%;">
+                                    <input id="{{data.id}}" name="competence" class="magic-checkbox checkbox_two" type="checkbox"
+                                        {% if data.id in customer.competence %}checked="checked" {%else%}{%endif%} disabled/>
+                                    <label for="{{data.id}}" class="control-label">
+                                        {{data.data}}
+                                    </label>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <table id="confirm_quoatoin_status_1" class="table">
+                        <thead>
+                            <tr>
+                                <th><b>100% Eurocircuits Customer?</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in MasterData.ec_customer_check %}
+                            <tr role="row" class="odd">
+                                <td class="master_data" style="white-space:nowrap;max-width:100%;">
+                                    <input id="{{data.id}}" name="ec_customer_check" class="magic-checkbox checkbox_two"
+                                        type="checkbox" {% if data.id in customer.ec_customer_check %}checked="checked"
+                                        {%else%}{%endif%} disabled/>
+                                    <label for="{{data.id}}" class="control-label">
+                                        {{data.data}}
+                                    </label>
+                                </td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="show-tab" href="#address-lines">Addresses</a></li>
+            <li><a class="show-tab" href="#users-lines">Users</a></li>
+            <li><a class="show-tab" href="#activities-lines">Activities</a></li>
+            <li><a class="show-tab" href="#call-report-lines">Call reports</a></li>
+        </ul>
+        <div class="tab-content tab-data-content">
+            <div class="tab-pane active" id="address-lines">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+                        class="row-border hover"></table>
+                </div>
+            </div>
+            <div class="tab-pane" id="users-lines">
+                <div id="idContactTable">
+                    <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2"
+                        class="row-border hover"></table>
+                </div>
+            </div>
+            <div class="tab-pane" id="activities-lines">
+                <div id="gridCon">
+                    <div class="row">
+                        {% if activities %}
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="id_mobile" class="control-label col-sm-6" >User name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" style="width: 300px" class="form-control" id=""  value="{{activities.UserName}}" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_phone" class="control-label col-sm-6">Last login (UTC)</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="idLastLogin" title="{{activities.user_last_login}}" value="{{activities.user_last_login}}" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="time_zone" class="control-label col-sm-6">Last data uploaded (UTC)</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="idLastUploaded" title="{{activities.user_last_data_upload}}" type="text"
+                                        value='{{activities.user_last_data_upload}}' disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="time_zone" class="control-label col-sm-6">Last PCB calculated (UTC)</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="idLastPcbCalculated" title="{{activities.user_last_pcb_calc_open}}" type="text"
+                                        value='{{activities.user_last_pcb_calc_open}}' disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="time_zone" class="control-label col-sm-6">Last basket save (UTC)</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="idLastBasketSave" type="text" title="{{activities.user_last_save_basket}}"
+                                        value='{{activities.user_last_save_basket}}' disabled>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="emptyTable">
+                        <h5 style="margin-left: 100px;">No data available in table</h5>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="call-report-lines">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions3" dt-columns="dtColumns3" dt-instance="dtInstance3"
+                        class="row-border hover"></table>
+                </div>
+                <br>
+                <span>
+                    <i class="icon-plus-circle"></i>
+                    <a id="addNewReport"  ng-click="onSurveyReport();"> Add Report</a>
+                </span>
+            </div>
+        </div>
+    </form>
+    <div id="msg"></div>
+</div>
+<div class="modal-footer details-footer ng-scope">
+    <!-- <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button> -->
+    <button class="btn btn-primary" style="" id = 'idsaveMasterData' ng-click="saveMasterData($event);" ng-disabled="btnDisabled">Save</button>
+</div>
+
+
+
+<div id="customerAddressModel" class="modal fade" tabindex="-1" role="dialog">
+    <div style="width: 500px;" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="addressModelTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="custAddressform"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" id= 'idsaveAddress' ng-click="saveAddress($event);" ng-disabled="btnDisabled">Save</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div id="customerUserModel" class="modal fade" tabindex="-1" role="dialog">
+    <div style="width: 55%;" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="userModelTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="custUserform"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" id ='idsaveUser' ng-click="saveUser($event);" ng-disabled="btnDisabled">Save</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div id="partner_fin_model" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel" ng-bind="partnerDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="partner_fin_form"></div>
+                <div id="fin_lineMsg"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" ng-click="saveFinancial($event);"
+                    ng-disabled="btnDisabled">Save</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<div id="partnerContactModal" class="modal fade" tabindex="-1" role="dialog">
+    <div style="width:60%;" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel" ng-bind="partnerContactTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="partnerContact_form"></div>
+                <div id="partnerContactMsg"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" ng-click="saveContact($event);" ng-disabled="btnDisabled">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addRemarkOnStatusChangeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div style="width:50%;" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add remarks</h4>
+            </div>
+            <div class="modal-body" style="padding-top: 0px">
+                <h5 class="required">Remarks</h5>
+                <textarea style="max-width: 100%;width: 100%;height: 120px" id="remarkCompanyStatus" required></textarea>
+                <span id="errorMsg" class="required">This field is required</span>
+                <p><i>Note: Saved remarks will be displayed as popup at bottom right of the screen on related pages of ECC.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" ng-click="saveCompanyStatusRemark();" ng-disabled="btnDisabled">Save</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var customerId = {{ customer.CompanyId}};
+    var permissions = {{permissions| safe}};
+    var report_permisions = {{report_permisions| safe}};
+    var roles = {{roles|safe}};
+    var companyData = {
+        'companyId': customerId,
+        'permissions': permissions,
+        'roles': roles,
+        'report_permisions': report_permisions,
+        'edit_customer_from':'{{edit_customer_from}}',
+        'previous_status':'{{CustomerData.Customer.CompanyStatusId}}',
+        'is_sales_review': '{{CustomerData.Customer.IsSalesReview}}'
+    }
+    customerInit(companyData);
+</script>

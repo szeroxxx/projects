@@ -1,0 +1,117 @@
+ {% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/css/magic-check.min.css' %}?v=0.1">
+
+<style type="text/css">
+.drop-box {
+    border: 1px dotted silver;
+    text-align: center;   
+    color: #2780f8;
+    font-size: 16px;
+    line-height: 1.8em;
+    cursor: pointer;
+    height: 30px;
+}
+#file_info ul {
+    padding: 0;
+}
+#file_info ul li {
+    list-style-type: none;
+}
+.form-group {
+	margin-top: 15px;
+}
+.success-message{
+	color: green;
+	font-size: 24px;
+	text-align: center;
+	padding-top: 50px;
+}
+</style>
+    <form id="frmSubmitIssue"  role="form" class="form-horizontal ng-pristine ng-valid">
+    	<div ng-show="success_msg" class="success-message form-group">You request has been submitted. We will review you request and respond as soon as possible.</div>
+        <div class="modal-body details-body" ng-show="suppost_form">
+            <div class="row container">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                    	<div>
+                        	<label for="id_title" class="control-label required" >Your request subject</label>
+                        </div>
+                        <div>
+                            <input class="form-control " id="id_title" value="" type="text" required />
+                        </div>
+                    </div>
+	                <div class="form-group">
+                    	<div>
+                        	<label for="id_details" class="control-label col-sm-5 required">Your request detail</label>
+                    	</div>
+                        <div>
+                        	<textarea class="form-control " id="id_details" rows="15" required aria-required="true" />
+                        </div>
+					</div>
+
+					<div class="form-group" style="margin-bottom: 0;">						
+						<div>
+							<label class="col-sm-2"></label>
+						</div>
+						<div class="form-group">
+				        	<div ngf-drop="uploadDailouge($files)" ngf-select="uploadDailouge($files)" class="drop-box"  ngf-drag-over-class="dragover">Browse or drop a file here</div>
+				        	<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+				        </div>
+				        <div>
+				        	<p style="font-size: 12px">Files must be less than <b>2MB.</b></p>
+				        </div>
+					</div>
+
+				    <div class="form-group" style="margin: 0;">				
+			          	<div id ="file_info" class="control-label">
+			          		<div>
+			          			<ul>
+				              		<li ng-repeat="file in files"><i class="icon-file-upload"></i><span style="margin-left:10px;">{[{file.name}]}</span> <span class="file-size">Size: {[{file.size/1024 | number: 1}]} KB</span>
+				              		</li>
+			            		</ul>
+			          		</div>	            	
+			          	</div>
+			        </div>
+
+			    	<div class="form-group" style="margin-top: 0;">						
+			    		<div>
+		    				<label for="id_email" class="control-label required">Receive reply on email</label>
+		    			</div>
+		    			<div>
+			    			<div>
+				                <input class="form-control" id="from_email" value="{{email}}" type="email" required/>
+				            </div>
+			        	</div>
+		    		</div>
+
+			    	<div class="form-group">
+		    			<div>
+							<div>
+							  	<input class="magic-radio" type="radio" id="id_bug" name="request_for" ng-click="onRequestTypeSelect('bug')" checked>
+  								<label for="id_bug" style="display: inline-block;">I am reporting a bug</label>
+
+  								<input class="magic-radio" type="radio" id="id_feature" ng-click="onRequestTypeSelect('feature')" name="request_for">
+  								<label for="id_feature" style="display: inline-block;margin-left: 20px;">I am requesting a possible improvement</label>
+							</div>	
+			            </div>
+		    		</div>
+		    	</div>	
+		    	<div class="col-sm-6" style="text-align: center;">
+		    		<div class="form-group">
+		    			<img src="{% static 'base/images/support.svg' %}" height="280" width="280">
+		    		</div>
+		    		<h1 style="font-weight: 600; font-size: 34px;">Help is just a click away</h1>
+		    		
+		    		<p style="margin-top: 20px; font-size: 16px; font-weight: 400">What happens after you submit your request?</p>
+		    		<p style="margin-top: 15px; color: grey">Our support team will review your request and reply </br>with appropriate resolution as soon as possible</p>
+		    	
+		    		
+		    	</div>		
+		</div>
+	</form>
+	<div class="modal-footer details-footer"> 
+		<div class="col-sm-6">
+			<button class="btn" data-dismiss="modal" aria-hidden="true" ng-click="onClose($event)" id="btnClose">Close</button>
+	        <button class="btn btn-primary" ng-click="upload($event);" ng-disabled="btnUploadDisabled"  edit-mode="true" >Submit request</button>
+    	</div>
+	</div>

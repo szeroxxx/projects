@@ -1,0 +1,73 @@
+<template>
+    <name>leave_summary</name>
+    <description>Summary mail for the users who are on the leave .</description>
+    <subject>Sparrow - {{ number }} employee(s) is on leave next day {{ date }}.</subject>
+    <html_content>
+        <![CDATA[
+<table border="0" cellspacing="0" cellpadding="0" style="max-width:700px;margin:0 auto; width: 600px;">
+<tbody>
+<tr height="16"></tr>
+<tr>
+<td>
+<table bgcolor="#364760" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width:332px;max-width:800px;border:1px solid #e0e0e0;border-bottom:0;border-top-left-radius:3px;border-top-right-radius:3px">
+<tbody>
+<tr>
+<td height="35px" colspan="3"></td>
+</tr>
+<tr>
+<td width="32px"></td>
+<td style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:24px;color:#ffffff;line-height:1.25;min-width:600px;padding-left:30px">{{ number }} employee(s) is on leave tomorrow</td>
+<td width="32px"></td>
+</tr>
+<tr>
+<td height="18px" colspan="3"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table bgcolor="#FAFAFA" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width:332px;max-width:800px;border:1px solid #f0f0f0;border-bottom:1px solid #c0c0c0;border-top:0;border-bottom-left-radius:3px;border-bottom-right-radius:3px">
+<tbody>
+<tr height="16px">
+<td width="32px" rowspan="3"></td>
+<td></td>
+<td width="32px" rowspan="3"></td>
+</tr>
+<tr>
+<td>
+<table style="min-width:550px;font-family:Roboto-Regular,Helvetica,Arial;font-size:13px;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<th style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;text-align:left;width:180px"></br>Employee</th>
+<th style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;text-align:left;width:50px"></br>Days</th>
+<th style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;text-align:left;"></br>Leave duration</th>
+
+</tr>
+                                {% for employee in employees %}
+                                 <tr>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">{{ employee.name }}</td>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">{{ employee.days }}</td>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">{{ employee.start_date }} - {{ employee.end_date }}</td>
+
+</tr>
+                               {% endfor %}
+                              <tr height="16px"></tr>
+<tr>
+<td colspan="10" style="font-size:12px;color:#b9b9b9;line-height:3">This email can't receive replies.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr height="20"></tr>
+</tbody>
+</table>
+]]>
+    </html_content>
+</template>

@@ -1,0 +1,35 @@
+.team_list {
+    border-bottom: solid 1px #DDDDDD;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    line-height: 1.6rem;
+  }
+  .team_invite_member{
+    text-align: right;
+  }
+  .team_container{
+    color: #525252;
+    margin-top: 20px;;
+  }
+  .invitations_container{
+    border: solid 1px #DDDDDD;
+    margin:20px !important;
+  }
+  .invitations_container .avatar{
+    height: 50px;
+    width: 50px;
+  }
+  .invite_by_user_image{
+    margin-top: 20px !important;
+    text-align: center;
+  }
+  .inv_btn_container{
+    text-align: center;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+  }
+  .set-password-invitation{
+    margin-top: 100px;
+    margin-left: 30%;
+    align-items: center;
+  }

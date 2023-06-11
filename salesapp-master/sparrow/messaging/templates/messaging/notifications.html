@@ -1,0 +1,183 @@
+<style type="text/css">
+    .btn-markRead{
+        font-size: 11px;
+        margin-top: 2px;
+        padding: 2px 8px;
+    }
+    .user-notificationsTable tr td,
+    .general-notificationsTable tr td {
+        padding: 4px;
+    }
+    .notification td{
+        padding:0px;
+    }
+    .user-notificationsTable,
+    .general-notificationsTable{
+        width: 100%;
+    }
+    .notification {
+        border-bottom: 1px solid #ddd;
+        margin-left: 10px
+    }
+    .notification-subject {
+        float: left;
+    }
+    .notification-created-on, .notification-read-by{
+        float: right;
+        font-weight: normal; 
+        font-size: 11px;
+    }
+    .notification-text {
+        float: left;
+        font-weight: normal; 
+        font-size: 11px;
+    }
+    .glyphicon-ok {
+        cursor: pointer; 
+        font-size:15px; 
+        margin-left:10px;
+    }
+    .view-more-btn {
+        text-align: center;
+        font-size: 15px; 
+        margin-top: 12px
+    }
+    .user-notifications,
+    .general-notifications{
+        overflow-y: auto;
+        padding: 10px 2px;
+    }
+    .classPanel {
+        font-size: 9px;
+        position: relative;
+        left: 0px;
+        bottom: 2px;
+    }
+    .general{
+        background-color: #2d6987;
+    }
+    .notification_type{
+        font-size: 14px;
+        padding-left: 5px;
+    }
+    .viewMore{
+        text-decoration: underline;
+        text-align: center; 
+        cursor: pointer;
+    }
+    .topbarIcons {
+        color: #7a7979;
+        margin: 0px 5px 0px 5px;
+        font-size: 20px;
+    }
+    .noNotification{
+        display: none;
+        text-align: -webkit-center;
+        padding-top: 50px;
+    }
+    .panel_header{
+        padding: 10px 5px;
+    }
+    .desktop-notification{
+        text-align: center;
+        padding-top: 5px;
+    }
+</style>
+
+<div class="modal-body">
+    <div>
+
+        <div class="panel panel-default" id="panel_body" style="margin-bottom: 5px;overflow-y: auto;">
+            <div class="panel-heading panel_header">
+                <span id = "id_user_cnt" class="label btn-primary classPanel" style="background-color: red;"></span>
+                <span class="notification_type"><b>User notifications</b></span>
+                    <div class="focus-inner" style="float:right;margin-top: -5px">
+                        <input type="button" class="btn btn-sm btn-markRead" id="btnMarkAsReadUser" value="Mark all as read" ng-click="markAsRead(true)"></input>
+                    </div>
+            </div>
+            <div class="panel-body user-notifications">
+                <table class="user-notificationsTable">
+                </table>
+                <div id="no-notification-user" class="noNotification" style="display: none; text-align: center; padding-top: 50px">
+                    <i class="icon-notification topbarIcons"></i>
+                    <p style="font-size: 25px; padding-top: 15px;">No new notifications.</p>
+                </div>
+                <!-- <div class="view-more-btn" style="">       
+                    <button id="id_view_more" count="{{ count }}" class="btn" data-dismiss="modal" ng-click="viewMoreUser($event);" aria-hidden="true">View more</button>
+                </div> -->
+                
+            </div>
+
+        </div>
+
+        <div style="text-align: center; padding-bottom: 10px;">
+         <a id="id_view_more_user" count="{{ count }}" class="viewMore" ng-click="viewMoreUser($event)" >View more</a>
+        </div>
+
+
+        <div class="panel panel-default" id="panel_body_general" style="margin-top:10px;overflow-y: auto;">
+            <div class="panel-heading panel_header">
+                <span id = "id_general_cnt" class="label btn-primary classPanel"></span>
+                <span class="notification_type"><b>General notifications</b></span>
+                    <div class="focus-inner" style="float:right;margin-top: -6px">
+                        <input type="button" class="btn btn-sm btn-markRead" id="btnMarkAsReadGeneral" value="Mark all as read" ng-click="markAsRead(false)"></input>
+                    </div>
+            </div>
+            <div class="panel-body general-notifications">
+                <table class="general-notificationsTable">
+                </table>
+                <div id="no-notification-general" class="noNotification" style="display: none; text-align: center;padding-top: 50px">
+                    <i class="icon-notification topbarIcons"></i>
+                    <p style="font-size: 25px; padding-top: 15px;">No new general notifications.</p>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: -15px;">
+         <a id="id_view_more_general" count="{{ count }}" class="viewMore" ng-click="viewMoreGeneral($event)">View more</a>
+        </div>
+
+
+
+
+    <!-- {% for notification in notifications %}
+        <tr class="notification">
+            <td style="padding-left: 15px">
+                <input type="checkbox" ref="{{ notification.id }}">
+            </td>
+            <td>
+                <div class="col-sm-12">
+                    <label id="id_subject" class="notification-subject" style="{% if notification.is_read %}font-weight: normal;{% endif %}">{{ notification.subject }} {{ notification.id }}</label>
+                    <label id="id_created_on" class="notification-created-on" style="{% if not notification.is_read %}font-weight: bold;{% endif %}">{{ notification.created_on }}  
+                        <span id="mark_as_read" value="{{ notification.id }}" class="glyphicon glyphicon-ok" style="{% if notification.is_read %}display: none;{% endif %}"></span>
+                    </label>
+                </div>
+                <div class="col-sm-12">
+                    <label id="id_text" class="notification-text">{{ notification.text }}</label>
+                    <label id="id_read_by" class="notification-read-by" style="{% if notification.read_by == '' %}display: none;{% endif %}">{{ notification.read_by }}</label>
+                </div>
+            </td>
+        </tr>
+    {% endfor %} -->
+    </div>
+</div>
+<div class="desktop-notification" style="display: none;">
+    <a class="follow-link" onclick="sparrow.enableNotification();" title="Click to enable desktop notification.">
+        <i class="icon-imac" style="font-size: 12px;"></i>
+        <span class="follow-text">Enable Desktop Notification</span>
+    </a>
+</div>
+<!-- <div class="panel panel-default">
+    <div class="panel-heading">User notifications
+        <script type="text/ng-template" id="top_action_bar">
+            <div class="focus-inner" style="float:right;margin-top: 10px;margin-bottom: 5px;">
+            <input type="button" class="btn btn-primary btn-sm" id="btnMarkAsRead" value="Mark all as read" ng-disabled="btnMarkAsReadDisable"></input>
+            </div>
+        </script>
+    </div>
+    <div class="panel-body">
+            <div class="view-more-btn" style=""> -->
+    <!-- <label id="id_view_more" count="{{ count }}" style="cursor: pointer;">View more</label> -->
+<!--                 <button id="id_view_more" count="{{ count }}" class="btn" data-dismiss="modal" ng-click="viewMore($event);" aria-hidden="true">View more</button>
+            </div>
+    </div>
+</div> -->

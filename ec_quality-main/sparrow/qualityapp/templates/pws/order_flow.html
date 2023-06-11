@@ -1,0 +1,189 @@
+<style>
+  #divscroll{
+    overflow: auto;
+    max-height:650px;
+  }
+  #p2{
+    display:inline;
+  }
+  .content-label{
+    margin-top: -25px;
+    margin-bottom: -9px;
+  }
+  #permContainer{
+    margin-top: -3px;
+  }
+</style>
+<div class="modal-body details-body">
+  <form
+    id="frmSaveServiceProcess"
+    action="/qualityapp/order_flow_save/"
+    method="POST"
+    role="form"
+    class="form-horizontal"
+    enctype="multipart/form-data"
+  >
+    <div class="container" >
+      <input class="form-control" type="hidden" id="id_company_id" name="company_id" required>
+
+      <div class="col-md-12 col-sm-12">
+         <h5 class="content-label">Services / Processes :</h5>
+          <hr />
+        <div class="form-group" id="divscroll" style="margin-top: -6px;">
+          <div class="col-md-12 col-sm-12 width-100%">
+          {% for service in services %}
+            <div class="perm_section active">
+              <li id="permContainer" class="nav side-menu">
+                    <input type="checkbox" name="services" onClick="selectall(this)"
+                      id="{{service.id}}"
+                      value="{{service.id}}"
+                      {% for serviceid in services_processes %}
+                      {% if service.id == serviceid %} checked {% endif %}
+                      {% endfor %}
+                     />
+                      <a class="sub-menu" style="font-size: 14px;display: block;padding: 10px 0;color: #000; display:inline;">
+                      <span class="icon-arrow-1-down" style="float:right;margin-top: 7px;font-size: 12px;font-weight:bold;"></span>
+                          {{service.name}}
+                      </a>
+                    <ul class="role_menus" id="{{service.id}}" style="display: none;">
+                       <b>Design</b><br>
+                      {% for process in processes %}
+                        {% if process.code == "schematic" or process.code == "footprint" or process.code == "placement" or process.code == "routing" or process.code == "gerber_release" %}
+                          &emsp; <input
+                            type="checkbox"
+                            name="processes{{service.id}}"
+                            id="{{process.id}}"
+                            value="{{process.id}}"
+                            {% for serviceid,processid in services_processes.items %}
+                            {% if service.id == serviceid %}
+                              {% for process_id in processid %}
+                                  {% if process.id == process_id %} checked {% endif %}
+                              {% endfor %}
+                              {% endif %}
+                            {% endfor %}/>
+                          {{process.name}}<br/>
+                        {% endif %}
+                      {% endfor %}
+                      <b>Preperation</b><br>
+                      {% for process in processes %}
+                        {% if process.code == "analysis" or process.code == "incoming" or process.code == "BOM_incoming" or process.code == "SI" or process.code == "SICC" or process.code == "BOM_CC" or process.code == "FQC"%}
+                          &emsp; <input
+                            type="checkbox"
+                            name="processes{{service.id}}"
+                            id="{{process.id}}"
+                            value="{{process.id}}"
+                            {% for serviceid,processid in services_processes.items %}
+                            {% if service.id == serviceid %}
+                              {% for process_id in processid %}
+                                  {% if process.id == process_id %} checked {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                          {% endfor %}/>
+                          {{process.name}}<br/>
+                        {% endif %}
+                       {% endfor %}
+                      <b>Production</b><br>
+                      {% for process in processes %}
+                        {% if process.code == "panel" or process.code == "upload_panel" %}
+                            &emsp; <input
+                            type="checkbox"
+                            name="processes{{service.id}}"
+                            id="{{process.id}}"
+                            value="{{process.id}}"
+                            {% for serviceid,processid in services_processes.items %}
+                            {% if service.id == serviceid %}
+                              {% for process_id in processid %}
+                                  {% if process.id == process_id %} checked {% endif %}
+                              {% endfor %}
+                            {% endif %}
+                          {% endfor %}/>
+                          {{process.name}}<br/>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+              </li>
+            </div><br>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+    function selectall(source) {
+        checkboxes = document.getElementsByName('processes'+source.id);
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+          checkboxes[i].checked = source.checked;
+        }
+      }
+    $(document).ready(function () {
+        $(".perm_section").find("li").first().addClass("active");
+        $(".perm_section").find("ul").first().addClass("onActive");
+        $(".perm_section").find("a").first().addClass("onActive");
+        var data = $(".perm_section").find("ul").first().attr("id");
+        var name = $(".perm_section").find("ul").first().text();
+        var parent_name = $(".perm_section").find("a").first().text();
+        var dataId = data.split("_")[1];
+        display_msg =
+          "Select all permissions for " + parent_name.trim() + " module";
+        $("#display_msg_id").text(display_msg);
+        $(".head").addClass("permissionItem");
+        $(".check-all").show();
+        $("#menu_name").text(parent_name + " / " + name);
+        $(".select-all").attr("id", dataId);
+        $('div[data-id="' + dataId + '"]').show();
+        var $li = $(".perm_section").find("li").first();
+        var list = $li.find("ul");
+        list.css("display", "block");
+        var dropDown = $(".perm_section").find("span").first();
+        dropDown.addClass("icon-arrow-1-up");
+        var checked = $('input[data-id="' + dataId + '"]:checked').length;
+        var totalcheck = $('input[data-id="' + dataId + '"]').length;
+        if (checked == totalcheck) {
+          $(".select-all").prop("checked", true);
+        }
+
+        $(".perm_section")
+          .find("a")
+          .on("click", function (ev) {
+            var $li = $(this).parent();
+            $(".sub-menu").removeClass("onActive");
+            $(this).addClass("onActive");
+
+            if ($li.is(".active")) {
+              $li.removeClass("active");
+              $("ul", $li).slideUp();
+              $(".sub-menu").removeClass("onActive");
+              if (!$li.parent().is(".child_menu")) {
+                $(".icon-arrow-1-up")
+                  .removeClass("icon-arrow-1-up")
+                  .addClass("icon-arrow-1-down");
+              }
+            } else {
+              // prevent closing menu if we are on child menu
+              if (!$li.parent().is(".child_menu")) {
+                $(".perm_section").find("li").removeClass("active");
+                $(".permCheckbox ch").prop("disabled", true);
+                $(".perm_section").find("li ul").slideUp();
+                $(".icon-arrow-1-up")
+                  .removeClass("icon-arrow-1-up")
+                  .addClass("icon-arrow-1-down");
+              } else {
+                $li
+                  .parent()
+                  .find("li")
+                  .removeClass("active")
+                  .removeClass("current-page");
+              }
+
+              $li.addClass("active");
+              $(this)
+                .find(".icon-arrow-1-down")
+                .removeClass("icon-arrow-1-down")
+                .addClass("icon-arrow-1-up");
+              $("ul", $li).slideDown();
+            }
+          });
+      });
+</script>

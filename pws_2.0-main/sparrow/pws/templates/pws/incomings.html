@@ -1,0 +1,257 @@
+<style>
+#divscroll{
+   overflow: auto;
+   max-height:200px;
+   {% comment %} border: 1px outset black; {% endcomment %}
+}
+#id_remarks_type_back{
+  cursor: not-allowed;
+}
+#id_remarks_type_back .ms-trigger{
+  display: none !important;
+}
+.remarks span {
+    width: 225px;
+    max-height: 3.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+}
+</style>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <button class="btn btn-primary btn-sm" id="btnFiles" ng-disabled="btnReserveDisable"><u>F</u>iles</button>
+      <button class="btn btn-primary btn-sm" id="btnPutToCustomer" ng-disabled="btnReserveDisable">P<u>u</u>t to customer </button>
+      <button class="btn btn-primary btn-sm" id="btnModifyException" ng-disabled="btnReserveDisable"><u>M</u>odify exception</button>
+      <button class="btn btn-primary btn-sm" id="btnSendback" ng-disabled="btnReserveDisable">Send <u>b</u>ack</button>
+      <input type="button" class="btn btn-primary btn-sm" id="btnBackToInComing" value="Back to In coming" ng-disabled="btnReserveDisable"></input>
+      <input type="button" class="btn btn-primary btn-sm" id="btnSendReminder" value="Send reminder" ng-disabled="btnReserveDisable"></input>
+      <input type="button" class="btn btn-primary btn-sm" id="btnSendReminderIncoming" value="Send reminder" ng-disabled="btnSendReminderIncoming"></input>
+
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistoryDisable"></input>
+            <input type="button" class="btn btn-primary btn-sm" id="btnCancel" value="Cancel" ng-disabled="btnReserveDisable"></input>
+            <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port"></input>
+            <input type="button" class="btn btn-primary btn-sm" value="Export all data" id="btnAllDataExport"></input>
+          </li>
+        </ul>
+      </div>
+  </div>
+</script>
+
+
+<div class="modal-body details-body" id = "">
+    <ul class="nav nav-tabs">
+        <li {% if type == 'in_coming' %} class="active" {% endif %}>
+            <a class="show-tab" href="#in_coming" index="1" id="tab1" ng-click="onTabChange('in_coming',1)"><i id="in_coming-fav" {% if type == 'in_coming' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>In coming</a>
+        </li>
+        <li {% if type == 'put_to_customer' %} class="active" {% endif %}>
+            <a class="show-tab" href="#put_to_customer" index="2" id="tab2" ng-click="onTabChange('put_to_customer',2)"><i id="put_to_customer-fav" {% if type == 'put_to_customer' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Put to customer</a>
+        </li>
+        <li class="mn-listing tab-search" style="min-width: 350px !important;width: auto !important;">
+            <div {% if type == 'in_coming' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="in_coming-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index ="1"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'put_to_customer' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="put_to_customer-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams2" parameters="availableSearchParams2" index ="2"></nit-advanced-searchbox>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div {% if type == 'in_coming' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="in_coming">
+            <div class="lst-container in_coming">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'put_to_customer' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="put_to_customer">
+            <div class="lst-container put_to_customer" >
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %}  modify exception  POP-UP {% endcomment %}
+<div id="modifyException" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="margin-left: 10%">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="viewModifyExceptionTitle" ng-bind="LabelDialogTitle"></h4>
+        <span
+          class="modal-title"
+          id="user_header"
+          style="font-size: 20px"
+        ></span>
+      </div>
+      <div class="modal-body tab-data-content" id="exceptionModify">
+
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn"
+          ng-click="$dismiss()"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          id="btnSavePreDefineProblem"
+          ng-click="SavePreDefineProblem($event)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %}  exception details  POP-UP {% endcomment %}
+<div id="detailsException" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="margin-left: 10%">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="viewExceptionTitle" ng-bind="LabelDialogTitle"></h4>
+        <span
+          class="modal-title"
+          id="user_header"
+          style="font-size: 20px"
+        ></span>
+      </div>
+      <div class="modal-body tab-data-content" id="exceptionDetails">
+
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn"
+          ng-click="$dismiss()"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          Close
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %}  send back to process  POP-UP {% endcomment %}
+<div id="sendBackToProcess" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="margin-left: 10%">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4>Send back To Process</h4>
+        <span
+          class="modal-title"
+          id="user_header"
+          style="font-size: 20px"
+        ></span>
+      </div>
+      <div class="modal-body tab-data-content">
+      <div class="modal-body details-body">
+        <form
+            id="frmSaveRemarks"
+            action="/pws/order_remark_save/"
+            method="POST"
+            role="form"
+            class="form-horizontal"
+            enctype="multipart/form-data"
+        >
+            <div class="container">
+                <div class="form-group">
+                    <label required for="id_remarks_type_back" id="id_message_lable_remarks" class="control-label col-sm-2 required">Remark type</label>
+                    <div class="col-sm-10">
+                        <input style="cursor:not-allowed;" class="form-control" disabled id="id_remarks_type_back" name="remarks_type_back" value=""/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_remarks" class="control-label col-sm-2 required">Remarks :</label>
+                    <div class="col-sm-10">
+                    <textarea
+                        class="form-control"
+                        id="id_remarks_back"
+                        name="remarks_back"
+                        type="text"
+                        required
+                    ></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn"
+          ng-click="$dismiss()"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary modalsave"
+          id="btnSaveRemarks"
+          ng-click="SaveRemarks($event)"
+        >
+          Save
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+
+    var data = {'type' : '{{type}}','permissions': {{ permissions| safe}}};
+    var incomingJs = incomingsInit(data);
+</script>
+

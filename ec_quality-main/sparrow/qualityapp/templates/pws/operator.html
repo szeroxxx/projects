@@ -1,0 +1,323 @@
+{% load widget_tweaks %}
+<style>
+    .valid {
+        color: green;
+    }
+
+    .valid:before {
+        position: relative;
+        content: "✔";
+    }
+
+    .invalid {
+        color: #c66c6c;
+    }
+
+    .invalid:before {
+        position: relative;
+        content: "✖";
+    }
+    .operator-email{
+        margin-bottom:5px;
+    }
+    .customer-user-table{
+        border: 0px solid;
+    }
+    .customer-user-pass-msg{
+        margin-top: 10px;
+    }
+    .msg-show{
+        color:#a94442;
+        display: none;
+    }
+    .customer-user-pass-change{
+        width: 26%
+    }
+    .customer-user-pass-change-header{
+        padding: 8px 10px;
+    }
+    .change-pass-label{
+        padding-left: 8px;
+    }
+    .customer-user-pass-input{
+        padding-right: 10px;
+        right: 10px
+    }
+    .operator-ip{
+        float:right;
+        color:#4c81d2;
+        margin-top: 9px;
+    }
+    .mouseover:hover{
+        background-color: #f5f5f5;
+        color: #666;
+    }
+    .mouseover{
+        line-height: 25px;
+        text-align: left;
+        padding: 2px 5px;
+        color: #666;
+        cursor: pointer;
+    }
+</style>
+<div class="modal-body  details-body">
+    <form id="frmSaveOperator" action="/qualityapp/save_operator/" method="POST" role="form" class="form-horizontal ng-pristine" autocomplete="off">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label required for="id_first_name" class="control-label col-sm-3 required">First name</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_first_name" name="first_name" type="text" value="{{user.first_name}}" placeholder="Enter first name" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_last_name" class="control-label col-sm-3 required">Last name</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_last_name" name="last_name" type="text" value="{{user.last_name}}" placeholder="Enter last name" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_username" class="control-label col-sm-3 required">Operator name</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="username_id" name="username" type="text" required value="{{ user.username }}" placeholder="Enter username"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required email for="id_email" class="control-label col-sm-3 required">Email id</label>
+                    <div class="col-sm-9">
+                        <input class="form-control operator-email" id="id_email" name="email" type="text" value="{{user.email}}" placeholder="Enter email" data-rule-email="true" required/>
+                    </div>
+                </div>
+                <div class="form-group" id="password_form_field">
+                    <label for="op_password" id="password_form" class="control-label col-sm-3 required">Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control"  id="op_password" name="password" ng-click="newPassword($event);" placeholder="Enter password" required autocomplete="on"/>
+                        <div id="validate_message" class="customer-user-pass-msg">
+                            <h5>Your Password must meet the following requirements:</h5>
+                            <p id="validate_character_length" class="invalid">&nbsp;&nbsp;At least 8 characters</b></p>
+                            <p id="validate_capital_letter" class="invalid">&nbsp;&nbsp;At least one capital letter</p>
+                            <p id="validate_small_letter" class="invalid">&nbsp;&nbsp;At least one small letter</p>
+                            <p id="validate_digit" class="invalid">&nbsp;&nbsp;At least one digit</p>
+                            <p id="validate_special_character" class="invalid">&nbsp;&nbsp;At least one special character</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="c_password_form_field">
+                    <label for="confirm_op_password" class="control-label col-sm-3 required">Confirm password</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control"  id="confirm_op_password" data-rule-equalto="#op_password" required placeholder="Enter confirm password" autocomplete="on"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_group" class="control-label col-sm-3 required">Operator role</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_group" name="group" type="text" ng-click="id_message($event)" value="[{{ope_role.group.id}}]"/>
+                        <span class="msg-show" id="id_message">This field is required.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_user_group" class="control-label col-sm-3">Group of user</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_user_group" name="operator_group" type="text" {% if opera %} {% if opera.operator_group  %} value='["{{opera.operator_group}}"]' {% endif %} {% endif %}/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_user_sub_group" class="control-label col-sm-3">Sub group of user</label>
+                    <div class="ms-ctn form-control col-sm-6" style="width:73%; height:auto;" id="myDropdown">
+                        <span class="ms-helper " style="display: inline;"></span>
+                        <div class="ms-sel-ctn" style="width:100%;">
+                            <div class="ms-sel-item opera-set" id="opereee" style="auto;">{{sub_group.sub_group_name}}<span class="ms-close-btn" ng-click="clearselect()"></span></div>
+                            <input type="hidden" id="id_user_sub_group_data" name="user_sub_group_data">
+                            <input value="" autocomplete="off" onkeyup="filterFunction()" type="text" id="myInput" name="user_sub_group" class="actual-input-box" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <ul class="dropdown-menu checkbox-menu allow-focus col-sm-11" style="width:100%; max-height:300px; overflow: auto;" aria-labelledby="dropdownMenu1" id="myDrop">
+                                <div ng-repeat="group in subgroup_of_operators_list" ng-hide="group.sub_group_name==Value" id="id_sub_group_lists">
+                                    <div class="ms-res-item mouseover" ng-click="select(group.sub_group_name)" id="id_sub_group">{[{group.sub_group_name}]}</div>
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="ms-trigger"><div class="ms-trigger-ico"></div></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_is_active" class="control-label col-sm-3">Is active</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" class="checkbox-margin magic-checkbox" id="id_is_active" name="is_active" {% if opera.is_active == False %} unchecked {% else %} checked {% endif %}>
+                        <label for="id_is_active"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ip_restriction" class="control-label col-sm-3">IP Restriction
+                        <span class="icon-question fa-1 operator-ip" aria-hidden="true" title="Check if IP based login restriction should be applied."></span>
+                    </label>
+                    <div class="col-sm-9">
+                        <input id="id_ip_restriction" class="magic-checkbox" name="ip_restriction" type="checkbox" {% if ip_restriction == False %} unchecked {% else %} checked {% endif %}/>
+                        <label for="id_ip_restriction"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_show_own_records_only" class="control-label col-sm-3">Show own records only</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" class="checkbox-margin magic-checkbox" id="id_show_own_records_only" name="show_own_records_only" {% if opera.show_own_records_only == True %} checked {% else %} unchecked {% endif %}>
+                        <label for="id_show_own_records_only"></label>
+                    </div>
+                </div>
+                <div class="form-group"  id="id_change_password_field">
+                    <label class="col-sm-3"></label>
+                    <div class="col-sm-4">
+                        <a id="id_change_password" name="change_password" class="link">Change password</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label for="id_group_type" class="control-label col-sm-2">Type of user</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_group_type" name="operator_type" type="text" {% if opera %}{% if opera.operator_type %} value='["{{opera.operator_type}}"]' {% endif %} {% endif %}/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_company" class="control-label col-sm-2">Customer</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" style="height:auto;" id="id_company" name="company_ids" type="text" value="[{{comp}}]"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_shift" class="control-label col-sm-2">Shift</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_shift" name="shift" type="text" {% if opera %} {% if opera.shift %} value='["{{opera.shift}}"]' {% endif %}{% endif %}/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_permanent_shift" class="control-label col-sm-2">Permanent shift</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_permanent_shift" name="permanent_shift" type="text" {% if opera %} {% if opera.permanent_shift %}  value='["{{opera.permanent_shift}}"]' {% endif %} {% endif %}/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_doj" class="control-label col-sm-2">DOJ</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control task-date" onfocusout="showSelectOption()" name="doj" id="id_doj" value="{{doj}}" placeholder="Select date"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_doc" class="control-label col-sm-2">DOC</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control task-date" onfocusout="showSelectOption()" name="doc" id="id_doc" value="{{doc}}" placeholder="Select date"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_dor" class="control-label col-sm-2">DOR</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control task-date" onfocusout="showSelectOption()" name="dor" id="id_dor" value="{{dor}}" placeholder="Select date"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_emp_code" class="control-label col-sm-2">Employee code</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="emp_code" id="id_emp_code" {% if opera.emp_code %} value="{{opera.emp_code}}" {% endif %} placeholder="Enter employee code"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_remark" class="control-label col-sm-2">Remark</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" style="resize: none;" oninput="validate(this)" id="id_remark" name="remark" type="text" placeholder="Enter remark">{{opera.remark}}</textarea>
+                        <script>
+                            function validate(input){
+                                if(/^\s/.test(input.value))
+                                input.value = '';
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer details-footer tfooter-btn" role="tablist">
+    <button class="btn" data-dismiss="modal" aria-hidden="true" id="btnClose" ng-click="goBack($event)">Close</button>
+    <button class="btn btn-primary" ng-click="saveOperator($event)" ng-disabled="btnDisabled">Save</button>
+</div>
+
+
+<div id="passwordChangeModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg customer-user-pass-change" role="document">
+    <div class="modal-content">
+        <div class="modal-header customer-user-pass-change-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="changepasswordModalLabel" ></h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <form id="frmchangedpassword" action="" role="form" class="form-horizontal" >
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="changepassword" id="changepassword_form" class="control-label col-sm-5 required change-pass-label"></label>
+                    <div class="col-sm-7 customer-user-pass-input">
+                        <input type="password" class="form-control"  id="changepassword" name="changepassword" ng-click="newPaassword($event);" data-rule-equalto="#changepassword" required autocomplete="on" placeholder="Enter password"/>
+                        <div id="validate_change_message" class="customer-user-pass-msg">
+                            <h5>Your Password must meet the following requirements:</h5>
+                            <p id="validatee_character_length" class="invalid">&nbsp;&nbsp;At least 8 characters</b></p>
+                            <p id="validatee_capital_letter" class="invalid">&nbsp;&nbsp;At least one capital letter</p>
+                            <p id="validatee_small_letter" class="invalid">&nbsp;&nbsp;At least one small letter</p>
+                            <p id="validatee_digit" class="invalid">&nbsp;&nbsp;At least one digit</p>
+                            <p id="validatee_special_character" class="invalid">&nbsp;&nbsp;At least one special character</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmchangepassword" id="confimrchangedpassword_form" class="control-label col-sm-5 required change-pass-label"></label>
+                    <div class="col-sm-7 customer-user-pass-input">
+                        <input type="password" class="form-control"  id="confirmchangepassword" data-rule-equalto="#changepassword" required autocomplete="on" placeholder="Enter confirm password"/>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal"  aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" id="changePass" ng-click="changePass($event);" ng-disabled="btnDisabled">Update password</button>
+         </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function() {
+        $('.task-date').daterangepicker({
+            autoUpdateInput: false,
+            singleDatePicker: true,
+            timePicker: false,
+            timePickerIncrement: 1,
+            timePicker24Hour : true,
+            locale: {
+                format: 'DD/MM/YYYY',
+            }
+        });
+        $('.task-date').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            showSelectOption();
+        });
+
+    });
+    function filterFunction() {
+        var input, filter, ul, li, a, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("myDrop");
+        a = div.getElementsByTagName("div");
+        for (i = 0; i < a.length; i++) {
+            txtValue = a[i].textContent || a[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            a[i].style.display = "";
+            } else {
+            a[i].style.display = "none";
+            }
+        }
+        }
+</script>
+<script type="text/javascript">
+    var data = {'subgroup_of_operators' : '{{subgroup_of_operators}}'};
+    var operatorJs = operatorInit(data);
+</script>

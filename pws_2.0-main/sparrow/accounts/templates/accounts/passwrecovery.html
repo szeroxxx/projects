@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>PWS: Password recovery</title>
+  {% load staticfiles %}
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'base/images/favicon_pp.ico' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap-theme.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/signin.css' %}" />
+
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" />
+  <script src="{% static 'base/js/jquery-1.11.2.min.js' %}"></script>
+  <script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'base/js/bootstrap.js' %}"></script>
+</head>
+
+<body class="background-login">
+  <span id="loading-image" class="ele-center loader loader-double"></span>
+  <section class="sp_login-section">
+    <div class="container-sp_login">
+      {% load widget_tweaks %}
+      <div class="box-s">
+        <div class="row col-rev">
+          <div class="col-md-6 padd-n-1">
+            <div class="sp_bg sp_slider-main">
+              <div id="myCarousel" class="carousel slide poss-slide" data-ride="carousel" data-interval="3000"
+                data-pause="false">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                  <li data-target="#myCarousel" data-slide-to="1"></li>
+                  <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner carousel-viss" role="listbox">
+                  <div class="item active">
+                    <!-- <div class="container"> -->
+                    <div class="carousel-img">
+                      <img src="{% static 'base/images/sp_img.png' %}">
+                    </div>
+                    <div class="carousel-caption">
+                      <h2>New Scheduling and routingb Options</h2>
+                      <p>We also updated the format of podcasts and rewards.</p>
+                    </div>
+                    <!-- </div> -->
+                  </div>
+                  <div class="item">
+                    <!--  <div class="container"> -->
+                    <div class="carousel-img">
+                      <img src="{% static 'base/images/sp_img_1.png' %}">
+                    </div>
+                    <div class="carousel-caption">
+                      <h2>Change The Quality Of Your Life</h2>
+                      <p>A balance diet and smart strats will fill your life with happiness and joy.</p>
+                    </div>
+                    <!--   </div> -->
+                  </div>
+                  <div class="item">
+                    <!--  <div class="container"> -->
+                    <div class="carousel-img">
+                      <img src="{% static 'base/images/sp_img_2.png' %}">
+                    </div>
+                    <div class="carousel-caption">
+                      <h2>Easy To Navigate And Earn Rewards</h2>
+                      <p>Now you can make reservations and complete against other users.</p>
+                    </div>
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 padd-n">
+            <div class="sp_bg_w">
+            <div class="sp-main-heading">
+              <div class="sp_login-head">
+                <img src="{% static 'base/images/pp_logo_bl.png' %}">
+                <h1 style="text-align:center;">Reset your password</h1>
+                <p class="welcome_title_disc">Enter your email address and we will send you a link to <br> reset your password.</p>
+              </div>
+              <form id="frmPasswrecovery" action="/accounts/passwrecv/" method="POST" role="form" class="form-horizontal form-signin sp-login-form">
+                {% csrf_token %}
+                {% for field in form %}
+                  {{ field.errors }}
+                  {% if field.help_text %}
+                  <span>{{ field.help_text|safe }}</span>
+                  {% endif %}
+                  {% if field.field.required == True %}
+                  <span class="required"></span>
+                  {% endif %}
+                  {% if field|field_type != 'booleanfield' %}
+                  <div class="sp_dis" >
+                      {{ field|add_class:"form-control" }}
+                      <i class="fa fa-envelope poss-icon" aria-hidden="true"></i>
+                  </div>
+                  {% else %}
+                  {{ field }}
+                  {% endif %}
+
+                {% endfor %}
+                <div class="checkbox sp_login-check">
+                  <label style="padding-left: 0px;">
+                    <div class="alert-danger" style="display:none;" id="msg"></div>
+                    <div class="alert-success" style="display:none;" id="successmsg"></div>
+                  </label>
+                  <div>
+                  <label class="sp_lable">
+                    <a href="/accounts/signin/">Back to sign-in</a>
+                  </label>
+                  </div>
+                </div>
+                <input class="btn btn-lg btn-block" type="submit" id="btnSignin" value="Send password reset email">
+                </form>
+                  <div class="sp_login-footer">
+                  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    //callback handler for form submit
+    $("#frmPasswrecovery").submit(function (e) {
+      var postData = $(this).serializeArray();
+      var formURL = $(this).attr("action");
+      $.ajax({
+        dataType: "json",
+        type: "POST",
+        url: formURL,
+        data: postData,
+        beforeSend: function () {
+          $('#loading-image').show();
+        },
+        complete: function () {
+          $('#loading-image').hide();
+        },
+        success: function (data) {
+          success = data.code == 0 ? false : true;
+          if (success == true) {
+            $('#successmsg').show().text(data.msg);
+            $('#msg').hide()
+          }
+          else {
+            $('#successmsg').hide();
+            $('#msg').show().text(data.msg);
+          }
+        },
+        error: function (data) {
+          callback({ msg: "Error occurred" }, false);
+          console.log(data);
+        }
+      });
+      e.preventDefault();
+    });
+
+    $("#ajaxform").submit(); //Submit  the FORM
+
+
+  </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,322 @@
+<style>
+.operator{
+    overflow-wrap: break-word;
+}
+.remarks span {
+    width: 225px;
+    max-height: 3.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+}
+
+@media only screen and (max-width:1307px) {
+  .button-bar{
+       display: block;
+       float: right;
+       margin-right: 0;
+   }
+    .btn-group{
+        float: right;
+    }
+    .btn{
+        margin-top: 2px;
+    }
+}
+.production-search{
+    min-width: 350px !important;
+    width: auto !important;
+}
+.send-to-next-model, .back-to-previous-model{
+    width: 650px;
+    margin-top:30px;
+    margin-left:18%;
+}
+.msg-show{
+    color:#a94442;
+    display: none;
+}
+.generate-exception-model{
+    margin-left: 10%
+}
+.generate-exception-model-title{
+    font-size: 20px
+}
+.mlr-10{
+margin: 0px 10px !important;
+}
+.custom-body p{
+    max-height:500px;
+    overflow-wrap: break-word;
+    overflow:auto;
+}
+</style>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <button class="btn btn-primary btn-sm" id="btnReserve" ng-disabled="btnReserveDisable"><u>R</u>eserve</button>
+      <button class="btn btn-primary btn-sm" id="btnRelease" ng-disabled="btnReleaseDisable">Re<u>l</u>ease</button>
+      <button class="btn btn-primary btn-sm" id="btnSendtonext" ng-disabled="btnSendtonextDisable">Send to <u>n</u>ext stage</button>
+      <button class="btn btn-primary btn-sm" id="btnReserveSendtonextPanel" >Reserve and send to next stage</button>
+      <button class="btn btn-primary btn-sm" id="btnBackToprevious" ng-disabled="btnBackTopreviousDisable">Back to <u>p</u>revious stage</button>
+      <button class="btn btn-primary btn-sm" id="btnFiles" ng-disabled="btnFilesDisable"><u>F</u>iles</button>
+      <button class="btn btn-primary btn-sm" id="btnGenerateException" ng-disabled="btnGenerateException">Reg̲ister exception</button>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory"></input>
+          </li>
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" value="Ex̲port" id="btnExport"></input>
+          </li>
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" value="Export all data" id="btnAllDataExport"></input>
+          </li>
+        </ul>
+      </div>
+  </div>
+</script>
+<div class="modal-body details-body" id = "">
+    <ul class="nav nav-tabs">
+        <li {% if type == 'panel' %} class="active" {% endif %}>
+            <a class="show-tab" href="#panel" index="1" id="tab1" ng-click="onTabChange('panel',1)"><i id="panel-fav" {% if type == 'panel' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Panel</a>
+        </li>
+        <li {% if type == 'upload_panel' %} class="active" {% endif %}>
+            <a class="show-tab" href="#upload_panel" index="2" id="tab2" ng-click="onTabChange('upload_panel',2)"><i id="upload_panel-fav" {% if type == 'upload_panel' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Upload panel</a>
+        </li>
+        <li class="mn-listing tab-search production-search">
+            <div {% if type == 'panel' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="panel-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index ="1"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'upload_panel' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="upload_panel-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams2" parameters="availableSearchParams2" index ="2"></nit-advanced-searchbox>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div {% if type == 'panel' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="panel">
+            <div class="lst-container panel">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'upload_panel' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="upload_panel">
+            <div class="lst-container upload_panel">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewReserveModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveModel($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="viewReserveTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body">
+        <div id="viewReserveBody" class="my-custom-scrollbar">
+          <form id="frmSaveReserve" action="/qualityapp/reserve_operator/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label required for="id_operator" class="control-label col-sm-2 required">Operator : </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="id_operator" name="operator" value=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" role="tablist">
+        <button type="submit" class="btn btn-primary btn-sm" id="btnSaveReserve" ng-click="saveReserve($event);" ng-disabled="btnDisabled"  edit-mode="true">Reserve</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="viewReserveandSendToNextModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveandSendToNextModel($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="viewReserveandSendToNextTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body mlr-10">
+        <div id="viewReserveandSendToNextBody" class="my-custom-scrollbar">
+          <form id="frmSaveReserveandSendToNext" action="/qualityapp/reserve_and_send_to_next_/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data" autocomplete="off">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label required for="id_order_resrve_send_to_next" class="control-label col-sm-4 required">Select multiple records: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" style="height:auto;" id="id_order_resrve_send_to_next" name="order_resrve_send_to_next" value="" required placeholder="Enter record's here" required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required for="id_operator_resrve_send_to_next" class="control-label col-sm-4 required">Operator: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="id_operator_resrve_send_to_next" name="operator_resrve_send_to_next" value=""/>
+                            <span class="msg-show" id="id_message_oper_resrve_send_to_next">This field is required.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required for="id_panel_no" class="control-label col-sm-4 required">Panel number: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="id_panel_no" name="panel_no" value="" type="text" placeholder="Enter panel number" required/>
+                        </div>
+                    </div><div class="form-group">
+                        <label required for="id_panel_qty" class="control-label col-sm-4 required">Panel quantity: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="id_panel_qty" name="panel_qty" value="" type="number" placeholder="Enter panel quantity" maxlength="9" required/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" role="tablist">
+        <button class="btn btn-primary btn-sm" ng-click="saveReserveandSendToNext($event);" ng-disabled="btnDisabled"  edit-mode="true">Reserve & Send to next</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="viewSendToNextModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content send-to-next-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewSendToNextTitle" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body" id="send_to_next_form">
+                <div id="send_to_next_form_"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="btnSaveSendToNext" ng-click="saveSendToNext($event);" ng-disabled="btnDisabled"  edit-mode="true">Save & Send to next</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewBackToPreviousModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content back-to-previous-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewBackToPreviousTitle" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="back_to_previous_form"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="btnBackToPrevious" ng-click="saveBackToPrevious($event);" ng-disabled="btnDisabled"  edit-mode="true">Save & Send back to previous</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="generateException" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content generate-exception-model">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4>Generate Exception</h4>
+        <span class="modal-title generate-exception-model-title" id="user_header"></span>
+      </div>
+      <div class="modal-body tab-data-content">
+        <div class="modal-body details-body">
+            <form id="frmSaveExceptionProblem" action="/qualityapp/generate_exception_problem_save/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
+                <div class="container">
+                    <div class="form-group">
+                        <label for="id_problem_department" class="control-label col-sm-3 required">Problem department :</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" id="id_problem_department" name="problem_department" type="text" required readonly/>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="id_order_number" class="control-label col-sm-3 required">Order number :</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" id="id_order_number" name="order_number" type="text" required readonly/>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="id_pre_defined_problem" class="control-label col-sm-3 required">Pre-defined problem :</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" id="id_pre_defined_problem" name="pre_defined_problem" type="text" required/>
+                            <span class= "msg-show" id="id_message_pre_defined_problem">This field is required.</span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group internal_remark">
+                        <label for="id_internal_remark" class="control-label col-sm-3 required">Internal remark :</label>
+                        <div class="col-sm-6">
+                        <textarea
+                            class="form-control"
+                            id="id_internal_remark"
+                            name="internal_remark"
+                            type="text"
+                            required
+                        ></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" id="upload_image">
+                        <label class="control-label col-sm-3" id="upload_image_label">Exception file :</label>
+                        <div class="col-sm-6">
+                            <input type="file" id="id_upload_image" name="upload_image">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" id="si_file">
+                        <label class="control-label col-sm-3" id="si_file_label">SI file :</label>
+                        <div class="col-sm-6">
+                            <input type="file" id="id_si_file" name="si_file" accept=".zip,">
+                        </div>
+                    </div>
+                    <input class="form-control" id="id_order_id"  name="order_id" type="hidden" required/>
+                </div>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" ng-click="$dismiss()" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button type="submit" class="btn btn-primary" id="btnSavePreDefineProblem" ng-click="SavePreDefineProblem($event)">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    var data = {'type' : '{{type}}','exception_problems_id':'{{exception_problems_id.id}}', 'permissions': {{ permissions| safe}}};
+    var productionJs = productionsInit(data);
+    setAutoLookup("id_operator", "/lookups/operators/", "", true, false, false, null, 1);
+    setAutoLookup("id_operator_resrve_send_to_next", "/lookups/operators/", "", true, false, false, null, 1);
+</script>

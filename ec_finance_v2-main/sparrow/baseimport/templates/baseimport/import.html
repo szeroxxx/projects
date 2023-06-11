@@ -1,0 +1,486 @@
+{% csrf_token %}
+{% load staticfiles %}
+<style type="text/css">
+#idProductImport {
+    display: none !important;
+}
+
+.atta-dt .fa {
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.radio-inline {
+    margin: 0 20px 0 0;
+}
+
+.header {
+    border-bottom: solid 1px #c1c1c1;
+}
+
+.table-parent {
+    height: auto;
+    margin-top: 10px;
+    overflow: auto;
+    margin-left: 15px;
+}
+
+table.import-table tr {
+    background-color: #f2f2f2 !important;
+    color: #000;
+}
+
+table.import-table tr td {
+    padding: 6px 7px;
+    border-bottom: 1px solid #c1c1c1;
+    white-space: nowrap;
+}
+
+.invalid-data {
+    background-color: #EF7878 !important;
+}
+
+.warning-class {
+    color: #fff;
+}
+
+.hide-data {
+    display: none !important;
+}
+
+.edit-cell {
+    cursor: pointer;
+}
+
+.cell-edit-icon {
+    font-size: 14px;
+    float: right;
+    padding-top: 6px;
+    display: none;
+}
+
+.input-cell {
+    width: 90%;
+    padding-left: 2px;
+}
+.input-cell:focus {
+   background-color: #ffeaba !important
+}
+.input-cell:focusout {
+   background-color: transparent;
+}
+.mapped {
+    background-color: rgb(200, 255, 202);
+}
+
+.warning-class {
+    float: right;
+    vertical-align: middle !important;
+    margin-right: -4px;
+    font-size: 1.3em;
+}
+
+.addNewClass {
+    margin-left: 15px;
+    font-size: 15px;
+    display: none;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.meter {
+    height: 20px;
+    /* Can be anything */
+    border: 1px solid rgb(169, 169, 169);
+    position: relative;
+    margin: 10px 0 10px 0;
+    /* Just for demo spacing */
+    /*background: #555;*/
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    padding: 10px;
+    -webkit-box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.meter>span {
+    display: block;
+    height: 100%;
+    -webkit-border-top-right-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
+    -moz-border-radius-topright: 8px;
+    -moz-border-radius-bottomright: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -moz-border-radius-topleft: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background-color: rgb(43, 194, 83);
+    background-image: -webkit-gradient(linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(43, 194, 83)),
+        color-stop(1, rgb(84, 240, 84)));
+    background-image: -moz-linear-gradient(center bottom,
+        rgb(43, 194, 83) 37%,
+        rgb(84, 240, 84) 69%);
+    -webkit-box-shadow:
+        inset 0 2px 9px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow:
+        inset 0 2px 9px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+    box-shadow:
+        inset 0 2px 9px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.meter>span:after,
+.animate>span>span {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image:
+        -webkit-gradient(linear, 0 0, 100% 100%,
+        color-stop(.25, rgba(255, 255, 255, .2)),
+        color-stop(.25, transparent), color-stop(.5, transparent),
+        color-stop(.5, rgba(255, 255, 255, .2)),
+        color-stop(.75, rgba(255, 255, 255, .2)),
+        color-stop(.75, transparent), to(transparent));
+    background-image:
+        -moz-linear-gradient(-45deg,
+        rgba(255, 255, 255, .2) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, .2) 50%,
+        rgba(255, 255, 255, .2) 75%,
+        transparent 75%,
+        transparent);
+    z-index: 1;
+    -webkit-background-size: 50px 50px;
+    -moz-background-size: 50px 50px;
+    -webkit-animation: move 2s linear infinite;
+    -webkit-border-top-right-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
+    -moz-border-radius-topright: 8px;
+    -moz-border-radius-bottomright: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -moz-border-radius-topleft: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    overflow: hidden;
+}
+
+.animate>span:after {
+    display: none;
+}
+
+@-webkit-keyframes move {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 50px 50px;
+    }
+}
+
+.after-import-show,
+.prepareExcelScreen {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.file-size {
+    color: #6d6c6c;
+    font-size: 13px;
+    margin-top: -20px;
+    padding-left: 50%;
+}
+
+.textBold {
+    font-weight: bold;
+}
+
+.fieldMapped {
+    background-color: dodgerblue;
+    color: white;
+}
+</style>
+<div class="modal fade">
+    <div class="modal-dialog modal-lg" style="width:98%;">
+        <div class="modal-content" style="height: 92vh;">
+            <div class="modal-header" style="border-bottom: none;">
+                <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{[{title}]}</h4>
+            </div>
+            <div class="modal-body" style="margin-top: -18px;">
+                <div class="header">
+                    <div class="form-group" style="margin: 10px;">
+                        <form id="frmImport" action="/baseimport/generate_file_data/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12" style="padding-left: 10px;">
+                                    <div class="row" ng-show="excelSection">
+                                    {% if model_name != 'alternatives' %}
+                                        <div id="after-upload" class="col-md-12 col-sm-12" style="margin-left: 10px;">
+                                            <div class="row">
+                                                <h2>What do you want to do with records in the file?</h2>
+                                            </div>
+                                            <div class="row">
+                                                <input type="radio" name="operation_category" value="new_record" ng-click="onCategoryChange('new_record')"> Add new record only
+                                                <input type="radio" name="operation_category" value="update_record" ng-click="onCategoryChange('update_record')" style="margin-left: 10px;"> Update existing records only
+                                                <input type="radio" name="operation_category" value="both" ng-click="onCategoryChange('both')" style="margin-left: 10px;" checked> Both
+                                            </div>
+                                            <div class="row">
+                                                <h5 class="line" style="display: inline-block;">{[{line_text}]}</h5>
+                                                <select class="selectList" style="height: 27px;margin-left: 10px;"></select>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    </div>
+                                    {% if model_name == 'part_offers' %}
+                                    <br>
+                                    <div class="form-group">
+                                        <div class="col-md-1">
+                                            <label for="supplier_lookup" class="control-label required">Supplier</label>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="ms-ctn">
+                                                <input id="supplier_lookup" name="supplier_lookup" class="actual-input-box" placeholder="Type or click here">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    {% endif %}
+                                    <div id="file-upload-parent" class="col-md-12 col-sm-12" ng-show="uploadSection">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div>
+                                                <h4 style="margin: 0;margin-bottom: 10px;display:inline-block;">Choose file:</h4>
+                                                {% if model_name == 'product' %}
+                                                <label ng-bind-html="descr" ng-click="sample()"></label>
+                                                {% else %}
+                                                <label ng-bind-html="descr"></label>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input class="form-control" id="data_file" name="file" style="height: auto;" required="" type="file" required="">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <button type="button" ng-click="uploadfile()" class="btn btn-primary" ng-disabled="btnUpldDisabled" style="margin-top: -1px;">Upload file</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="after-import-hide" ng-show="excelSection">
+                                <div class="col-md-4 col-sm-4">
+                                    <div class="row" style="float: left;">
+                                        {% if model_name != 'alternatives' %}
+                                            <div id="delimiter-body" class="col-md-12 col-sm-12"}>
+                                                <input type="text" name="bom_name">
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-sm-8">
+                                    <div class="row">
+                                        <div id="button-parent" class="col-sm-12 col-md-12" style="float: right;margin-right: -37px;">
+                                            <input id="btnImportItems" type="button" class="btn btn-primary btn-sm" style="float: right;" value="Import" ng-click="importItems({% if model_name == 'product' %}true{% else %}false{% endif %});" ng-disabled='disable'>
+                                            <input type="button" class="btn btn-sm" ng-click="onBackSelection()" id="backSelection" style="float: right;" value="Back" ng-disabled='disable'>
+                                            <label id="msgImport" style="color:#ff0000;"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="imageUpload" class="col-md-8 col-sm-8" id="uploadImageInfoId">
+                                <p style="margin-bottom: 4px;">Drag and drop all image folders to upload. All folders name must be the same as mapped image folder column in the previous step.</p>
+                                <p>If you want to skip upload image process go back to the previous step and remove the mapping of the image folder.</p>
+                            </div>
+                            <div ng-show="imageUpload" class="col-sm-4 col-md-4" style="float: right;margin-right: -37px;">
+                                <input ng-show="imageUploadBtn" type="button" class="btn btn-primary btn-sm" style="float: right;" value="Upload" ng-click="uploadImageFolder($event);" ng-disabled="disable">
+                                <input type="button" class="btn btn-primary btn-sm" style="float: right;" value="Import" ng-click="importItems(false);" ng-show="imageImportBtn">
+                                <input type="button" ng-show="imageUpload" class="btn btn-sm" ng-click="backFromImageUpload()" style="float: right;" value="Back" ng-disabled="disable">
+                                <label id="msgImport" style="color:#ff0000;"></label>
+                            </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 10px;" ng-show="imageUpload" id="imageUploadId">
+                <div ngf-drop="uploadImageDailouge($files)" ngf-select="uploadImageDailouge($files)" class="drop-box" ngf-drag-over-class="dragover" ngf-multiple="true" id="uploadPlacehoder" webkitdirectory multiple>Drag image folder here</div>
+                <div ngf-no-file-drop>Images Drag/Drop is not supported for this browser</div>
+            </div>
+            <div id="fileInfoId" ng-show="fileInfo" class="control-label col-sm-12" style="height:370px;overflow-y: auto;width:100%;">
+                <ul style="font-size:14px;list-style-type:none;" id="file_list">
+                    <li ng-repeat="file in files" style="padding-top:10px ; border-bottom: #adabab dotted 1px;">
+                        <div style="height:35px;">
+                            <img ngf-thumbnail="file" style="width: 35px;">
+                            <span style="margin-left:10px;">{[{file.name}]}</span>
+                            <span id="{[{file.objectName}]}">
+                                <span ng-if="file.status == 'progress'" class="importInfoIcon"><img style="height: 16px;" src="{% static 'base/images/spinner.gif' %}"></span>
+                                <span ng-if="file.status == 'succeess'" style="margin-left: 155px;" class="importInfoIcon"><img src="{% static 'base/images/success.png' %}"></span>
+                                <span ng-if="file.status == 'failed'" class="importInfoIcon"><img src="{% static 'base/images/warning.png' %}"></span>
+                                <span id="upload_info">{[{file.msg}]}</span>
+                            </span>
+                            <div class="file-size">Size: {[{file.size/1024 | number : 2}]} KB</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h1 class="prepareExcelScreen" ng-show="waitForExcelScreen">Loading data...</h1>
+            </div>
+            <div class="after-import-show" style="display: none;">
+                <h2>Your data is being imported... {[{completePercentage}]}</h2>
+                <div>
+                    <div id="id_progress">
+                        <div class="meter col-sm-12" style=" height: 37px; background-color: #FFFFFF">
+                            <span id="id_progress_bar" style="width: {[{completePercentage}]}; height: 15px;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="after-import-hide" ng-show="excelSection">
+                <div class="add-new-row">
+                    <!-- <a class="icon-plus-circle addNewClass" ng-click="addNewRow()" id="new_row" style=""><span style="font-family: 'Open Sans', Arial, sans-serif;font-weight: 700;font-size: 13px">Add new row</span></a> -->
+                </div>
+                <div class="table-parent" id="data-body" ng-hide="hideTable">
+                    <table id="id-table-data" class="import-table" style="width:100%;" role="grid">
+                        <tr>
+                            <td></td>
+                            <td ng-repeat="len in columnLength track by $index" ng-class="{ 'mapped': mappedCols[$index] }">
+                                <select id="map_select_{[{$index}]}" ng-model="selectedMapColumn[$index]" class="map-columns" name="map-columns" ng-change="changeDropdownData($index, selectedMapColumn[$index])">
+                                    <option value="">---select column---</option>
+                                    <option ng-selected="{[{column.col_name == selectedMapColumn[$index]}]}" ng-repeat="column in mappingColumns track by $index" value="{[{column.col_name}]}" ng-init="$last && onMapDropdownBindFinish($parent.$index, mappingColumns)" ng-class="{'fieldMapped': isFieldMapped[column.col_name]}">{[{column.col_label}]}{[{checkRequired(column.is_required)}]}</option>
+                                </select>
+                                <i class="icon-warning-circle" style="font-size: 1.5em;" ng-if="headerWarning[$index]" title="Some cell has invalid data."></i>
+                            </td>
+                            <td style="pointer-events: none;"></td>
+                        </tr>
+
+                        <tr ng-repeat="row in excelData">
+                            <td ng-if="$index == 0"><b>Row</b></td>
+                            <td ng-if="$index != 0"><b>{[{$index}]}</b></td>
+                            <td ng-init="show = false" class="edit-cell td-value" ng-class="{ 'mapped': mappedCols[$index]}" ng-repeat="col in row track by $index"
+                                id="td_cell_{[{$parent.$index}]}_{[{$index}]}">
+                                <i class="icon-warning-circle warning-class" title="{[{mappingFieldsData[$index].msg}]}"
+                                    id="td_warning_icon_{[{$parent.$index}]}_{[{$index}]}" style="display: none"></i>
+
+                                <input style="border:none;outline:none;background: transparent;" ng-change="changeValueInExcelData(false, $parent.$parent.$index, $index, col)"
+                                    ng-keyup="$event.keyCode == 13 ? show = false : show = true;"  ng-model="col"
+                                    ng-blur="show = false; inputValueCheck($index, col, $parent.$index, show)" class="input-cell" type="text"
+                                    name="input_cell" ng-if="selectedMapColumn[$index] != 'cross_reference' || $parent.$index == 0"
+                                    id="input_cell_{[{$parent.$parent.$index}]}_{[{$index}]}" value="{[{col}]}">
+
+                                <select id="input_cell_{[{$parent.$parent.$index}]}_{[{$index}]}" name="map-columns-1"
+                                    ng-if="selectedMapColumn[$index] == 'cross_reference' && $parent.$index != 0"
+                                    ng-blur="inputValueCheck($index, col, $parent.$index, show)"
+                                    ng-change="changeValueInExcelData(false, $parent.$parent.$index, $index, col)" ng-model="col">
+                                    <option value="">--Select Cross reference--</option>
+                                    <option ng-selected="{[{column == col}]}" ng-repeat="column in cross_references track by $index"
+                                        value="{[{column}]}">
+                                        {[{column}]}</option>
+                                </select>
+                            </td>
+                            <td class="delete">
+                                <div class="pull-right"><i class="icon-trash list-btn" ng-click="deleteRow($index)" ng-if="$index != 0"></i>&nbsp;
+                                </div>
+                            </td>
+                        </tr>
+                        </table>
+                    <span id="id_type_fields" style="display:none;">{[{fields}]}</span>
+                </div>
+                <div id="msgPost"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% if model_name == 'product' %}
+<div id="idProductImport" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="width:26%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Download Product template</h4>
+            </div>
+            <div class="modal-body" style="text-align: center;margin-bottom: 70px;">
+                <label for="id_type_id" class="control-label col-sm-3">Product group</label>
+                <div class="col-sm-9" style="margin-bottom: 20px;">
+                    <input class="form-control" id="id_type_id" name="type_id" value="[{{product_group_id}}]" />
+                </div>
+                <span style="float: left;">Select product group to download template with attributes.</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" ng-click="sampleProduct($event);" ng-disabled="btnDisabled">Download</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div ng-show="showDialog" id="errorDialog" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="width:35%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myErrorModalLabel">Import issue(s)</h4>
+            </div>
+            <div class="modal-body" id="errorBody" style="overflow: auto;">
+                <div id="idInvalidData">
+                    <h4>{[{errorMsg}]}</h4>
+                    <h5 ng-if="serverErrorMsg != ''" style="color: #EF7878;">{[{serverErrorMsg}]}</h5>
+
+                    <div ng-if="keys.length>0" style="font-size: 16px;">Import data is invalid. Correct following errors.</div>
+                    <div>
+                        <div ng-repeat="row in errorData track by $index" ng-if="row" style="font-size: 15px; color: #EF7878;">
+                            Row {[{$index+1}]}
+                            <ul>
+                                <li ng-repeat="dict in row track by $index" ng-if="dict.value">
+                                    <span ng-if="dict.type != 'article number' && dict.type != 'email' && dict.type != 'Cross reference' && dict.type != 'Suggested MPN'" > Cannot find {[{dict.value}]} {[{dict.type}]}</span>&nbsp;
+                                    <span ng-if="dict.type == 'article number' || dict.type == 'email' && dict.type != 'Cross reference' && dict.type != 'Suggested MPN'"> {[{dict.value}]}  {[{dict.type}]} can not be duplicate.</span>
+                                    <span ng-if="dict.type == 'Cross reference' || dict.type == 'Suggested MPN'">{[{dict.value}]}</span>
+                                </li>
+
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function checkVal() {
+        var isFirstRow = $('#is-first-row').prop('checked');
+        if(isFirstRow){
+            $('.header0').addClass('textBold')
+        }
+        else{
+            $('.header0').removeClass('textBold')
+        }
+    }
+</script>

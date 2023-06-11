@@ -1,0 +1,86 @@
+{% load static %}
+{% load staticfiles %}
+
+<style type="text/css">
+  .answer {
+        border-bottom: 1px solid #f1f1f1;
+        padding-bottom: 11px;
+  }
+  .question{
+    margin-top: 13px;
+    font-size: 17px;
+    margin-bottom: 13px;
+  }
+  .textDiv{
+    border: 1px solid #cccc;
+    width: 100%;
+    font-size:20px;
+    padding:10px;
+  }
+  .textBox{
+    max-width: 99%
+  }
+  .ansInline{
+    display: inline-flex;
+  }
+  .spacingOtherInline{
+    padding-right: 20px;
+    display: -webkit-inline-box
+  }
+</style>
+
+<div class="modal-body details-body ng-scope" id="modalReportForm" style="padding: 0px;margin-left: 5px">
+    <div  class="form-horizontal ng-pristine ng-valid" ng-repeat="f_data in formData" style="margin-top: 0%;">
+        <div ng-if="f_data.field == 'MCQ_SINGLE'">
+            <div class="col-sm-12 question">
+                <b>{[{f_data.question}]}</b>
+            </div>
+            <div class="answer ansInline">
+                <div ng-repeat="opt in f_data.options" class="spacingOtherInline">
+                    <label ><input ng-disabled="{[{inputDisabled}]}" type="radio" id="question_{[{f_data.question_id}]}_answer_{[{opt.is_text}]}"  ng-checked="opt.selected=='true'" value="{[{opt.id}]}" name="{[{f_data.question_id}]}_answer" ng-click="showOtherTextBox(f_data.question_id,opt,f_data.field,f_data)">
+                    {[{opt.value}]}</label>
+                    <input ng-show="opt.other_ans" style="width: 150%; margin-left:10px" ng-disabled="{[{inputDisabled}]}" value="{[{opt.other_ans}]}" type="text" class="form-control" id="question_{[{f_data.question_id}]}_answer_{[{opt.is_text}]}_input">
+                </div>
+            </div>
+        </div>
+        <div ng-if="f_data.field == 'MCQ_MULTI'">
+            <div class="col-sm-12 question">
+                <b>{[{f_data.question}]}</b>
+            </div>
+            <div class="answer">
+                <div ng-repeat="opt in f_data.options">
+                    <label ><input type="checkbox" id="question_{[{f_data.question_id}]}_answer_{[{opt.is_text}]}" value="{[{f_data.question_id}]}_{[{opt.id}]}"    name="question_{[{f_data.question_id}]}_answer" ng-checked="opt.selected=='true'" ng-click="showOtherTextBox(f_data.question_id,opt,f_data.field,'')" ng-disabled="{[{inputDisabled}]}">
+                    {[{opt.value}]}</label>
+                    <input value="{[{opt.other_ans}]}" ng-show="opt.other_ans" type="text" class="form-control textBox"  id="question_{[{f_data.question_id}]}_answer_{[{opt.is_text}]}_input" ng-disabled="{[{inputDisabled}]}">
+                </div>
+            </div>
+        </div>
+        <div ng-if="f_data.field == 'TEXT'">
+            <div class="col-sm-12 question">
+                <b>{[{f_data.question}]}</b>
+            </div>
+            <div class="col-sm-12 answer">
+                <textarea class="textDiv" style="max-width: 100%;height: 108px" ng-disabled="{[{inputDisabled}]}" type="text" id="question_{[{f_data.question_id}]}_answer">{[{f_data.options[0].other_ans}]}</textarea> 
+            </div>
+        </div>
+        <div ng-if="f_data.field == 'BLANK'">
+            <div class="col-sm-12 question">
+                <b>{[{f_data.question}]}</b>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer details-footer ng-scope" >
+    <label style="margin-left: -9px;float: left;"><input ng-disabled="{[{inputDisabled}]}" id="ecActionNeed" ng-checked="ecActionNeeded=='True'" type="checkbox" name=""> Eurocircuits action needed</label>
+    <button class="btn btn-primary" ng-click="submitFormData(false)" ng-disabled="btnDisabled" id="btnSave">Save</button>
+    <button class="btn btn-primary" id="btnSaveClose" ng-click="submitFormData(true)" aria-hidden="true">Save and close</button>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+    surveryReportInit({{data | safe}});
+</script>

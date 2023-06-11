@@ -1,0 +1,72 @@
+{% load widget_tweaks %}
+<style type="text/css">
+.help-block{
+    color: #a94442
+}
+</style>
+<div class ="modal-body  details-body">
+    <form id="frmdocument" action="/attachment/document_save/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <div class="form-group">
+                    <label  for="id_title" class="control-label col-sm-1 required">Title</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_title" name="title" {% if type == "link" %} value="{{title}}" {% else %} value="{{document_data.title}}" {% endif %} required  type="text"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="form-group">
+                    <label  for="id_customer" class="control-label col-sm-2 required">Customer</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_customer" name="customer" {% if type == "link" %} value="[{{customer}}]" {% else %} value='[{{document_data.company.id}}]' {% endif %} type="text" style="height: auto;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="form-group">
+                    <label for="id_tag" class="control-label col-sm-2 required">Tag</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_tag" name="tag" type="text" style="height: auto;" {% if type == "link" %} value='[{{tag}}]' {% else %} value='[{{document_data.tag.id}}]' {% endif %}/>
+                    </div>
+                </div>
+            </div>
+            {% if type == "link" %}
+                <div class="col-md-12 col-sm-12" style="margin-top: 20px;">
+                    <label style="margin-bottom: 12px;" for="id_id_url" class="control-label heavy-label col-sm-4 required">Link URL</label>
+                </div>
+                <div class="col-md-12 col-sm-12">
+                    <input class="form-control" id="id_id_url" name="link" required type="text" value="{{link}}" autocomplete="off"/>
+                </div>
+            {% else %}
+                <div  class="col-md-12 col-sm-12" style="margin-top: 20px;">
+                    <label style="margin-bottom: 12px;" for="id_template" class="control-label heavy-label col-sm-4 required">Document content</label>
+                </div>
+                <div  class="col-md-12 col-sm-12">
+                    <textarea style="display: none;" class="form-control html_template" id="id_template" name="template" required="required">{{source_code|safe}}</textarea>
+                </div>
+            {% endif %}
+        </div>
+
+    </form>
+</div>
+<div class="modal-footer details-footer tfooter-btn">
+    <button class="btn" data-dismiss="modal" aria-hidden="true"  ng-click="onClose($event)" id="btnClose">Close</button>
+    <button class="btn btn-primary" ng-click="saveDocument($event)" ng-disabled="btnDisabled" edit-mode="true">Save</button>
+    <button id="idEditBtn" style="display: none;"  class="btn btn-primary pull-right" ng-click="applyEditMode($event);" ng-disabled="btnDisabled" edit-mode="false">Edit</button>
+</div>
+
+ <script type="text/javascript">
+  var available_height = $(document).height()-370
+  // $('.template_preview_class').css('height', ($(document).height()-10)+'px');
+  $('.html_template').summernote({height:available_height})
+  $('.note-icon-picture').parent().hide()
+  $('.note-icon-video').parent().hide()
+  {% if type == "link" %}
+    $('#basePageTitle').text('Link');
+  {% else %}
+    $('#basePageTitle').text('Document');
+  {% endif %}
+ </script>
+ <!-- <a class="icon-pencil-1 list-btn" ng-click="editDocument()"></a>\ -->

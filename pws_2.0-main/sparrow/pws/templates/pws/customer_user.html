@@ -1,0 +1,168 @@
+<style>
+.valid {
+  color: green;
+}
+
+.valid:before {
+  position: relative;
+  content: "✔";
+}
+
+.invalid {
+  color: #c66c6c;
+}
+
+.invalid:before {
+  position: relative;
+  content: "✖";
+}
+.customer-user-table{
+    border: 0px solid;
+}
+.customer-user-pass-msg{
+    margin-top: 10px;
+}
+.msg-show{
+    color:#a94442;
+    display: none;
+}
+.customer-user-pass-change{
+    width: 26%
+}
+.customer-user-pass-change-header{
+    padding: 8px 10px;
+}
+.change-pass-label{
+    padding-left: 8px;
+}
+.customer-user-pass-input{
+    padding-right: 10px;
+    right: 10px
+}
+</style>
+<div class="modal-body details-body">
+    <form id="frmSaveCustomerUser" action="/pws/save_customer_user/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12 customer-user-table">
+                <div class="form-group">
+                    <label required for="id_first_name" class="control-label col-sm-1 required">First name</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_first_name" name="first_name" type="text" required value="{{ user.first_name }}" placeholder="Enter first name"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_last_name" class="control-label col-sm-1 required">Last name</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_last_name" name="last_name" type="text" required value="{{ user.last_name }}" placeholder="Enter last name"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_username" class="control-label col-sm-1 required">Username</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="username_id" name="username" type="text" required value="{{ user.username }}" placeholder="Enter username"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_email" class="control-label col-sm-1 required">Email id</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_email" name="email" type="email" value="{{ user.email }}" placeholder="Enter email" required/>
+                    </div>
+                </div>
+                <div class="form-group" id="password_form_field">
+                    <label for="password" id="password_form" class="control-label col-sm-1 required">Password</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control"  id="password" name="password" ng-click="newPassword($event);" placeholder="Enter password" data-rule-equalto="#password" required autocomplete="on"/>
+                        <div id="validate_message" class="customer-user-pass-msg">
+                            <h5>Your Password must meet the following requirements:</h5>
+                            <p id="validate_character_length" class="invalid">&nbsp;&nbsp;At least 8 characters</b></p>
+                            <p id="validate_capital_letter" class="invalid">&nbsp;&nbsp;At least one capital letter</p>
+                            <p id="validate_small_letter" class="invalid">&nbsp;&nbsp;At least one small letter</p>
+                            <p id="validate_digit" class="invalid">&nbsp;&nbsp;At least one digit</p>
+                            <p id="validate_special_character" class="invalid">&nbsp;&nbsp;At least one special character</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="c_password_form_field">
+                    <label for="confirmpassword" id="confimrpassword_form" class="control-label col-sm-1 required">Confirm password</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control"  id="confirmpassword" data-rule-equalto="#password" required placeholder="Enter confirm password" autocomplete="on"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_group" class="control-label col-sm-1 required">User role</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_group" name="group" type="text" ng-click="id_message($event)" required value="[{{user_role.group.id}}]"/>
+                        <span class="msg-show" id="id_message">This field is required.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_company" class="control-label col-sm-1">Customer name</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_company" name="company" type="text" value="[{{ comp_user.company.id }}]"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_is_active" class="control-label col-sm-1 ">Is active</label>
+                    <div class="col-sm-4">
+                        <input id="id_is_active" name="is_active" type="checkbox" {% if user.is_active == False %} unchecked {% else %} checked {% endif %} />
+                    </div>
+                </div>
+                <div class="form-group"  id="id_change_password_field">
+                    <label class="col-sm-1"></label>
+                    <div class="col-sm-4">
+                        <a id="id_change_password" name="change_password" class="link">Change password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer details-footer tfooter-btn" role="tablist">
+    <button class="btn" data-dismiss="modal" aria-hidden="true" id="btnClose" ng-click="goBack($event)">Close</button>
+    <button class="btn btn-primary btn-sm" ng-click="saveCustomerUser($event);" ng-disabled="btnDisabled" edit-mode="true">Save</button>
+</div>
+
+<div id="passwordChangeModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg customer-user-pass-change" role="document">
+    <div class="modal-content">
+        <div class="modal-header customer-user-pass-change-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="changepasswordModalLabel" ></h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <form id="frmchangedpassword" action="" role="form" class="form-horizontal" >
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="changepassword" id="changepassword_form" class="control-label col-sm-5 required change-pass-label"></label>
+                    <div class="col-sm-7 customer-user-pass-input">
+                        <input type="password" class="form-control"  id="changepassword" name="changepassword" ng-click="newPaassword($event);" data-rule-equalto="#changepassword" placeholder="Enter password" required autocomplete="on"/>
+                        <div id="validatee_message" class="customer-user-pass-msg">
+                            <h5>Your Password must meet the following requirements:</h5>
+                            <p id="validatee_character_length" class="invalid">&nbsp;&nbsp;At least 8 characters</b></p>
+                            <p id="validatee_capital_letter" class="invalid">&nbsp;&nbsp;At least one capital letter</p>
+                            <p id="validatee_small_letter" class="invalid">&nbsp;&nbsp;At least one small letter</p>
+                            <p id="validatee_digit" class="invalid">&nbsp;&nbsp;At least one digit</p>
+                            <p id="validatee_special_character" class="invalid">&nbsp;&nbsp;At least one special character</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmchangepassword" id="confimrchangedpassword_form" class="control-label col-sm-5 required change-pass-label"></label>
+                    <div class="col-sm-7 customer-user-pass-input">
+                        <input type="password" class="form-control"  id="confirmchangepassword" data-rule-equalto="#changepassword" required placeholder="Enter confirm password" autocomplete="on"/>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal"  aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" id="changePass" ng-click="changePass($event);" ng-disabled="btnDisabled">Update password</button>
+         </div>
+        </div>
+    </div>
+</div>

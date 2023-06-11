@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>sparrow</title>
+    {% load staticfiles %}
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'base/images/favicon_pp.ico' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" /> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/custom.css' %}" />
+    <script src="{% static 'base/js/jquery-1.11.2.min.js' %}"></script>
+
+</head>
+
+<body style="background:#F7F7F7;" ng-app="sparrow" ng-controller="SingupController">
+    <div class="">
+        <a class="hiddenanchor" id="toregister"></a>
+        <a class="hiddenanchor" id="tologin"></a>
+
+        <div id="wrapper">
+
+            <section class="login_content">
+
+            <form id="frmsignup" action="/accounts/signup" method="POST" role="form" class="form-horizontal" >
+                <h1>Create Account</h1>
+                {% csrf_token %}
+                <div>
+                    <input type="text" class="form-control" id="id_first_name" placeholder="First name" name="first_name" required>
+                </div>
+                <div>
+                    <input type="text" class="form-control" id="id_last_name" name="last_name" placeholder="Last name" required>
+                </div>
+                <div>
+                    <input type="email" class="form-control" id="id_email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div>
+                    <input type="password" class="form-control" id="id_password" name="password" placeholder="Password" required pattern=".{6,}" title="minimum 6 characters.">
+                </div>
+                <div>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm password" required pattern=".{6,}" title="minimum 6 characters.">
+                </div>
+
+                <div>
+                    <input type="submit" ng-click="signup($event)" value="Sign up" class="btn btn-default submit">
+                    <a class="reset_pass" href="/accounts/signin/">Sign in</a>
+                </div>
+                <div class="clearfix"></div>
+                <div class="separator">
+
+                <div>
+                  <div style="display:none;" id="msg"></div>
+                </div>
+                <div class="clearfix"></div>
+                <br />
+                <div>
+
+                  <script type="text/javascript">
+                        var dt = new Date();
+                        document.write("<p> ©" + dt.getFullYear());
+                      </script> All Rights Reserved.</p>
+                </div>
+                </form>
+            </section>
+
+        </div>
+    </div>
+    <script src="{% static 'base/js/jquery.validate.min.js' %}?v=2"></script>
+    <script src="{% static 'accounts/js/signup.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,200 @@
+<style>
+    .operator{
+        overflow-wrap: break-word;
+    }
+    .back-to-previous-model-page, .back-to-previous-model-page-2{
+        border-bottom:1px solid #e5e5e5;
+        padding-left:15px;
+    }
+    .back-to-previous-model-file{
+        font-size:14px;
+        color: #555 !important;
+    }
+    .msg-show{
+        color:#a94442;
+        display: none;
+    }
+    .back-to-previous-model-page-2-label, .back-to-previous-model-page-3-label{
+        font-size:14px;
+        color: #555 !important;
+        padding-top: 10px;
+    }
+    .back-to-previous-model-page-3{
+        padding-left:15px;
+    }
+    .back-to-previous-textarea{
+        resize: none;
+    }
+    .back-to-previous-proce-time{
+        float:right;
+        margin-right:-14px;
+    }
+</style>
+<form id="frmSaveBackToPrevious" action="/pws/back_to_previous/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 back-to-previous-model-page">
+            <div class="form-group">
+                <label class="back-to-previous-model-file"><b>Files</b></label>
+            </div>
+            <div class="form-group">
+                <label for="id_file_type_back_to_previous" id="id_message_lable_back_to_previous" class="control-label col-sm-3">File type</label>
+                <div class="col-sm-9 id_message_back_to_previous">
+                    <input name="file_type_back_to_previous" id="id_file_type_back_to_previous" type="text" class="form-control" disabled/>
+                    <span class="msg-show" id="id_message_back_to_previous">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group id_message_back_to_previous_">
+                <label required for="id_file_back_to_previous" class="control-label col-sm-3 select-file-back-previous">Select file</label>
+                <div class="col-sm-9">
+                    <input class="form-control" id="id_file_back_to_previous" disabled name="file_back_to_previous" type="file">
+                    <span class="msg-show" id="id_message_back_to_previous_">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group" id="upload_hide_back_to_previous">
+                <label required for="id_file_not_req_back_to_previous" class="control-label col-sm-3"></label>
+                <div class="col-sm-9 file_back_to_previous">
+                    <input id="id_file_not_req_back_to_previous" class="magic-checkbox" name="file_not_req_back_to_previous" type="checkbox" checked/>
+                    <label for="id_file_not_req_back_to_previous">File is not required</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 back-to-previous-model-page-2">
+            <div class="form-group">
+                <label class="back-to-previous-model-page-2-label"><b>Order details</b></label>
+            </div>
+            <div class="form-group">
+                <label required for="id_back_to_previous_status" class="control-label col-sm-3">Previous process section</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="id_back_to_previous_status" name="back_to_previous_status" value="{{ord_previous_name}}" readonly>
+                    <input type="hidden" class="form-control" id="id_back_to_previous_code" name="back_to_previous_code" value="{{ord_previous_code}}">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 back-to-previous-model-page-3">
+            <div class="form-group">
+                <label class="back-to-previous-model-page-3-label"><b>Efficiency points</b></label>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">User Efficiency points</label>
+                <div class="col-sm-9">
+                    <b id= "id_user_efficeiency_point_back_to_previous">{{layer_point}}</b>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Time taken</label>
+                <div class="col-sm-9">
+                    <b id= "id_time_taken_back_to_previous">{{prep_time_}} Minutes</b>
+                    <input type="hidden" class="form-control" id="id_prep_time_back_to_previous" name="prep_time_back_to_previous" value="{{prep_time_decimal}}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_efficeiency_check_back_to_previous" class="control-label col-sm-3">Efficiency check</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control back-to-previous-textarea" oninput="validate_(this)" id="id_efficeiency_check_back_to_previous" name="efficeiency_check_back_to_previous" type="text"></textarea>
+                </div>
+                <script>
+                function validate_(input){
+                    if(/^\s/.test(input.value))
+                    input.value = '';
+                }
+                </script>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Efficiency stage</label>
+                <div class="col-sm-3">
+                    <b id= "id_efficeiency_stage_back_to_previous">{{order_status}}</b>
+                </div>
+                <div class="col-sm-4 operator">
+                    <b id= "id_operator_back_to_previous">{{operator}}</b>
+                </div>
+                <div class="col-sm-2 back-to-previous-proce-time">
+                    <b id= "id_process_time_back_to_previous">{{process_start_time}}</b>
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_remarks_type_back_to_previous" id="id_message_lable_remarks_back_to_previous" class="control-label col-sm-3">Remark type</label>
+                <div class="col-sm-9">
+                    <input class="form-control" id="id_remarks_type_back_to_previous" name="remarks_type_back_to_previous"/>
+                    <span class= "msg-show" id="id_message_remarks_back_to_previous">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_remarks_back_to_previous" id="id_remarks_lable_back_to_previous" class="control-label col-sm-3">Remarks</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control id_remarks back-to-previous-textarea" oninput="validate(this)" id="id_remarks_back_to_previous" name="remarks_back_to_previous" type="text"></textarea>
+                    <span class= "msg-show" id="id_message_remarks_textarea_back_to_previous">This field is required.</span>
+                </div>
+                <script>
+                    function validate(input){
+                        if(/^\s/.test(input.value))
+                        input.value = '';
+                    }
+                </script>
+            </div>
+            <div class="form-group">
+                <label required for="id_attachment_back_to_previous" class="control-label col-sm-3">Attachment</label>
+                <div class="col-sm-9">
+                    <input class="form-control" id="id_attachment_back_to_previous" name="attachment_back_to_previous" type="file">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    setAutoLookup("id_file_type_back_to_previous", "/lookups/file_type/", "", false, true);
+    setAutoLookup("id_remarks_type_back_to_previous", "/lookups/remark_type_send_to_next_back_to_previous/", "", false, "", "", "", 1, '{{order_status_code}}');
+    var set_remarks_type_back_to_previous = $('#id_remarks_type_back_to_previous').magicSuggest()
+    set_remarks_type_back_to_previous.clear();
+    set_remarks_type_back_to_previous.setSelection([ { name: '{{remark_type_back_to_previous.name}}', id: '{{remark_type_back_to_previous.id}}' }, ])
+
+    if('{{order_status_code}}' != "upload_panel"){
+        var set_file_type = $('#id_file_type_back_to_previous').magicSuggest()
+        set_file_type.enable()
+        $(".id_message_back_to_previous_").on("click", function () {
+            $("#id_message_back_to_previous_").hide();
+            $(".select-file-back-previous").css('color', 'black');
+            $('#id_file_back_to_previous').css('border-color', '#ccc');
+            $("#id_file_back_to_previous-error").hide();
+        });
+    };
+    if('{{order_status_code}}' == "upload_panel"){
+        var set_file_type = $('#id_file_type_back_to_previous').magicSuggest()
+        set_file_type.setSelection([ { name: '{{panel_file_type_.name}}', id: '{{panel_file_type_.id}}' }, ])
+        $('#id_file_not_req_back_to_previous').prop('checked', false);
+        $('#id_file_back_to_previous').prop('disabled', false);
+        $(".select-file-back-previous").css('color', '#a94442');
+        $("#id_message_lable_back_to_previous").css("color", "#a94442");
+        $("#upload_hide_back_to_previous").hide();
+        $(".id_message_back_to_previous_").on("click", function () {
+            $("#id_message_back_to_previous_").hide();
+            $('#id_file_back_to_previous').css('border-color', '#a94442');
+            $("#id_file_back_to_previous-error").hide();
+        });
+    };
+
+    $(".file_back_to_previous").on("click", function () {
+    if ($('#id_file_not_req_back_to_previous').is(":checked"))
+    {
+        $("#id_file_back_to_previous").attr("disabled", true);
+        $("#id_file_back_to_previous").removeAttr("required");
+        $("#id_message_back_to_previous").hide();
+        $("#id_message_back_to_previous_").hide();
+        $("#id_file_back_to_previous-error").hide();
+        $("#id_message_lable_back_to_previous").css("color", "black");
+        $(".select-file-back-previous").css('color', 'black');
+        $("#id_file_type_back_to_previous").css("border-color", "#ccc");
+        $('#id_file_back_to_previous').css('border-color', '#ccc');
+    }
+    if ($('#id_file_not_req_back_to_previous').is(":unchecked"))
+    {
+        $("#id_file_back_to_previous").removeAttr("disabled", true);
+    }
+    });
+    $(".id_remarks").on("click", function () {
+    $("#id_message_remarks_textarea_back_to_previous").hide();
+    $("id_remarks_back_to_previous").css("border-bottom", "#ccc");
+    $("#id_remarks_lable_back_to_previous").css("color", "black");
+    $("#id_message_lable_back_to_previous").css("color", "black");
+    });
+</script>

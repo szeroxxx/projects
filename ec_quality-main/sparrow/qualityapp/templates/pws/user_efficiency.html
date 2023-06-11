@@ -1,0 +1,105 @@
+<style>
+    .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #A00D0D;
+    }
+    .message{
+        color:#a94442;
+        display: none;
+    }
+</style>
+<form id="frmUserEfficiency" action="/qualityapp/save_user_efficiency/" method="POST" role="form"
+    class="form-horizontal" enctype="multipart/form-data" autocomplete="off">{% csrf_token %}
+
+    <input class="form-control" id="user_efficiencies_id" name="user_efficiencies_id"
+        value="{{user_efficiency.id}}" type="hidden">
+    <div class="row">
+        <div class="form-group">
+            <label for="id_company" class="control-label col-sm-4 required">&ensp;Customer:</label>
+            <div class="col-sm-5">
+                <input class="form-control required" id="id_company" type="text" name="company" value="[{{user_efficiency.company_id}}]"/>
+            </div>
+        </div>
+    </div><br>
+    <div class="row">
+        <div class="form-group">
+            <label for="id_service" class="control-label col-sm-4 required ">&ensp;Service:</label>
+            <div class="col-sm-5">
+                <input class="form-control required" id="id_service" type="text" name="service"  value="[{{user_efficiency.service_id}}]" />
+                <span class="message" id="id_select_message">Please first select customer</span>
+            </div>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="form-group">
+            <label for="id_process" class="control-label col-sm-4 required">&ensp;Process:</label>
+            <div class="col-sm-5">
+                <input class="form-control required" id="id_process" type="text" name="process" value="[{{user_efficiency.process_id}}]"/>
+            </div>
+        </div>
+    </div><br>
+    <div class="row">
+        <div class="col-md-4">
+            <label for="id_layer" class="col-form-label">&ensp;1/2 layer(s) : </label>
+        </div>
+        <div class="col-md-5">
+            <input type="number" class="form-control" id="id_layer" name="layer"
+              min="0" {% if user_efficiency %} value="{{user_efficiency.layer}}" {% else %} value="0" {% endif %}>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="id_multi_layer" class="col-form-label">&ensp;Multi layers : </label>
+        </div>
+        <div class="col-md-5">
+            <input type="number" class="form-control" id="id_multi_layer" name="multi_layer"
+               min="0" {% if user_efficiency %} value="{{user_efficiency.multi_layer}}" {% else %} value="0" {% endif %}>
+        </div>
+    </div><br>
+
+</form>
+<script>
+        setAutoLookup(
+                "id_company",
+                "/b/lookups/order_flow_mapping_company/",
+                "",
+                true,
+                true
+            );
+        setAutoLookup(
+            "id_service",
+            "/lookups/order_flow_mapping_service/",
+            "id_company",
+            true,
+            true
+        );
+        setAutoLookup("id_process", "/lookups/user_efficiency_processes/", "", true, true);
+
+        document.getElementById("id_service").addEventListener("click", Service)
+        function Service() {
+            let company_id = $("#hid_company").val();
+            if (company_id == undefined ) {
+                $("#id_select_message").show();
+            }
+        }
+        document.getElementById("id_company").addEventListener("click", Company)
+        function Company() {
+            var company = $("#id_company").magicSuggest();
+            let company_id = $("#hid_company").val();
+            if (company_id == undefined) {
+                service_id = $("#id_service").magicSuggest();
+                service_id.clear();
+            }
+            if (company_id) {
+                $("#id_select_message").hide();
+            }
+            $(company).on("selectionchange", function (e, m) {
+                service_id = $("#id_service").magicSuggest();
+                service_id.clear();
+            });
+        }
+</script>

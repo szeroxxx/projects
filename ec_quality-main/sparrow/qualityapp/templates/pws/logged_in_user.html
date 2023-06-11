@@ -1,0 +1,26 @@
+<div class="lst-container">
+  <div>
+    <form autocomplete="off">
+      <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1"
+        placeholder="Search...">
+      </nit-advanced-searchbox>
+    </form>
+  </div>
+  <div class="lst-container">
+    <div id="gridCon">
+      <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+  </div>
+
+</div>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+    <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port"/>
+    <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data"/>
+  </div>
+</script>
+
+<script>
+  var data = { 'permissions': {{ permissions| safe}}};
+  loggedInUserInit(data);
+</script>

@@ -1,0 +1,226 @@
+<style>
+    .operator{
+        overflow-wrap: break-word;
+    }
+    .send-to-next-model{
+        width: 650px;
+        margin-top:30px;
+        margin-left:18%;
+    }
+    .send-to-next-model-page, .send-to-next-model-page-2{
+        border-bottom:1px solid #e5e5e5;
+        padding-left:15px;
+    }
+    .send-to-next-model-file{
+        font-size:14px;
+        color: #555 !important;
+    }
+    .msg-show{
+        color:#a94442;
+        display: none;
+    }
+    .send-to-next-model-page-2-label, .send-to-next-model-page-3-label{
+        font-size:14px;
+        color: #555 !important;
+        padding-top: 10px;
+    }
+    .send-to-next-model-page-3{
+        padding-left:15px;
+    }
+    .send-to-next-textarea{
+        resize: none;
+    }
+    .send-to-next-proce-time{
+        float:right;
+        margin-right:-14px;
+    }
+</style>
+<form id="frmSaveSendToNext" action="/pws/send_to_next/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 send-to-next-model-page">
+            <div class="form-group">
+                <label class="send-to-next-model-file"><b>Files</b></label>
+            </div>
+            <div class="form-group">
+                <label for="id_file_type_" id="id_message_lable" class="control-label col-sm-3 required">File type</label>
+                <div class="col-sm-9 id_message">
+                    <input name="file_type_send_next" id="id_file_type_" type="text" class="form-control" disabled/>
+                    <span class="msg-show" id="id_message">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group id_message_">
+                <label required for="id_file_send_next" class="control-label col-sm-3 select-file required">Select file</label>
+                <div class="col-sm-9">
+                    <input class="form-control" id="id_file_send_next" name="file_send_next" type="file">
+                    <span class="msg-show" id="id_message_">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group" id="upload_hide">
+                <label required for="id_file_not_req" class="control-label col-sm-3"></label>
+                <div class="col-sm-9 file_send_next">
+                    <input id="id_file_not_req" class="magic-checkbox" name="file_not_req" type="checkbox" unchecked/>
+                    <label for="id_file_not_req">File is not required</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 send-to-next-model-page-2">
+            <div class="form-group">
+                <label class="send-to-next-model-page-2-label"><b>Order details</b></label>
+            </div>
+            <div class="form-group">
+                <label required for="id_next_status" class="control-label col-sm-3">Next process section</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="id_next_status" name="next_status" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 send-to-next-model-page-3">
+            <div class="form-group">
+                <label class="send-to-next-model-page-3-label"><b>Efficiency points</b></label>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">User Efficiency points</label>
+                <div class="col-sm-9">
+                    <b id= "id_user_efficeiency_point">{{layer_point}}</b>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Time taken</label>
+                <div class="col-sm-9">
+                    <b id= "id_time_taken">{{prep_time_}} Minutes</b>
+                    <input type="hidden" class="form-control" id="id_prep_time_" name="prep_time_" value="{{prep_time_decimal}}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_efficeiency_check" class="control-label col-sm-3">Efficiency check</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control send-to-next-textarea" oninput="validate_(this)" id="id_efficeiency_check" name="efficeiency_check" type="text"></textarea>
+                </div>
+                <script>
+                function validate_(input){
+                    if(/^\s/.test(input.value))
+                    input.value = '';
+                }
+                </script>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">Efficiency stage</label>
+                <div class="col-sm-3">
+                    <b id= "id_efficeiency_stage">{{order_status}}</b>
+                </div>
+                <div class="col-sm-4 operator">
+                    <b id= "id_operator_">{{operator}}</b>
+                </div>
+                <div class="col-sm-2 send-to-next-proce-time">
+                    <b id= "id_process_time">{{process_start_time}}</b>
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_remarks_type" id="id_message_lable_remarks_" class="control-label col-sm-3">Remark type</label>
+                <div class="col-sm-9">
+                    <input class="form-control" id="id_remarks_type" name="remarks_type"/>
+                    <span class= "msg-show" id="id_message_remarks">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_remarks" id="id_remarks_lable" class="control-label col-sm-3">Remarks</label>
+                <div class="col-sm-9">
+                    <textarea class="form-control id_remarks send-to-next-textarea" oninput="validate(this)" id="id_remarks" name="remarks" type="text"></textarea>
+                    <span class= "msg-show" id="id_message_remarks_textarea">This field is required.</span>
+                </div>
+                <script>
+                    function validate(input){
+                        if(/^\s/.test(input.value))
+                        input.value = '';
+                    }
+                </script>
+            </div>
+            <div class="form-group">
+                <label required for="id_attachment" class="control-label col-sm-3">Attachment</label>
+                <div class="col-sm-9">
+                    <input class="form-control" id="id_attachment" name="attachment" type="file">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    if('{{next_status_code}}' == ""){
+        var order_status = [
+            { id: "order_finish", name: "Order finish" },
+        ];
+    }
+    if ('{{next_status_code}}' != ""){
+        var order_status = [
+            {% for key in process_ %}
+                { id: "{{key.id}}", name: "{{key.name}}" },
+            {% endfor %}
+        ];
+    }
+    setAutoLookup("id_next_status", order_status, "", true);
+
+    var next_status = $('#id_next_status').magicSuggest()
+    next_status.clear();
+    if('{{next_status_code}}' == ""){
+        next_status.setSelection([ { name: "Order finish", id: "order_finish" }, ])
+    }
+    if('{{next_status_code}}' != ""){
+        next_status.enable()
+        next_status.setSelection([ { name: '{{next_status_name}}', id: '{{next_status_code}}' }, ])
+    }
+
+    setAutoLookup("id_remarks_type", "/lookups/remark_type_send_to_next_back_to_previous/", "", false, "", "", "", 1, '{{order_status_code}}');
+    var set_remarks_type = $('#id_remarks_type').magicSuggest()
+    set_remarks_type.clear();
+    set_remarks_type.setSelection([ { name: '{{remark_type_send_to_next.name}}', id: '{{remark_type_send_to_next.id}}' }, ])
+
+    setAutoLookup("id_file_type_", "/lookups/file_type/", "", false, true);
+
+    if('{{order_status_code}}' != "upload_panel"){
+        var set_file_type = $('#id_file_type_').magicSuggest()
+        set_file_type.enable()
+        $(".id_message_").on("click", function () {
+            $("#id_message_").hide();
+            $('#id_file_send_next').css('border-color', '#ccc');
+            $("#id_file_send_next-error").hide();
+        });
+    };
+    if('{{order_status_code}}' == "upload_panel"){
+        var set_file_type = $('#id_file_type_').magicSuggest()
+        set_file_type.setSelection([ { name: '{{panel_file_type_.name}}', id: '{{panel_file_type_.id}}' }, ])
+        $('#id_file_not_req').prop('checked', false);
+        $('#id_file_send_next').prop('disabled', false);
+        $(".select-file").css('color', '#a94442');
+        $('#upload_hide').hide();
+        $(".id_message_").on("click", function () {
+            $("#id_message_").hide();
+            $('#id_file_send_next').css('border-color', '#ccc');
+            $("#id_file_send_next-error").hide();
+        });
+    };
+
+    $(".file_send_next").on("click", function () {
+    if ($('#id_file_not_req').is(":checked"))
+    {
+        $("#id_file_send_next").attr("disabled", true);
+        $("#id_file_send_next").removeAttr("required");
+        $("#id_message").hide();
+        $("#id_message_").hide();
+        $("#id_file_send_next-error").hide();
+        $('#id_file_type_').css('border-color', '#ccc');
+        $('#id_file_send_next').css('border-color', '#ccc');
+    }
+    if ($('#id_file_not_req').is(":unchecked"))
+    {
+        $("#id_file_send_next").removeAttr("disabled", true);
+        $("#id_message_lable").css('color', '#a94442');
+        $(".select-file").css('color', '#a94442');
+    }
+    });
+    $(".id_remarks").on("click", function () {
+        $("#id_message_remarks_textarea").hide();
+        $("id_remarks").css('border-bottom', '#ccc');
+        $("#id_remarks_lable").css('color', 'black');
+    });
+</script>

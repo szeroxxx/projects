@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+	<title>Exchange rate</title>
+	<link rel="icon" type="image/x-icon" href="{% static 'base/images/sparrow-logo-b copy.png' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}?v=2" />
+  	<script src="{% static 'base/js/jquery-1.11.2.min.js' %}?v=0.1"></script>
+  	<script src="{% static 'base/js/bootstrap.min.js' %}?v=0.2"></script>
+  	<script src="{% static 'base/js/moment.min.js' %}?v=0.1"></script>
+  	<script src="{% static 'base/js/jquery.validate.min.js' %}?v=0.9"></script>
+  	<link rel="stylesheet" type="text/css" href="{% static 'base/css/datepicker.min.css' %}?v=2">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/datepicker3.min.css' %}?v=2">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/daterangepicker.css' %}?v=0.1">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'base/css/custom.css' %}?v=0.3"> -->
+  	<script src="{% static 'base/js/daterangepicker.js' %}?v=0.1"></script>
+</head>
+<style type="text/css">
+	label{
+		font-weight: normal;
+	}
+	#frmCurrencyRate{
+		padding-top: 15px;
+	}
+	.form-btn-div{
+		float: right;
+    	padding-top: 14px;
+    	padding-right: 13px;
+	}
+	.top-dis{
+		padding-top: 12px;
+	}
+	.left-dis{
+		padding-left: 7px;
+	}
+	.required{
+		color: #c66c6c;
+	}
+	label.error{
+		color: red;
+		font-weight: normal;
+	}
+	.alert-danger{
+		padding: 8px;
+		border-color: red;
+		color: #E9EDEF;
+		font-size: 13px;
+	}
+</style>
+<body>
+	<div style="position: absolute; left: 50%;">
+        <div id="appMsg" class="alert alert-danger" style="position: relative; background-color: red; left: -50%;margin-top: 2px;z-index:9999; display: none;"></div>
+    </div>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-offset-3 col-lg-6">
+			<div align="center" style="padding-top: 45px;">
+				<a href="/" class="site_title"><img src="{% if company_img %}data:image/png;base64,{{ company_img }}{% else %}{% static 'base/images/logo-wh.png' %}?v=2{% endif %}" style="max-height: 90px; min-width: 150px; margin-right:25px;"></a>
+			</div>
+			<div class="panel panel-default" style="margin-top: 20px;">
+				<div class="panel-body" >
+					<h4 style="font-weight: bold;">Exchange rate</h4>
+					<div>Following exchange rates are expired. Please update it before continue.</div>
+					<form id='frmCurrencyRate' class="form-inline">
+						<div class="row">
+						{% for currency_rate in currencyrates %}
+							<div class="col-sm-5 form-group" style="padding-top: 12px;">
+								<span id="id_base" style="display: none;">{{ base_currency }}</span>
+								<label for="c_{{ currency_rate.id }}">1 {{ base_currency }} = </label>
+								<input type="text" style="width: 93px;" class="form-control" name="currency_rate" id="c_{{ currency_rate.id }}" required>
+								<span id="symb_{{ currency_rate.id }}" style="margin-left: 3px;">{{ currency_rate.currency.symbol }}</span>
+							</div>
+							<div class="col-sm-7 form-group" style="padding-top: 12px;">
+								<label for="expire_id_{{ currency_rate.id }}" style="padding-top: 6px; margin-left: 27px;">Expire on</label>
+				                <input type="text" class="form-control pick-date" name="expire_date" id="expire_id_{{ currency_rate.id }}" style="float: right;" type="text" year="" month="" day="" hour="" minute="" date-format='MM/DD/YYYY H:mm' data-rule-required="true"/>
+							</div>
+						{% endfor %}
+						<div class="col-sm-5"></div>
+						<div class="col-sm-7">
+							<div class="form-group" style="padding-top: 12px; float: right;">
+								<button type="submit" id="btnSave" class="btn btn-primary" onclick="openDialog()">Save</button>
+								<!-- <input type="button" class="btn btn-primary" name="save" value="Save"  id="btn_save"> -->
+							</div>
+						</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="currencyRateModal" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+ <div style="width:30%;" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Exchange rate</h4>
+      </div>
+    <div class="modal-body">
+    	<div>Verify exchange rate before update.</div>
+        <div id="currency_rate_info"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary" onclick="updateIt()">Save and continue</button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+	var currencyRateIds = [];
+	var currency_ids = [];
+	{% for currency_rate in currencyrates %}
+		currencyRateIds.push({{currency_rate.id}});
+		currency_ids.push({{currency_rate.currency.id}});
+	{% endfor %}
+	var exchangeData = [];
+	function updateIt(){
+		for (var i = 0; i < currencyRateIds.length; i++) {
+			var new_exchange = {};
+			exchange_rate = $('#c_'+currencyRateIds[i]).val();
+			expire_on = $('#expire_id_'+currencyRateIds[i]).val();
+			var ex_id = currencyRateIds[i]
+			exchangeData.push({exchange_rate: exchange_rate, expire_on: expire_on});
+		}
+		exchangeData.push({ids: currencyRateIds})
+		exchangeData.push({c_ids: currency_ids})
+		var url_data = ''
+              var data = exchangeData;
+              var formURL = "/base/add_exchange_rate/";
+              if(window.location.hash != '') {
+                url_data = window.location.hash;
+              }
+              var postData = {
+                'data' :  JSON.stringify(data),
+                'url_data' : url_data,
+              }
+              $.ajax({
+                  dataType: "json",
+                  type: "POST",
+                  url: formURL,
+                  data: postData,
+                  success: function (data) {
+                    var success = data.code == 0 ? false : true;
+                    if(success) {
+                      // window.location.replace(url_data);
+                      // window.location = '/base/signin/' ;
+						location.reload();
+
+                    }
+                    else{
+                    	$('#currencyRateModal').modal('hide');
+                    	// alert(data.msg);
+                    	$('#appMsg').text(data.msg);
+                    	$('#appMsg').show()
+                    	setTimeout(function(){
+                    		$('#appMsg').hide();
+                    	}, 5000);
+                    }
+                  }
+            });
+	}
+
+	function openDialog(){
+		is_null = false;
+		$("input").each(function() {
+		    if (!$(this).val()) {
+		      is_null = true;
+		    }
+		  });
+		if(!is_null){
+			$('#btnSave').attr('type','button');
+			currency_rate_list = '<div class="row">';
+				for (var i = 0; i < currencyRateIds.length; i++) {
+					currency_rate_list += '<div class="col-md-5 top-dis">'
+					currency_rate_list += '<span>1 '+baseCurrency+' = </span>';
+					currency_rate_list += '<span class="left-dis">'+$('#c_'+currencyRateIds[i]+'').val()+' '+$('#symb_'+currencyRateIds[i]).text()+'</span>';
+					currency_rate_list += '</div>'
+					currency_rate_list += '<div class="col-md-6 top-dis">'
+					currency_rate_list += '<span style="padding-left:20px;">Expire on </span>';
+					currency_rate_list += '<span class="left-dis">'+$('#expire_id_'+currencyRateIds[i]+'').val()+'</span>';
+					currency_rate_list += '</div>'
+				}
+				currency_rate_list += '</div>';
+				$('#currencyRateModal').modal('show');
+				$('#currency_rate_info').html(currency_rate_list)
+			}
+		}
+	$(document).ready(function(){
+		$('.pick-date').daterangepicker({
+		    minDate: moment(),
+		    singleDatePicker: true,
+		    timePicker: true,
+		    timePickerIncrement: 5,
+		    timePicker24Hour : true,
+		    locale: {
+		        format: 'DD/MM/YYYY H:mm'
+		    }
+		});
+		$('.pick-date').val('');
+		baseCurrency = $('#id_base').text();
+	});
+</script>
+</html>

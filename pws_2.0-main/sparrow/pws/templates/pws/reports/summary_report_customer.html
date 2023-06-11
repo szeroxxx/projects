@@ -1,0 +1,54 @@
+<style>
+    .customer-label{
+        margin-left: 20px;
+
+    }
+    .col-sm-5{
+        height: 15px;
+    }
+    .filter{
+        max-width: auto;
+        margin-bottom: 10px;
+    }
+    .order-date-range-label{
+        min-width: 80px !important;
+        width: auto !important;
+    }
+    .customer-input{
+        margin-right: 25px;
+    }
+</style>
+<div class="filter">
+    <div class="col-md-12 col-sm-12">
+        <div class="row">
+            <label for="id_company" class="control-label col-md-1 customer-label" style="min-width: 80px !important; width: auto !important;">Customer:</label>
+            <div class="col-md-2 customer-input">
+                <input type="text" class="form-control " id="id_company" name="company" value="">
+            </div>
+            <label required for="" class="col-form-label col-md-1 order-date-range-label">Date range:</label>
+            <div id="id_datepicker" class="col-sm-3">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp; <span id="dates"></span> <b class="caret"></b>
+            </div>
+            <span class="pull-right">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary btn-sm"
+                        id="load_btn">L<u>o</u>ad</button>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port" disabled>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data" disabled>
+                </div>
+            </span>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 col-sm-5">
+</div>
+<div id="gridCon">
+    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover">
+    </table>
+</div>
+</div>
+
+<script>
+    var data = { 'permissions': {{ permissions| safe}}};
+    summaryReportCustomerInit(data);
+</script>

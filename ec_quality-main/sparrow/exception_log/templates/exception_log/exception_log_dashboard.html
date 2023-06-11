@@ -1,0 +1,137 @@
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% load widget_tweaks %}
+{% load app_filters %}
+<!-- {% load app_filters %} -->
+
+<style>
+    .tableData {
+        height: 80px;
+    }
+    .rightAlign {
+        text-align: right;
+    }
+    .stat {
+        color: #555555;
+        padding-top: 6px;
+    }
+    .width-80 {
+        width: 80px;
+    }
+    .width-60 {
+        width: 60px;
+    }
+    .width-30 {
+        width: 30px;
+    }
+    .inline {
+        display: inline-block;
+    }
+
+    .center {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+
+        -webkit-box-align: center;
+        -moz-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+
+        -webkit-box-pack: center;
+        -moz-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+    }
+
+    #exception_log {
+        margin: 2% 0px 0px 2%;
+        padding: 0px 0px 0px 0px;
+        width: 60%;
+        height: 26%;
+
+        color: white;
+        cursor: pointer;
+        position: relative;
+        float: left;
+        /* vertical-align: middle; */
+        /* line-height: 200px; */
+        /* width:130px;
+        height: 70px; */
+    }
+    #exception_log_name {
+        position: absolute;
+        width: 97.8%;
+        height: 91%;
+        /*height: 25px;*/
+        /*width:130px ; */
+        /*font-weight: bold; */
+        font-size: 105%;
+    }
+    #exception_log_link {
+        position: absolute;
+        width: 100%;
+        height: 209%;
+        margin: 25px 0px 0px 0px;
+        font-size: 257%;
+        /* height: 55px;
+        width:130px ; */
+    }
+
+    .innerDiv {
+        height: 108px;
+        position: relative;
+    }
+    ::-webkit-scrollbar {
+        width: 13px;
+        height: 8px;
+    }
+
+</style>
+
+ <div class="modal-body">
+    <div class="tile_count" >
+        {% for exception_log in exception_logs %}
+        <div class="col-md-3 col-sm-3 col-xs-3" id="exception_log_outer">
+            <div class="row innerDiv" >
+                <div id="exception_log" class="col-md-4 col-sm-4 col-xs-4" onclick="location.href='/b/#/exception_log/logs/{{exception_log.class_name}}/';">
+                    <div id="exception_log_name" class="container center">
+                        {{exception_log.class_name}}
+                    </div>
+                    <div id="exception_log_link" class="container center">
+                        {{exception_log.class_count}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    sparrow.setTitle('Exception logs Dashboard');
+    $('#top_action_bar').html('');
+
+    $(document).ready(function () {
+        bg_color = sparrow.global.get(sparrow.global.keys.BUTTON_COLOR);
+        shade_color = adjust(bg_color, 20);
+        elements = document.querySelectorAll('[id=exception_log]');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.backgroundColor = adjust(bg_color, -10);
+        }
+        elements = document.querySelectorAll('[id=exception_log_link]');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.backgroundColor = adjust(bg_color, 10);
+        }
+
+    });
+
+    function adjust(color, amount) {
+        return '#' + color.replace(/^#/, '').replace(/../g, (color) => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    }
+</script>
+
+

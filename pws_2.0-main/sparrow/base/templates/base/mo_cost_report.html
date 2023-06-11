@@ -1,0 +1,119 @@
+{% load widget_tweaks %}
+{% load app_filters %}
+{% load staticfiles %}
+<script src="{% static 'base/js/jquery.tablesorter.min.js' %}?v=0.1"></script>
+<style>
+    #dvData-table, td {
+        border-top: 1px solid #ccc;
+        padding: 14px 4px;
+    }
+    #dmi_table_data thead tr th:first-child {
+        text-align:left !important;
+    }
+    #dmi_table_data th {
+        background-color: #ffffff;
+        color: #6D7279;
+        padding: 12px 4px;
+        text-align:right;
+    }
+
+    #dmi_table_data {
+        background-color:#ffffff;
+        text-align:right;
+        width: 100%;
+    }
+
+    .estimated {
+        display: none;
+        font-size : 11px;
+        color:#6a6b6d;
+    }
+    .pro_cost_chart{
+        width: 60%;
+       /* height: 400px;*/
+        margin: auto ;
+    }
+    .chart_type_select input{
+        padding-right:05px;
+    }
+    .chart_type_select label{
+        padding-right:15px;
+    }
+
+    
+</style>
+<div class="modal-body">    
+    <div class="row">
+        <div class="form-group col-md-4 col-sm-4">
+            <label  class="control-label col-sm-3">Date range</label>
+            <div class=" col-sm-8" id="id_start_datepicker">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar form-control">
+                 <span id="dates"></span> <b class="caret"></b></i>
+            </div>
+        </div>
+        <div class="form-group col-md-2 col-sm-2">
+                <input  id="id_show_est" type="checkbox"> &nbsp; Show estimated cost
+        </div>
+        <div style="float: right;" class="col-md-2 col-sm-2">
+            <button style="float: right;margin-left: 20px;" class="btn btn-primary" ng-click="loadReport(false);" ng-disabled="btnDisabled">Load</button>
+        </div>
+        <div id="msg"></div>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a class="show-tab" href="#reportData">Data</a>
+        </li>
+        <li>
+            <a class="show-tab" href="#reportChart">Visualization</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="reportData">
+            <div >
+                <div id="dvData">
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="reportChart">
+            <div class="pro_cost_chart" style="">
+                <canvas id="idProCostChart"></canvas>
+                <div class="chart_type_select" align="center">
+                    <input type="radio" value="months" name="chart_type" checked/> 
+                    <label>Monthly</label>
+                    <input type="radio" value="quarters" name="chart_type"/> 
+                    <label>Quarterly</label>
+                    <input type="radio" value="years" name="chart_type"/> 
+                    <label>Yearly</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+<script type="text/javascript">
+    if($('#id_start_datepicker').length != 0){
+        function cb(start, end) {
+            if(start != '' && end != ''){
+                $('#id_start_datepicker span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            }
+        }
+        var startDate = moment().subtract(29, 'day')
+        var endDate = moment()
+        $('#id_start_datepicker').daterangepicker({
+            startDate: startDate,
+            endDate : endDate,
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+               'This Year': [moment().startOf('year'), moment().endOf('year')],
+               'Last Year': [moment().subtract(1, 'year').add(1,'day'), moment()]
+            }
+        }, cb);
+        cb(startDate,endDate);
+    }
+</script>

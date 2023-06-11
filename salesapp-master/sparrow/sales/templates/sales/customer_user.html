@@ -1,0 +1,91 @@
+<form id="frmUser" action="/sales/save_customer_user/" method="POST" role="form" class="form-horizontal">
+    <fieldset id ='id_useredit_form'>
+    {% csrf_token %}
+    <div class="col-md-12 col-sm-12">
+        <div class="col-md-6 col-sm-6">
+            <div class="form-group">
+                <label for="id_first_name" class="control-label col-sm-4 required">Username</label>
+                <div class="col-sm-8">
+                    <label>{{user.UserName}}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-4 ">Role</label>
+                <div class="col-sm-8">
+                    <label>{{user.Role}}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4 required">First name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="FirstName" type="text" value="{% if user.FirstName != None %}{{user.FirstName}}{% endif %}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4 required">Last name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="LastName" type="text" value="{% if user.LastName != None %}{{user.LastName}}{% endif %}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4">Job title</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="JobTitle" type="text" value="{% if user.JobTitle != None %}{{user.JobTitle}}{% endif %}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4 required">Email</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="Email" type="text" value="{% if user.Email != None %}{{user.Email}}{% endif %}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4">Phone</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="Phone" type="text" value="{% if user.Telephone != None %}{{user.Telephone}}{% endif %}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4">Mobile</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="Mobile" type="text" value="{% if user.Mobile != None %}{{user.Mobile}}{% endif %}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4">Fax</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="Fax" type="text" value="{% if user.Fax != None %}{{user.Fax}}{% endif %}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_last_name" class="control-label col-sm-4">IM</label>
+                <div class="col-sm-8">
+                    <input class="form-control" name="IM" type="text" value="{% if user.Im != None %}{{user.Im}}{% endif %}"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6" style="overflow: auto;height: 480px;">
+            <table id="confirm_quoatoin_status" class="table">
+                <thead>
+                    <tr>
+                        <th style="white-space:nowrap;max-width:100%;"><b>User responsibilities</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in MasterData.user_responsibilities %}
+                        <tr role="row" class="odd">
+                            <td class="master_data" style="white-space:nowrap;max-width:100%;">
+                                <input id="{{data.id}}" name="selected" ng-click="isSelected($event);" class="magic-checkbox"
+                                    type="checkbox" {% if data.id in user.user_responsibilities %}checked="checked"{%else%} {%endif%} />
+                                <label for="{{data.id}}" class="control-label">
+                                    {{data.data}}
+                                </label>
+                            </td>
+                        </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </fieldset>
+</form>

@@ -1,0 +1,262 @@
+<style>
+    .add-leave .col-sm-9 {
+        padding-right: 0;
+    }
+
+    #id_leave_to-error {
+        float: right;
+        margin-right: 20px;
+    }
+
+    #id_leave_from-error,
+    #id_days-error {
+        margin-left: 113px;
+    }
+    #all_leaves_calendar {
+        padding-right: 8px;
+        padding-left: 15px;
+    }
+    .all-leaves-calendarView{
+        padding-right: 20px;
+        cursor: pointer;
+        font-size: 17px;
+        vertical-align: middle;
+    }
+    .all-leaves-listView{
+        padding-right: 10px;
+        cursor: pointer;
+        font-size: 17px;
+        vertical-align: middle;
+    }
+    .fc-time{
+        display: none;
+    }
+    .img-profile{
+        border-radius: 50%;
+        margin-left: 3px;
+    }
+    .fc-content{
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+    .fc-title{
+        font-size: 13px;
+        padding-left: 5px;
+    }
+    .public-holiday {
+        padding-top: 6px;
+        padding-bottom: 5px;
+        vertical-align: middle;
+    }
+    .all-pending-leaves-title{
+        padding-left: 2px;
+        vertical-align: middle;
+        display: inline-block;
+    }
+    .all-pending-leaves-icon{
+        padding-left: 3px;
+        font-size: 14px;
+        vertical-align: middle;
+        display: inline-block;
+        margin-bottom: 2px;
+    }
+    .all-approved-leaves-icon{
+        font-size: 14px;
+        padding-left: 3px;
+        vertical-align: middle;
+        display: inline-block;
+        margin-bottom: 2px;
+
+    }
+    .all-approved-leaves-title{
+        vertical-align: middle;
+        display: inline-block;
+        padding-left: 2px;
+    }
+
+    .all-rejected-leaves-title{
+        display: inline-block;
+        padding-left: 2px;
+        vertical-align: middle;
+    }
+    .all-rejected-leaves-icon{
+        transform: rotate(85deg);
+        transform-origin: 59% 40%;
+        font-size: 14px;
+        padding-left: 3px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-bottom: 2px;
+    }
+    .icon-user-circle{
+        font-size: 22px;
+    }
+    .all-pending-leaves-user-avatar {
+        vertical-align: middle;
+        margin-left: 3px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .all-approved-leaves-user-avatar{
+        vertical-align: middle;
+        margin-left: 3px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .all-rejected-leaves-user-avatar{
+        vertical-align: middle;
+        margin-left: 3px;
+        display: inline-block;
+        vertical-align: middle;
+
+    }
+
+</style>
+<div class="lst-container" id="idAllLeaves">
+    <div id ="searchbox">
+        <form autocomplete="off">
+            <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1" placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar" style="float:right;margin-top: 10px;">
+        <i type="button" style="font-weight : 800" class="icon-list-1 all-leaves-listView" title="List view" id="btnAllLeaveListView"></i>
+        <i type="button" class="icon-calendar all-leaves-calendarView" title="Calendar view" id="btnAllLeaveCalendarView"></i>
+        <input id="leaveadd" type="button" class="btn btn-primary btn-sm" value="Add new"></input>
+
+        <input id="leaveapprove" type="button" class="btn btn-primary btn-sm" value="Approve" ng-disabled="btnModelDeleteDisable"></input>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+                <li>
+                    <input id="rejectleave" type="button" class="btn btn-primary btn-sm" value="Reject" ng-disabled="btnModelDeleteDisable"></input>
+                </li>
+                <li>
+                    <input id="deleteleave" type="button" class="btn btn-primary btn-sm" value="Delete" ng-disabled="btnModelDeleteDisable"></input>
+                </li>
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnAllLeavesHistory" value="History" ng-click="onbtnAllLeavesHistory($event);" ng-disabled="btnAllLeavesHistoryDisable"></input>
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+
+<div id="all_leaves_calendar"></div>
+
+<div id="allLeaveModel" class="modal fade" tabindex="-1" role="dialog">
+    <form id="allLeaveForm" action="/hrm/my_leaves_save/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="width:38%;" class="modal-dialog modal-lg add-leave" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin: auto;">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="id_worker" class="control-label col-sm-3 required">Employee</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="id_worker" maxlength="200" name="worker" type="text" data-rule-required="true" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_leave_type" class="control-label col-sm-3 required">Leave type</label>
+                                <div class="col-sm-9">
+                                    <div>
+                                        <input class="form-control" id="id_leave_type" name="leave_type" type="text" data-rule-required="true" required/>
+                                    </div>
+                                    <div id="totalOfDays" style="display: none; margin-top: 5px;">
+                                        <label id="calculatedDays"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_description" class="control-label col-sm-3 required">Reason</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="id_description" maxlength="200" name="description" type="text" required/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_leave_duration" class="control-label col-sm-3 required">Duration</label>
+                                <div class="input-group">
+                                    <input type="text" id="id_leave_from" class="form-control" placeholder="Start" name="start_date" data-rule-required="true" required="" />
+                                    <span class="input-group-addon">-</span>
+                                    <input type="text" id="id_leave_to" class="form-control" placeholder="End" name="end_date" data-rule-required="true"  />
+                                </div>
+                            </div>
+                            <div class="form-group" ng-repeat="leave in leaves">
+                                <label class="control-label col-sm-3"></label>
+                                <div class="input-group col-sm-8">
+                                    <label  class="control-label col-sm-6">{[{leave.date}]}</label>
+                                    <select style="padding-right: 0px;" class="col-sm-2"  ng-model="leave.leave_val">
+                                        <option value ="1">1</option>
+                                        <option value ="0.75">0.75</option>
+                                        <option value ="0.50">0.50</option>
+                                        <option value ="0.25">0.25</option>
+                                    </select>
+                                    <div style="margin-left: 10px;" class = "required col-sm-3" style="display: inline-block;margin-top: 10px;">Day</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_leave_policy" class="control-label col-sm-3"></label>
+                                <div class="col-sm-9" style="margin-top: 10px;">
+                                    <a href="https://docs.google.com/document/d/1OJI3IRAMaWBgXgck9S35uyUdf8E-reD2NDuU17mRxQo/edit?usp=sharing" target="none" >Please review Leave Policy before applying leave (last updated on April-2017)</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" ng-click="saveLeaves($event);" ng-disabled="btnDisabled">Add leave</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+$(function() {
+    $('input[name="start_date"]').daterangepicker({
+        autoUpdateInput: false,
+        singleDatePicker: true,
+        timePicker: true,
+        timePickerIncrement: 5,
+        timePicker24Hour: true,
+        locale: {
+            format: 'DD/MM/YYYY H:mm'
+        }
+    });
+
+    $('input[name="start_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    $('input[name="end_date"]').daterangepicker({
+        autoUpdateInput: false,
+        singleDatePicker: true,
+        timePicker: true,
+        timePickerIncrement: 5,
+        timePicker24Hour: true,
+        locale: {
+            format: 'DD/MM/YYYY H:mm'
+        }
+    });
+
+    $('input[name="end_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+
+});
+
+</script>

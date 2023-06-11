@@ -1,0 +1,27 @@
+{% load widget_tweaks %}
+<div class="lst-container">
+   <div class="row">
+    <label for="id_operation" class="control-label col-sm-1" style="margin-left: 25px;padding-top: 10px;width: 150px">Select
+        workcenter</label>
+        <div class="col-sm-4 col-md-4">
+            <input class="form-control" id="id_workcenter" name="workcenter" style="padding: 0px;height: auto;">
+        </div>
+        <div class="col-sm-1 col-md-1">
+            <button type="button" class="btn btn-primary btn-sm" id="load_btn">Load</button>
+        </div>
+
+   </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" index="1"
+            class="row-border hover"></table>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar">
+	<!-- <button type="button" class="btn btn-primary btn-sm" id="btnExport" style="width: 75px;float:right; margin-top: 0px;" ng-click="onExport($event);">Export</button> -->
+    <button style="float:right;" id="btnExport" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> Export</button>
+	</div>
+
+</script>
+

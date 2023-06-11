@@ -1,0 +1,213 @@
+<style>
+    .dataTables_scrollBody{
+        max-height: 62vh;
+    }
+    .dataTables_paginate {
+        display:none !important;
+    }
+</style>
+
+<div class="lst-container">
+    <div>
+        <form autocomplete="off" style="width: 60%;float: right;margin-top: 15px;">
+            <nit-advanced-searchbox
+                    ng-model="searchParams1"
+                    parameters="availableSearchParams1"
+                    index = "1"
+                    placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+    <input type="button" class="btn btn-primary btn-sm" value="Create task" id="btnCreateTask" ng-disabled="btnCreateTaskDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" id="btnCustomerLogin" value="Customer login" ng-disabled="btnCustomerLoginDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Edit profile" id="btnEditProfile" ng-disabled="btnEditProfileDisable" ></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Proforma invoice" id ="btnProformaInvoice" ng-disabled = "btnProformaInvoiceDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Invoice" id ="btnInvoice" ng-disabled = "btnInvoiceDisable"></input>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Customer financial report" id="btnCustomerFinReport" ng-disabled="btnCustomerFinReportDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Grant days" id="btnGrantDays" ng-disabled="btnGrantDaysDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Credit limit" id="btnCreditLimit" ng-disabled="btnCreditLimitDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Credit report" id="btncreditReport" ng-disabled = "btncreditReportDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Credit status" id="btnCreditStatus" ng-disabled="btnCreditStatusDisable" ></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Delivery note" id ="btnDeliveryNote" ng-disabled = "btnDeliveryNoteDisable"></input>
+            </li>
+            <!-- <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Communication" ng-click="communication($event);" ng-disabled="btnCommunicationDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Send reminder" ng-click="sendReminder($event);" ng-disabled="btnSendReminderDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Send e-invoice" ng-click="sendEInvoice($event);" ng-disabled="btnSendEInvoiceDisable"></input>
+            </li> -->
+
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnChangeSecondaryStatus" value="Change secondary status" ng-disabled="btnChangeSecondaryStatusDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnInvoiceHistory" value="Invoice history" ng-disabled="btnInvoiceHistoryDisable"></input>
+            </li>
+        </ul>
+    </div>
+  </div>
+</script>
+
+<div id="grantDaysModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document" style="width: 23%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id = "grantDaysTitle">Enter grant days</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div style="padding-left: 10px" class="col-sm-9">
+                    <input required class="form-control" type="number" name="grant days" id="id_grantdays">
+                    </div>
+                    <label class="control-label required">Days</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="saveGrantDays($event)" ng-disabled="btnDisabled">Save</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="secondaryStatusModal" class="modal" role="dialog">
+    <div class="modal-dialog modal-md" role="document" style="width: 27%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="secondaryStatusTitle">Secondary status</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="seconday status" value="{{defaultSecondaryStatus}}" placeholder="" id="id_secondary_status">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="saveSecondaryStatus($event)" ng-disabled="btnDisabled">Save</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="customerFinReportModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id = "idCustomerFinReportTitle"></h4>
+            </div>
+            <div class="modal-body" style="height:80vh;overflow-y: auto;">
+                <a style = "position:relative;float:right;" ng-click = "refreshcustomerFinReport();">Refresh</a>
+                <div id = "idCustomerInvGrids"></div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="creditStatusModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document" style="width: 70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Credit Status</h4>
+            </div>
+            <div class="modal-body" style="height:500px;overflow-y: auto;">
+                <div id = "id_creditStatusGrid"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="createTaskModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id = "createTaskTitle"></h4>
+            </div>
+            <form id="frmCreateTask" action="/sales/create_task/" method="POST" role="form" class="form-horizontal">
+                <div class="modal-body" style="">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="control-label col-sm-3 required">Title</label>
+                            <div class="col-sm-9 col-md-9 col-lg-9">
+                                <input class="form-control col-sm-6" type="text" name="task_title" id="id_task_title" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class = "row">
+                            <label class="control-label col-sm-3 required">Description </label>
+                            <div class="col-sm-9 col-md-9 col-lg-9">
+                                <textarea type="text" class="form-control" name="task_desc" id="id_task_desc" required/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="oncreateTask($event)" ng-disabled="btnDisabled">Create task</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    invoicesInit({ 'customer_name': "{{customer_name}}", 'permissions': {{ permissions| safe}} });
+    function onCustInvoice(inv_number) {
+        invoicenum = inv_number
+        var doc_type = "invoice";
+        window.open("/sales/get_ec_customer_inv_doc/"+ invoicenum + "/" + doc_type + "/");
+
+    }
+</script>

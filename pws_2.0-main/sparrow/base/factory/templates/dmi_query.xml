@@ -1,0 +1,442 @@
+<DMI>
+    <query>
+        <title>Leaves report</title>
+        <report_sql>select emp.name as employee, lh.start_date as leave_from, lh.end_date as leave_to, lh.days as days , lt.name as leave_type ,lh.description as reason ,lh.status as status, lh.created_on as applied_on from default.production_labourholiday lh  inner join default.production_labour emp on emp.id = lh.worker_id    inner join default.hrm_leavetype lt on lt.id = lh.leave_type_id          where lh.start_date between '#from_date$' and '#to_date$'</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>leaves_rep</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url>#/hrm/leaves_report</url>
+        <app_name>hrm</app_name>
+    </query>
+
+    <query>
+        <title>Leave balance report</title>
+        <report_sql>select  lab.name as employee, coalesce(la.adays,0) as allocated_leaves, coalesce(lh.ldays,0) as leaves_taken, coalesce(la.adays  - lh.ldays + lhl.lhldays,0) as leave_balance  from default.production_labour lab  left join ( select worker_id , SUM(days) as adays  from default.hrm_leaveallocation where allocate_year  = #year$ group by worker_id) la on lab.id = la.worker_id  left join ( select worker_id , SUM(days) as ldays  from default.production_labourholiday where date_part('year', created_on) = #year$ and status != 'cancel' and status !='rejected' group by worker_id) lh on  lh.worker_id = lab.id  left join (select worker_id,sum(days) as lhldays from default.production_labourholiday where date_part('year', created_on) = #year$ and status != 'cancel' and status !='rejected' and leave_allocation_id in  (select id from default.hrm_leaveallocation where leave_type_id in (select id from default.hrm_leavetype where days is null)) group by worker_id) lhl on lhl.worker_id = lab.id where lab.id = #worker_id$</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>leave_bal</report_code>
+        <report_para></report_para>
+        <url></url>
+        <app_name>hrm</app_name>
+    </query>
+
+ <!--    <query>
+        <title>Generic parts inventory</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr>Products whose product group is generic</descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/parts/generic</url>
+        <app_name>inventory</app_name>
+    </query> -->
+
+    <query>
+        <title>Low stock based on reorder level</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>reorder_st</report_code>
+        <report_para></report_para>
+        <url>#/inventory/low_stock_based_on_reorder_level</url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Low stock based on reorder level</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>reorder_st</report_code>
+        <report_para></report_para>
+        <url>#/inventory/low_stock_based_on_reorder_level</url>
+        <app_name>inventory</app_name>
+    </query>
+
+    <query>
+        <title>MO Inventory</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/mo_inventory</url>
+        <app_name>inventory</app_name>
+    </query>
+
+    <query>
+        <title>Component usage</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr>Component usage</descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/components_usage</url>
+        <app_name>production</app_name>
+    </query>
+
+    <query>
+        <title>Waiting for components</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/waiting_components</url>
+        <app_name>production</app_name>
+    </query>
+
+    <query>
+        <title>Production cost</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr>Production cost</descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/production_cost</url>
+        <app_name>production</app_name>
+    </query>
+
+    <query>
+        <title>Pending receipt for scan</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/pending_receipt</url>
+        <app_name>production</app_name>
+    </query>
+
+    <query>
+        <title>MO Inventory</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/mo_inventory</url>
+        <app_name>production</app_name>
+    </query>
+
+     <query>
+        <title>Component usage</title>
+        <report_sql></report_sql>
+        <is_active>True</is_active>
+        <descr>Component usage</descr>
+        <report_code></report_code>
+        <report_para></report_para>
+        <url>#/base/components_usage</url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase inquiries generated today</title>
+        <report_sql>SELECT  po.ordernum as Number,  part.name as Supplier,  po.created_on as INQUIRY_date,  stat.description as status, po.total as Total   from default.purchasing_purchaseorder as po   INNER JOIN default.partners_partner as part ON po.supplier_id = part.id  INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id  INNER JOIN default.auditlog_auditlog as adt ON po.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'po_draft_created')  where adt.action_on between '#from_date$' and '#to_date$'  order by -po.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>346578912</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase quotation generated today</title>
+        <report_sql>SELECT po.ordernum as Number,   part.name as Supplier,   po.created_on as INQUIRY,  stat.description as status,  po.total as Total   from default.purchasing_purchaseorder as po   INNER JOIN default.partners_partner as part ON po.supplier_id = part.id   INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id  INNER JOIN default.auditlog_auditlog as adt ON po.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'po_quote_created')  where adt.action_on between '#from_date$' and '#to_date$' order by -po.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>456782130</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase quotation ordered today</title>
+        <report_sql>SELECT po.ordernum as Number,  part.name as Supplier, po.order_date,po.ship_date, po.created_on as INQUIRY, stat.description as status, po.total as Total  from default.purchasing_purchaseorder as po  INNER JOIN default.partners_partner as part ON po.supplier_id = part.id  INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id INNER JOIN default.auditlog_auditlog as adt ON po.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'po_order_created')  where adt.action_on between '#from_date$' and '#to_date$'  order by -po.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>754698320</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase orders received</title>
+        <report_sql>SELECT  po.ordernum as number,     part.name as supplier,     po.order_date as order_date,     po.ship_date as ship_date,      po.created_on as inquiry_date,      stat.description as status,      po.total as total         from default.logistics_transferorder tos          INNER JOIN default.logistics_purchaseorderreceipt tor ON tor.transfer_order_id = tos.id          INNER JOIN default.purchasing_purchaseorder po ON po.id = tor.purchase_order_id         INNER JOIN default.partners_partner as part ON part.id = po.supplier_id         INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id             where tos.transfer_type = 'receipt' and tos.status = 'confirmed' and po.created_on between '#from_date$' and '#to_date$'</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code></report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase orders partially received</title>
+        <report_sql>SELECT   po.ordernum as number,      part.name as supplier,      po.order_date as order_date,      po.ship_date as ship_date,       po.created_on as inquiry_date,       stat.description status,       po.total as total          from default.logistics_transferorder tos           INNER JOIN default.logistics_purchaseorderreceipt tor ON tor.transfer_order_id = tos.id           INNER JOIN default.purchasing_purchaseorder po ON po.id = tor.purchase_order_id          INNER JOIN default.partners_partner as part ON part.id = po.supplier_id          INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id              where tos.transfer_type = 'receipt' and tos.status in ('draft', 'partial_received') and tos.backorder_id is not null and po.created_on between '#from_date$' and '#to_date$'order by -po.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>2457843600</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase returns pending</title>
+        <report_sql>with t as ( SELECT po.id AS po_id, tos.id AS tos_id,tos.status AS status ,tos.created_on As transfer_order_created_on , tos.transfer_num AS transfer_number from default.purchasing_purchaseorderline pol        LEFT JOIN default.purchasing_purchaseorder po on po.id = pol.order_id       LEFT JOIN default.logistics_transferorderline tol ON tol.po_line_id = pol.id       LEFT JOIN default.logistics_transferorder tos ON tos.id = tol.transfer_id AND tos.transfer_type = 'po_return' and tos.status is NULL and tos.is_draft ='true' )   SELECT part.name, new_po.ordernum, t.transfer_number, new_po.order_date, new_po.ship_date, new_po.created_on, t.status, new_po.total  from t        LEFT JOIN default.purchasing_purchaseorder new_po ON t.po_id = new_po.id  LEFT JOIN default.partners_partner as part ON part.id = new_po.supplier_id   where t.tos_id IS NOT NULL  and  t.transfer_order_created_on between  '#from_date$' and '#to_date$' GROUP BY part.name,new_po.ordernum, t.transfer_number,new_po.order_date, new_po.ship_date,new_po.created_on,new_po.total,t.tos_id,t.status order by -t.tos_id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>7318954000</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase return completed</title>
+        <report_sql>with t as ( SELECT po.id AS po_id, tos.id AS tos_id,tos.status AS status ,tos.created_on As transfer_order_created_on  , tos.transfer_num AS transfer_number     from default.purchasing_purchaseorderline pol   LEFT JOIN default.purchasing_purchaseorder po on po.id = pol.order_id       LEFT JOIN default.logistics_transferorderline tol ON tol.po_line_id = pol.id       LEFT JOIN default.logistics_transferorder tos ON tos.id = tol.transfer_id AND tos.transfer_type = 'po_return' and tos.is_draft = 'f')   SELECT part.name, new_po.ordernum,t.transfer_number, new_po.order_date, new_po.ship_date, new_po.created_on, t.status, new_po.total  from t        LEFT JOIN default.purchasing_purchaseorder new_po ON t.po_id = new_po.id  LEFT JOIN default.partners_partner as part ON part.id = new_po.supplier_id  where t.tos_id IS NOT NULL  and t.transfer_order_created_on between '#from_date$' and '#to_date$'  GROUP BY part.name,new_po.ordernum, t.transfer_number, new_po.order_date, new_po.ship_date,new_po.created_on,new_po.total,t.tos_id,t.status order by -t.tos_id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>4901357894</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+     <query>
+        <title>Purchase quotation pending</title>
+        <report_sql>SELECT po.ordernum as Number,   part.name as Supplier,   po.created_on as INQUIRY,  stat.description as status,  po.total as Total   from default.purchasing_purchaseorder as po   INNER JOIN default.partners_partner as part ON po.supplier_id = part.id   INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id  INNER JOIN default.auditlog_auditlog as adt ON po.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'po_quote_created')  where po.order_type = 'rfq' and adt.action_on between '#from_date$' and '#to_date$' order by -po.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>0123456709</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase quotation expired or cancelled</title>
+        <report_sql>SELECT   po.ordernum as Number,  part.name as Customer,  po.created_on as INQUIRY_date,  po.expiry_date as Expiry_date,  stat.description as status,  po.total as Total  from default.purchasing_purchaseorder as po  INNER JOIN default.partners_partner as part ON po.supplier_id = part.id     INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id where (po.status_id = (select id from default.purchasing_orderstatus where name = 'cancel') or po.expiry_date between  '#from_date$' and '#to_date$') and po.order_type= 'rfq'</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>1120457645</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Purchase orders not received</title>
+        <report_sql>SELECT  po.ordernum as Number,   part.name as Supplier,  po.order_date,po.ship_date,  po.created_on as INQUIRY,  stat.description as status,  po.total as Total    from default.purchasing_purchaseorder as po    INNER JOIN default.partners_partner as part ON po.supplier_id = part.id    INNER JOIN default.purchasing_orderstatus as stat ON stat.id = po.status_id   INNER JOIN default.auditlog_auditlog as adt ON po.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'po_order_created')   where po.order_type = 'purchase' and not(stat.name = 'received') and adt.action_on between '#from_date$' and '#to_date$' order by -po.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>2634018060</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+    <query>
+        <title>Products by Suppliers</title>
+        <report_sql>SELECT  supp.name as supplier,  prod.name as product,  prod.internal_ref as article_number, int_cat.name as internal_category,  tax.code as tax_code,   country.name as country   FROM default.products_product prod              LEFT JOIN default.products_tax tax ON prod.tax_id = tax.id       LEFT JOIN default.products_internalcategory int_cat ON prod.internal_cat_id = int_cat.id                     LEFT JOIN default.products_productsupplier prod_supp ON prod_supp.product_id = prod.id                       LEFT JOIN default.partners_partner supp ON supp.id = prod_supp.supplier_id                               LEFT JOIN default.partners_country country ON country.id = supp.country_id where supp.name is not null</report_sql>
+        <is_active>True</is_active>
+        <descr>Products information according suppliers</descr>
+        <report_code>987987987</report_code>
+        <report_para></report_para>
+        <url></url>
+        <app_name>purchase</app_name>
+    </query>
+
+  <!--   <query>
+        <title>Maintenances job</title>
+        <report_sql>select * from default.maintenances_job where jobstatus = '#job_status$' and jobtype = '#job_type$' and started_on between '#from_date$' and '#to_date$'</report_sql>
+        <is_active>True</is_active>
+        <descr>Job defined by job status and job type.</descr>
+        <report_code>5282545256</report_code>
+        <report_para>job_status:preventive,job_type:pending,from_date:month,to_date:today</report_para>
+        <url></url>
+        <app_name>maintenances</app_name>
+    </query> -->
+
+    <query>
+        <title>Sales by produtcs</title>
+        <report_sql>with t as ( SELECT prod.name AS product_name, SUM(ol.quantity) AS total_qty, SUM(ol.total) AS total_price from default.sales_orderline ol  	INNER JOIN default.sales_order so ON so.id = ol.order_id  		AND so.status_id = (Select id from default.sales_orderstatus  where name = 'shipped')  		AND so.order_date between '#from_date$' and '#to_date$' 	INNER JOIN default.products_product prod ON prod.id = ol.product_id 	GROUP BY prod.name ) SELECT t.product_name AS product, t.total_qty AS sold_qty, t.total_price AS amount, t.total_price/t.total_qty AS average_price from t where t.total_qty !=0 order by -total_qty</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>5456498443</report_code>
+        <report_para>from_date:month,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales inquiries generated today</title>
+        <report_sql>SELECT   so.ordernum as Number,  part.name as Customer,  so.created_on as INQUIRY,stat.description as Status, so.total as Total from default.sales_order as so  INNER JOIN default.partners_partner as part ON so.customer_id = part.id INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id  INNER JOIN default.auditlog_auditlog as adt ON so.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'so_draft_created')  where adt.action_on between '#from_date$' and '#to_date$' order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>1234567815</report_code>
+        <report_para></report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales quotation generated today</title>
+        <report_sql>SELECT   so.ordernum as Number,   part.name as Customer,   so.created_on as INQUIRY,stat.description,  so.total as Total from default.sales_order as so   INNER JOIN default.partners_partner as part ON so.customer_id = part.id INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id  INNER JOIN default.auditlog_auditlog as adt ON so.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'so_quote_created') where adt.action_on between '#from_date$' and '#to_date$'  order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>654789321</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales quotation ordered today</title>
+        <report_sql>SELECT  so.ordernum as Number,  part.name as Customer,  so.order_date as order_date,  so.ship_date as ship_date, stat.description as status,  so.total as Total from default.sales_order as so  INNER JOIN default.partners_partner as part ON so.customer_id = part.id  INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id INNER JOIN default.auditlog_auditlog as aud ON so.id = aud.object_id where aud.action_id = (select id from default.auditlog_auditaction where name = 'so_order_created') and aud.action_on between '#from_date$' and '#to_date$' order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>789654213</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales orders pending invoice</title>
+        <report_sql>SELECT  so.ordernum as Number,  part.name as Customer,  so.order_date as order_date,  so.ship_date as ship_date,  so.total as Total    from default.sales_order as so    INNER JOIN default.partners_partner as part ON so.customer_id = part.id  INNER JOIN default.financial_invoice as inv ON inv.id in (select invoice_id from default.financial_transferorderinvoice where order_id = so.id) where inv.doc_type = 'cust_inv' and inv.invoice_status_id = (select id from default.financial_invoicestatus where name = 'draft') and inv.created_on between '#from_date$' and '#to_date$' order by -inv.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>678469321</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales orders due payment</title>
+        <report_sql>SELECT  so.ordernum as Number,  part.name as Customer,  so.order_date as order_date,  so.ship_date as ship_date,  so.total as Total   from default.sales_order as so   INNER JOIN default.partners_partner as part ON so.customer_id = part.id   INNER JOIN default.financial_invoice as inv ON inv.id in (select invoice_id from default.financial_transferorderinvoice where order_id = so.id)  where inv.doc_type = 'cust_inv' and inv.invoice_status_id = (select id from default.financial_invoicestatus where name = 'outstanding') and inv.created_on between '#from_date$' and '#to_date$' order by -inv.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>579684321</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales returns pending</title>
+        <report_sql>with t as ( SELECT so.id AS so_id, tos.id AS tos_id , tos.created_on As transfer_order_created_on  , tos.transfer_num AS transfer_number     from default.sales_orderline sol       LEFT JOIN default.sales_order so on so.id = sol.order_id      LEFT JOIN default.logistics_transferorderline tol ON tol.order_line_id = sol.id      LEFT JOIN default.logistics_transferorder tos ON tos.id = tol.transfer_id AND tos.transfer_type = 'so_return' and tos.status = 'draft' )  SELECT part.name, new_so.ordernum, t.transfer_number,new_so.order_date, new_so.ship_date,new_so.created_on, new_so.total  from t       LEFT JOIN default.sales_order new_so ON t.so_id = new_so.id      LEFT JOIN default.partners_partner as part ON part.id = new_so.customer_id      where t.tos_id IS NOT NULL  and t.transfer_order_created_on between '#from_date$' and '#to_date$'  GROUP BY new_so.id, part.name,t.transfer_number,new_so.order_date, new_so.ship_date,new_so.created_on,new_so.total,t.tos_id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>357951468</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales returns completed</title>
+        <report_sql>with t as ( SELECT so.id AS so_id, tos.id AS tos_id ,tos.created_on As transfer_order_created_on , tos.transfer_num AS transfer_number from default.sales_orderline sol        LEFT JOIN default.sales_order so on so.id = sol.order_id       LEFT JOIN default.logistics_transferorderline tol ON tol.order_line_id = sol.id       LEFT JOIN default.logistics_transferorder tos ON tos.id = tol.transfer_id AND tos.transfer_type = 'so_return' and tos.status = 'confirmed' )   SELECT part.name, new_so.ordernum,t.transfer_number, new_so.order_date, new_so.ship_date,new_so.created_on, new_so.total  from t        LEFT JOIN default.sales_order new_so ON t.so_id = new_so.id       LEFT JOIN default.partners_partner as part ON part.id = new_so.customer_id       where t.tos_id IS NOT NULL  and t.transfer_order_created_on between '#from_date$' and '#to_date$'   GROUP BY new_so.id, part.name,t.transfer_number,new_so.order_date, new_so.ship_date,new_so.created_on,new_so.total,t.tos_id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>841235798</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales quotation pending</title>
+        <report_sql>SELECT    so.ordernum as Number,   part.name as Customer,   so.created_on as INQUIRY, stat.description as status,  so.total as Total from default.sales_order as so   INNER JOIN default.partners_partner as part ON so.customer_id = part.id INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id  INNER JOIN default.auditlog_auditlog as adt ON so.id = adt.object_id and adt.action_id = (select id from default.auditlog_auditaction where name = 'so_quote_created') where  adt.action_on between '#from_date$' and '#to_date$' and so.type = 'quotation' order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>3489403215</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales quotation expired or cancelled</title>
+        <report_sql>SELECT  so.ordernum as Number, part.name as Customer, so.created_on as INQUIRY_date, so.expiry_date as Expiry_date, stat.description as status, so.total as Total from default.sales_order as so INNER JOIN default.partners_partner as part ON so.customer_id = part.id  INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id where (so.status_id = (select id from default.sales_orderstatus where name = 'cancel') or so.expiry_date between  '#from_date$' and '#to_date$') and so.type= 'quotation'</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>6480167984</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales orders not shipped</title>
+        <report_sql>SELECT  so.ordernum as Number,  part.name as Customer,  so.order_date as order_date,  so.ship_date as ship_date, stat.description as status,  so.total as Total   from default.sales_order as so    INNER JOIN default.partners_partner as part ON so.customer_id = part.id    INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id   INNER JOIN default.auditlog_auditlog as aud ON so.id = aud.object_id   where aud.action_id = (select id from default.auditlog_auditaction where name = 'so_order_created') and so.type = 'sale' and not (stat.name = 'shipped') and aud.action_on  between '#from_date$' and '#to_date$' order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>0123456789</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales orders not invoiced</title>
+        <report_sql>SELECT   so.ordernum as Number,    part.name as Customer,    so.order_date as order_date,    so.ship_date as ship_date, stat.description as Status,    so.total as Total   from default.partners_partner as part  INNER JOIN default.sales_order as so  ON so.customer_id = part.id   INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id   where so.type = 'sale' and so.id not in(select order_id from default.financial_invoiceline where order_id is not NULL) and so.created_on between '#from_date$' and '#to_date$' GROUP BY so.ordernum,part.name,so.order_date,so.ship_date,stat.description,so.total,so.id order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>8743591010</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Shipped sales orders</title>
+        <report_sql>SELECT    so.ordernum as Number,   part.name as Customer,   so.order_date as order_date,   so.ship_date as ship_date,  stat.description as status,   so.total as Total from default.sales_order as so   INNER JOIN default.partners_partner as part ON so.customer_id = part.id   INNER JOIN default.sales_orderstatus as stat ON stat.id = so.status_id  INNER JOIN default.auditlog_auditlog as aud ON so.id = aud.object_id where aud.action_id = (select id from default.auditlog_auditaction where name = 'so_order_shipped') and so.type = 'sale' and aud.action_on between '#from_date$' and '#to_date$'  order by -so.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>5756873654</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Sales order overdue payment</title>
+        <report_sql>SELECT  so.ordernum as Number,   part.name as Customer,   so.order_date as order_date,   so.ship_date as ship_date, inv.due_date as due_date, stat.description as status,  so.total as Total    from default.sales_order as so    INNER JOIN default.partners_partner as part ON so.customer_id = part.id    INNER JOIN default.sales_orderstatus as stat ON stat.id = so.id  INNER JOIN default.financial_invoice as inv ON inv.id in (select invoice_id from default.financial_transferorderinvoice where order_id = so.id)   where inv.doc_type = 'cust_inv' and inv.invoice_status_id = (select id from default.financial_invoicestatus where name = 'outstanding') and inv.due_date between '#from_date$' and '#to_date$' order by -inv.id</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>0321549361</report_code>
+        <report_para>from_date:today,to_date:today</report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Product by sub category</title>
+        <report_sql>SELECT cat.name AS sub_category, count(prod.id) AS product FROM default.products_internalcategory as  cat          LEFT JOIN default.products_product AS prod ON cat.id = prod.internal_cat_id          WHERE cat.parent_id is not null GROUP BY sub_category ORDER BY -count(prod.id)</report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>prod_cat</report_code>
+        <report_para></report_para>
+        <url></url>
+        <app_name>sales</app_name>
+    </query>
+
+    <query>
+        <title>Current Leaves</title>
+        <report_sql><![CDATA[ (select 'Today' as "WHEN", pl.name as "Name",plh.days as "Days",plh.start_date as "Starts",plh.end_date as "Ends",plh.description as "Description",plh.status as "Status",plh.created_on as "Applied On"   from default.production_labourholiday plh inner join default.production_labour pl on pl.id = plh.worker_id  where plh.start_date >= now() and plh.start_date <= now() + INTERVAL '1DAY' Union select 'Tomorrow' as "WHEN",pl.name,plh.days,plh.start_date,plh.end_date,plh.description,plh.status,plh.created_on  from default.production_labourholiday plh inner join default.production_labour pl on pl.id = plh.worker_id  where plh.start_date >= now() + INTERVAL '1DAY' and plh.start_date <= now() + INTERVAL '2DAY') order by "Starts" as c]]></report_sql>
+        <is_active>True</is_active>
+        <descr></descr>
+        <report_code>7318954001</report_code>
+        <report_para></report_para>
+        <url></url>
+        <app_name>hrm</app_name>
+    </query>
+
+</DMI>

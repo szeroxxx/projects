@@ -1,0 +1,133 @@
+{% load widget_tweaks %}
+<style>
+.valid {
+  color: green;
+}
+
+.valid:before {
+  position: relative;
+  content: "✔";
+}
+
+.invalid {
+  color: #c66c6c;
+}
+
+.invalid:before {
+  position: relative;
+  content: "✖";
+}
+</style>
+<div class ="modal-body  details-body">
+    <form id="frmUser" action="/accounts/user/0/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label required for="id_first_name" class="control-label col-sm-3 required">First name</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_first_name" name="first_name" type="text" value="{% if first_name != None %}{{first_name}}{% endif %}" placeholder="Enter first name" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_last_name" class="control-label col-sm-3 required">Last name</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_last_name" name="last_name" type="text" value="{% if last_name != None %}{{last_name}}{% endif %}" placeholder="Enter last name" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required email for="id_email" class="control-label col-sm-3 required">Email (Username)</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_email" style="margin-bottom:5px;" name="email" type="text" value="{% if email != None %}{{email}}{% endif %}" placeholder="Enter email" required data-rule-email="true"/>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label required for="id_group" class="control-label col-sm-3 required">Role</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="id_group" name="group" type="text" value="[{{user_role_obj}}]" required/>
+                    </div>
+                    <span id="id_group" style="display: none;">{{user_role_obj}}</span>
+                </div>
+                <div class="form-group">
+                    <label for="ip_restriction" class="control-label col-sm-3">IP Restriction
+                        <span style="float:right;color:#4c81d2;margin-top: 9px;" class="icon-question fa-1" aria-hidden="true" title="Check if IP based login restriction should be applied."></span>
+                    </label>
+                    <div class="col-sm-9">
+                        <input id="id_ip_restriction" class="magic-checkbox" name="ip_restriction" type="checkbox" {% if ip_restriction %}checked="checked"{% endif%}/>
+                        <label for="id_ip_restriction"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="active" class="control-label col-sm-3 ">Active</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" class="checkbox-margin magic-checkbox" id="id_active" name="active" {% if active == True %}checked{% endif%}>
+                        <label for="id_active"></label>
+                    </div>
+                </div>
+                <div class="form-group"  id="id_change_password_field">
+                    <label class="col-sm-3"></label>
+                    <div class="col-sm-9">
+                        <a id="id_change_password" name="change_password" class="link">Change password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+    <div id="msg"></div>
+</div>
+<div class="modal-footer details-footer">
+    <button type="button" class="btn"
+        ng-click="onEditLink('/b/iframe_index/#/auditlog/logs/userprofile/{{user_id}}','History - {{first_name}}', null, false, -1)"
+        title="View history"><i class="icon-history"></i></button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true" id="btnClose">Close</button>
+    <button class="btn btn-primary" ng-click="saveUser($event)" ng-disabled="btnDisabled">Save</button>
+</div>
+
+
+<div id="passwordChangeModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document"  style="width: 26%">
+    <div class="modal-content">
+        <div class="modal-header" style="padding: 8px 10px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="changepasswordModalLabel" ></h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <form id="frmchangedpassword" action="" role="form" class="form-horizontal" >
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="changepassword" id="changepassword_form" class="control-label col-sm-5 required" style="padding-left: 8px;" ></label>
+                    <div class="col-sm-7" style="padding-right: 10px; right: 10px">
+                        <input type="password" class="form-control"  id="changepassword" name="changepassword" ng-click="newPassword($event);" data-rule-equalto="#changepassword"   required/>
+                        <div id="validate_message" style="margin-top: 10px;">
+                            <h5>Your Password must meet the following requirements:</h5>
+                            <p id="validate_character_length" class="invalid">&nbsp;&nbsp;At least 8 characters</b></p>
+                            <p id="validate_capital_letter" class="invalid">&nbsp;&nbsp;At least one capital letter</p>
+                            <p id="validate_small_letter" class="invalid">&nbsp;&nbsp;At least one small letter</p>
+                            <p id="validate_digit" class="invalid">&nbsp;&nbsp;At least one digit</p>
+                            <p id="validate_special_character" class="invalid">&nbsp;&nbsp;At least one special character</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmchangepassword" id="confimrchangedpassword_form" class="control-label col-sm-5 required" style="padding-left: 8px;" ></label>
+                    <div class="col-sm-7" style="padding-right: 10px; right: 10px">
+                        <input type="password" class="form-control"  id="confirmchangepassword" data-rule-equalto="#changepassword" required />
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal"  aria-hidden="true">Cancel</button>
+            <button class="btn btn-primary" id="changePass" ng-click="changePass($event);" ng-disabled="btnDisabled">Update password</button>
+            <button class="btn btn-primary" id="passwordSave" style="display: none" ng-disabled="btnDisabled">Save</button>
+         </div>
+        </div>
+    </div>
+</div>

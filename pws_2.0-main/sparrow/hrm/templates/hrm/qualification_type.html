@@ -1,0 +1,32 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% load app_filters %}
+
+<div class="modal-body details-body" id='OperationModel'>
+    <form id="qualificationTypeForm" action="/hrm/qualification_type_save/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">
+    {% csrf_token %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$dismiss()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" ng-bind="qualificationMasterModelTitle" style="margin-left: -10px"></h4>
+        </div>
+        <div  class="modal-body">
+            <div class="row">
+                 <span id="qualificationId" style="display: none;"></span>
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_name" class="control-label col-sm-3 required">Name</label>
+                        <div class="col-sm-9">
+                            <input  class="form-control" id="id_name" maxlength="200" name="name" type="text"  data-rule-required="true" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button"  class="btn"  data-dismiss="modal" aria-label="Close" ng-click="$dismiss()">Close</button>
+            <button class="btn btn-primary" ng-click="saveQualificationType($event);"  ng-disabled="btnDisabled">Save</button>
+        </div>
+    </form>
+</div>

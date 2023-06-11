@@ -1,0 +1,10 @@
+<template>
+    <name>cust_payment_reminder</name>
+    <description>Send mail to the customer, reminder of payment due date.</description>
+    <subject>Payment due date {{ due_date }}</subject>
+    <html_content>
+        <![CDATA[
+<h1>{{ invoice_num }}</h1>
+]]>
+    </html_content>
+</template>

@@ -1,0 +1,148 @@
+<style>
+.cursor{
+    cursor: not-allowed;
+}
+.breakword{
+    overflow-wrap: break-word;
+}
+</style>
+
+<div class="modal-body details-body">
+        <form
+            id="frmSaveExceptionProblem"
+            method="POST"
+            role="form"
+            class="form-horizontal"
+            enctype="multipart/form-data"
+        >
+            <div class="container">
+                <div class="form-group">
+                    <label for="id_qualityapp_id" class="control-label col-sm-3">qualityapp ID :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_qualityapp_id"
+                        name="qualityapp_id"
+                        type="text"
+                        value="{{order_exception.order__order_number}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_order_number" class="control-label col-sm-3">Order number :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_order_number"
+                        name="order_number"
+                        type="text"
+                        value="{{order_exception.order__customer_order_nr}}"
+
+                        required
+                        readonly
+                    />
+
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_order_date" class="control-label col-sm-3">Order date :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_order_date"
+                        name="order_date"
+                        type="text"
+                        value="{{order_exception.order__order_date}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_order_status" class="control-label col-sm-3">Order status :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_order_status"
+                        name="order_status"
+                        type="text"
+                        value="{{order_exception.order_status}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_pre_defined_problem" class="control-label col-sm-3">Pre-defined problem :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_pre_defined_problem"
+                        name="pre_defined_problem"
+                        type="text"
+                        value="{{order_exception.pre_define_problem__code}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                {% if order_exception.pre_define_problem__code == "Internal Exception" %}
+                <div class="form-group">
+                    <label for="id_internal_remark" class="control-label col-sm-3">Internal remark :</label>
+                    <div class="col-sm-6">
+                    <textarea
+                        class="form-control"
+                        id="id_internal_remark"
+                        name="internal_remark"
+                        type="text"
+                        value="{{order_exception.internal_remark}}"
+                        required
+                        readonly
+                    >{{order_exception.internal_remark}}</textarea>
+                    </div>
+                </div>
+                <br>
+                {% endif %}
+                 {% if upload_image %}
+                 <div class="form-group" id="upload_image">
+                    <label for="id_upload_image" class="control-label col-sm-3" id="upload_image_label">Exception file :</label>
+                    <div class="col-sm-6 breakword">
+                        {{upload_image.name}}
+                    </div>
+                    <div class="col-sm-2">
+                        <a onclick ="fileDownload('{{upload_image.uid}}')">Download</a>
+                    </div>
+                </div>
+                <br>
+                {% endif %}
+                {% if si_file %}
+                <div class="form-group" id="si_file">
+                    <label for="id_si_file" class="control-label col-sm-3" id="si_file_label">SI file :</label>
+                    <div class="col-sm-6 breakword">
+                            {{si_file.name}}
+                    </div>
+                    <div class="col-sm-2">
+                        <a onclick ="fileDownload('{{si_file.uid}}')">Download</a>
+                    </div>
+                </div>
+                {% endif %}
+                <input class="form-control" id="id_order_exception"  name="order_exception" type="hidden" required/>
+
+            </div>
+        </form>
+      </div>
+
+<script>
+function fileDownload(id) {
+        var model ="order_attachment"
+        var app = "qualityapp"
+        window.open("/attachment/dwn_attachment/?uid=" +id +"&model=" +model +"&app=" +app,"_parent");
+}
+</script>

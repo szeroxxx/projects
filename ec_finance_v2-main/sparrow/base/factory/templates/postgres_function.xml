@@ -1,0 +1,257 @@
+<Function>
+    <query>
+        <name>count_mo_inventory_data</name>
+        <sql><![CDATA[
+            CREATE OR REPLACE FUNCTION default.count_mo_inventory_data(
+                paging_pagesize integer DEFAULT NULL::integer,
+                paging_pagenumber integer DEFAULT NULL::integer,
+                paging_columnfilterexpression text DEFAULT NULL::text,
+                paging_sortexpression text DEFAULT NULL::text)
+                RETURNS refcursor
+                LANGUAGE 'plpgsql'
+
+                COST 100
+                VOLATILE 
+            AS $BODY$
+            DECLARE 
+                     PageNumber BIGINT;
+                     SQL refcursor; 
+                     Paging_PageFilterExpression VARCHAR; 
+            BEGIN 
+             
+             IF Paging_ColumnFilterExpression IS NULL THEN
+              Paging_ColumnFilterExpression := ' ';
+             ELSE
+              Paging_ColumnFilterExpression := ' AND ' || Paging_ColumnFilterExpression;
+             END IF; 
+             
+             IF paging_sortexpression IS NULL THEN
+              paging_sortexpression := 'products_product.id'; 
+             END IF;  
+             IF (paging_pagesize IS NOT NULL AND paging_pagenumber IS NOT NULL) THEN
+              PageNumber := (Paging_PageSize * (Paging_PageNumber-1)); 
+             END IF;     
+             
+             SQL :=
+            '(
+            select count(*) From(SELECT logistics_transferorderline.product_id, products_product.id,products_product.name as Product_name, products_manufacturer.name as manufacturer, 
+            logistics_transferorderline.is_scanned,production_mfg_order.status, production_mfg_order.mfg_order_num,production_mfg_order.source_doc,logistics_transferorderline.supplier_sku, 
+            logistics_transferorderline.unit_price, logistics_transferorderline.purchase_qty, logistics_transferorderline.discount, logistics_transferorderline.total, 
+            partners_partner.name as supplier ,SUM(production_mfg_order_parts.prod_qty) AS total_prod_qty 
+            FROM default.logistics_transferorderline 
+            INNER JOIN default.logistics_transferorder ON (logistics_transferorderline.transfer_id = logistics_transferorder.id) 
+            INNER JOIN default.production_mfg_order ON (logistics_transferorder.mfg_order_id = production_mfg_order.id)
+            INNER JOIN default.products_product ON (logistics_transferorderline.product_id = products_product.id) 
+            LEFT OUTER JOIN default.products_manufacturer ON (products_product.manufacturer_id = products_manufacturer.id)  
+            LEFT OUTER JOIN default.partners_partner ON (logistics_transferorder.partner_id = partners_partner.id) 
+            INNER JOIN default.production_mfg_order_parts ON  (logistics_transferorder.mfg_order_id = production_mfg_order_parts.mfg_order_id)
+            WHERE((NOT production_mfg_order.sales_order_id IS NULL)'||Paging_ColumnFilterExpression||')
+            GROUP BY logistics_transferorderline.product_id,products_product.id,products_product.name, products_manufacturer.name ,logistics_transferorderline.unit_price, logistics_transferorderline.purchase_qty, logistics_transferorderline.discount,logistics_transferorderline.total, partners_partner.name  ,logistics_transferorderline.supplier_sku,logistics_transferorderline.is_scanned, production_mfg_order.source_doc,production_mfg_order.status,production_mfg_order.mfg_order_num)as count
+            )';
+            IF (paging_pagesize IS NOT NULL AND paging_pagenumber IS NOT NULL) THEN  
+                SQL:= SQL || 'LIMIT '||Paging_PageSize||' OFFSET '|| PageNumber;
+            END IF; 
+             
+             RETURN  SQL;
+             EXCEPTION WHEN OTHERS THEN 
+             RAISE;
+            END;
+            $BODY$;
+
+            ALTER FUNCTION default.count_mo_inventory_data(integer, integer, text, text)
+                OWNER TO postgres;
+            ]]>
+            </sql>
+        
+    </query>
+
+    <query>
+        <name>get_low_stock_items_by_reorder_level</name>
+        <sql><![CDATA[ 
+            CREATE OR REPLACE FUNCTION default.get_low_stock_items_by_reorder_level(
+                    paging_pagesize integer DEFAULT NULL::integer,
+                    paging_pagenumber integer DEFAULT NULL::integer,
+                    paging_columnfilterexpression text DEFAULT NULL::text,
+                    paging_sortexpression text DEFAULT NULL::text)
+                    RETURNS SETOF refcursor 
+                    LANGUAGE 'plpgsql'
+
+                    COST 100
+                    VOLATILE 
+                    ROWS 1000
+                AS $BODY$
+                DECLARE 
+                         PageNumber BIGINT;
+                         SQL refcursor; 
+                         Paging_PageFilterExpression VARCHAR; 
+                DECLARE
+                         SQLCOUNT refcursor;
+
+                BEGIN 
+                 IF Paging_ColumnFilterExpression IS NULL THEN
+                  Paging_ColumnFilterExpression := ' ';
+                 ELSE
+                  Paging_ColumnFilterExpression := ' AND ' || Paging_ColumnFilterExpression;
+                 END IF; 
+                 
+                 IF paging_sortexpression IS NULL THEN
+                  paging_sortexpression := 'prod.id'; 
+                 END IF;  
+                 IF (paging_pagesize IS NOT NULL AND paging_pagenumber IS NOT NULL) THEN
+                  PageNumber := (Paging_PageSize * (Paging_PageNumber-1)); 
+                 END IF;     
+                 
+                 SQL :=
+                '(
+                SELECT  prod.name as Product, prod.id as Id, manufacturer.name as Manufacturer ,prod.internal_ref as Article_number,
+                cat.name as category ,(stock_status.stock_on_hand - stock_status.stock_reserved) as Stock, prod.reorder_level as Reorder_level,
+                three_month_usage.qty as Three_month_usage, six_month_usage.qty as Six_month_usage
+                FROM default.products_product prod
+                LEFT JOIN default.products_internalcategory cat ON cat.id = prod.internal_cat_id
+                LEFT JOIN default.products_manufacturer manufacturer ON manufacturer.id = prod.manufacturer_id
+                INNER JOIN  default.inventory_stockstatus stock_status ON stock_status.product_id = prod.id
+                LEFT JOIN (select mfg_part.part_id as prodid,sum(mfg_part.prod_qty) as qty
+                from default.production_Mfg_order_parts mfg_part
+                left join default.production_Mfg_order mfg on mfg.id = mfg_part.mfg_order_id
+                WHERE mfg.created_on > CURRENT_DATE - INTERVAL ''6 months''  group by mfg_part.part_id)
+                six_month_usage ON six_month_usage.prodid = prod.id
+                LEFT JOIN (select mfg_part.part_id as prodid,sum(mfg_part.prod_qty) as qty
+                from default.production_Mfg_order_parts mfg_part
+                left join default.production_Mfg_order mfg on mfg.id = mfg_part.mfg_order_id
+                WHERE mfg.created_on > CURRENT_DATE - INTERVAL ''3 months''  group by mfg_part.part_id)
+                three_month_usage ON  three_month_usage.prodid = prod.id
+                WHERE ((prod.reorder_level >= (stock_status.stock_on_hand- stock_status.stock_reserved)and prod.reorder_level > 0)'||
+                Paging_ColumnFilterExpression||')
+                GROUP BY prod.name, prod.id, manufacturer.name  ,prod.internal_ref ,
+                cat.name ,stock_status.stock_on_hand,stock_status.stock_reserved, prod.reorder_level,six_month_usage.qty 
+                ,three_month_usage.qty  ORDER BY '||paging_sortexpression||'
+                )';
+
+                  IF (paging_pagesize IS NOT NULL AND paging_pagenumber IS NOT NULL) THEN  
+                            SQL:= SQL || ' LIMIT '||paging_pageSize||' OFFSET '|| paging_pagenumber;
+
+                  END IF; 
+
+                 RETURN NEXT SQL;
+                 SQLCOUNT:='select count(*) from(
+                SELECT  prod.name as Product, prod.id as Id, manufacturer.name as Manufacturer ,prod.internal_ref as Article_number,
+                cat.name as category ,(stock_status.stock_on_hand - stock_status.stock_reserved) as Stock, prod.reorder_level as Reorder_level,
+                three_month_usage.qty as Three_month_usage, six_month_usage.qty as Six_month_usage
+                FROM default.products_product prod
+                LEFT JOIN default.products_internalcategory cat ON cat.id = prod.internal_cat_id
+                LEFT JOIN default.products_manufacturer manufacturer ON manufacturer.id = prod.manufacturer_id
+                INNER JOIN default.inventory_stockstatus stock_status ON stock_status.product_id = prod.id
+                LEFT JOIN (select mfg_part.part_id as prodid,sum(mfg_part.prod_qty) as qty
+                from default.production_Mfg_order_parts mfg_part
+                left join default.production_Mfg_order mfg on mfg.id = mfg_part.mfg_order_id
+                WHERE mfg.created_on > CURRENT_DATE - INTERVAL ''6 months''  group by mfg_part.part_id)
+                six_month_usage ON six_month_usage.prodid = prod.id
+                LEFT JOIN (select mfg_part.part_id as prodid,sum(mfg_part.prod_qty) as qty
+                from default.production_Mfg_order_parts mfg_part
+                left join default.production_Mfg_order mfg on mfg.id = mfg_part.mfg_order_id
+                WHERE mfg.created_on > CURRENT_DATE - INTERVAL ''3 months''  group by mfg_part.part_id)
+                three_month_usage ON  three_month_usage.prodid = prod.id
+                WHERE prod.reorder_level >= (stock_status.stock_on_hand- stock_status.stock_reserved)and prod.reorder_level > 0'||
+                Paging_ColumnFilterExpression||') as count';
+                 RETURN  NEXT SQLCOUNT;
+                 RETURN;
+                 EXCEPTION WHEN OTHERS THEN 
+                 RAISE;
+                END;
+                $BODY$;
+
+                ALTER FUNCTION default.get_low_stock_items_by_reorder_level(integer, integer, text, text)
+                    OWNER TO postgres;
+            ]]>
+        </sql>
+    </query>
+
+    <query>
+        <name>mo_inventory_data</name>
+        <sql><![CDATA[ 
+            CREATE OR REPLACE FUNCTION default.mo_inventory_data(
+                paging_pagesize integer DEFAULT NULL::integer,
+                paging_pagenumber integer DEFAULT NULL::integer,
+                paging_columnfilterexpression text DEFAULT NULL::text,
+                paging_sortexpression text DEFAULT NULL::text)
+                RETURNS SETOF refcursor 
+                LANGUAGE 'plpgsql'
+
+                COST 100
+                VOLATILE 
+                ROWS 1000
+            AS $BODY$
+            DECLARE 
+                     PageNumber BIGINT;
+                     SQL refcursor; 
+                     Paging_PageFilterExpression VARCHAR; 
+            DECLARE
+                     SQLCOUNT refcursor;
+            BEGIN 
+             
+             IF Paging_ColumnFilterExpression IS NULL THEN
+              Paging_ColumnFilterExpression := ' ';
+             ELSE
+              Paging_ColumnFilterExpression := ' AND ' || Paging_ColumnFilterExpression;
+             END IF; 
+             
+             IF paging_sortexpression IS NULL THEN
+              paging_sortexpression := 'products_product.id'; 
+             END IF;  
+             IF (paging_pagesize IS NOT NULL AND paging_pagenumber IS NOT NULL) THEN
+              PageNumber := (Paging_PageSize * (Paging_PageNumber-1)); 
+             END IF;     
+             
+             SQL :=
+            '(
+            SELECT logistics_transferorderline.product_id, products_product.id,products_product.name as Product_name, products_manufacturer.name as manufacturer, 
+            logistics_transferorderline.is_scanned,production_mfg_order.status,production_mfg_order.mfg_order_num, production_mfg_order.source_doc,logistics_transferorderline.supplier_sku, 
+            logistics_transferorderline.unit_price, logistics_transferorderline.purchase_qty, logistics_transferorderline.discount, logistics_transferorderline.total, 
+            partners_partner.name as supplier ,SUM(production_mfg_order_parts.prod_qty) AS total_prod_qty 
+            FROM default.logistics_transferorderline 
+            INNER JOIN default.logistics_transferorder ON (logistics_transferorderline.transfer_id = logistics_transferorder.id) 
+            INNER JOIN default.production_mfg_order ON (logistics_transferorder.mfg_order_id = production_mfg_order.id)
+            INNER JOIN default.products_product ON (logistics_transferorderline.product_id = products_product.id) 
+            LEFT OUTER JOIN default.products_manufacturer ON (products_product.manufacturer_id = products_manufacturer.id)  
+            LEFT OUTER JOIN default.partners_partner ON (logistics_transferorder.partner_id = partners_partner.id) 
+            INNER JOIN default.production_mfg_order_parts ON  (logistics_transferorder.mfg_order_id = production_mfg_order_parts.mfg_order_id)
+            WHERE((NOT production_mfg_order.sales_order_id IS NULL)'||Paging_ColumnFilterExpression||')
+            GROUP BY logistics_transferorderline.product_id,products_product.id,products_product.name, products_manufacturer.name ,logistics_transferorderline.unit_price, logistics_transferorderline.purchase_qty, logistics_transferorderline.discount,logistics_transferorderline.total, partners_partner.name  ,logistics_transferorderline.supplier_sku,logistics_transferorderline.is_scanned, production_mfg_order.source_doc,production_mfg_order.status,production_mfg_order.mfg_order_num
+            ORDER BY '||paging_sortexpression||'
+             )';
+              IF (paging_pagesize IS NOT NULL AND paging_pagenumber IS NOT NULL) THEN  
+                SQL:= SQL || 'LIMIT '||Paging_PageSize||' OFFSET '|| paging_pagenumber;
+              END IF; 
+             
+            RETURN NEXT SQL;
+             SQLCOUNT :=
+            '(
+            select count(*) From(SELECT logistics_transferorderline.product_id, products_product.id,products_product.name as Product_name, products_manufacturer.name as manufacturer, 
+            logistics_transferorderline.is_scanned,production_mfg_order.status, production_mfg_order.mfg_order_num,production_mfg_order.source_doc,logistics_transferorderline.supplier_sku, 
+            logistics_transferorderline.unit_price, logistics_transferorderline.purchase_qty, logistics_transferorderline.discount, logistics_transferorderline.total, 
+            partners_partner.name as supplier ,SUM(production_mfg_order_parts.prod_qty) AS total_prod_qty 
+            FROM default.logistics_transferorderline 
+            INNER JOIN default.logistics_transferorder ON (logistics_transferorderline.transfer_id = logistics_transferorder.id) 
+            INNER JOIN default.production_mfg_order ON (logistics_transferorder.mfg_order_id = production_mfg_order.id)
+            INNER JOIN default.products_product ON (logistics_transferorderline.product_id = products_product.id) 
+            LEFT OUTER JOIN default.products_manufacturer ON (products_product.manufacturer_id = products_manufacturer.id)  
+            LEFT OUTER JOIN default.partners_partner ON (logistics_transferorder.partner_id = partners_partner.id) 
+            INNER JOIN default.production_mfg_order_parts ON  (logistics_transferorder.mfg_order_id = production_mfg_order_parts.mfg_order_id)
+            WHERE((NOT production_mfg_order.sales_order_id IS NULL)'||Paging_ColumnFilterExpression||')
+            GROUP BY logistics_transferorderline.product_id,products_product.id,products_product.name, products_manufacturer.name ,logistics_transferorderline.unit_price, logistics_transferorderline.purchase_qty, logistics_transferorderline.discount,logistics_transferorderline.total, partners_partner.name  ,logistics_transferorderline.supplier_sku,logistics_transferorderline.is_scanned, production_mfg_order.source_doc,production_mfg_order.status,production_mfg_order.mfg_order_num)as count
+            )';
+            RETURN  NEXT SQLCOUNT;
+            RETURN;
+            EXCEPTION WHEN OTHERS THEN 
+            RAISE;
+            END;
+            $BODY$;
+
+            ALTER FUNCTION default.mo_inventory_data(integer, integer, text, text)
+                OWNER TO postgres;
+        ]]>
+        </sql>
+        
+    </query>
+
+</Function>

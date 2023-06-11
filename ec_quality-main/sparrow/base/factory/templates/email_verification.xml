@@ -1,0 +1,18 @@
+<template>
+    <name>email_verification</name>
+    <description>A template will be used to send notification to verify email address.</description>
+    <subject>Sparrow - Verify your email for notifications</subject>
+    <html_content>
+        <![CDATA[
+<h1 style="font-weight:normal;">Confirm Your Email </h1>
+
+<p> Hey {{user_name}},</p>
+
+<p>We received a request to set your email.</p>
+
+<p>This is your one time verification code.</p>
+
+<h2 style="font-weight:normal;">{{token}}</h2>
+]]>
+    </html_content>
+</template>

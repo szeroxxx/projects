@@ -1,0 +1,14 @@
+<div class="lst-container">
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+        <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port">
+  </div>
+</script>
+<script>
+  var data = { 'permissions': {{ permissions| safe}}};
+  orders_with_qta_reportsInit(data);
+</script>

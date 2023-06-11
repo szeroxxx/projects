@@ -1,0 +1,27 @@
+
+<!-- <style type="text/css">
+    .createDoc{
+        float: right;
+        margin-right: 2%;
+    }
+</style>
+<input type="button"  class="btn btn-primary btn-sm createDoc" value="Add document" ng-click="addDocument($event)" ng-disabled="btnModelDocumentDisable"></input>  -->
+
+<div class="lst-container">
+    <div class="tab-pane" id="attachments">
+        <ang-attachments app-name="base" model-name="base_attachment" entity-id="0" count-id="id_attachments_count"
+            source-doc=""> </ang-attachments>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+        <input type="button" class="btn btn-primary btn-sm" value="Add link" id="onAddLink"></input>
+        <input type="button" class="btn btn-primary btn-sm" value="Add document" id="onNewDocument" ng-click="onAdd($event);"></input>
+  </div>
+</script>
+
+<script type="text/javascript">
+    var data = {'permissions':{{permissions|safe}},'tag_list':{{tag_list|safe}} };
+    documentsInit(data);
+</script>

@@ -1,0 +1,98 @@
+<template>
+    <name>advance_invoice_mail</name>
+    <description>Send mail with invoice in order is with advance payment.</description>
+    <subject>Sparrow - Order confirmed</subject>
+    <html_content>
+        <![CDATA[
+<table border="0" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto; width: 700px;">
+<tbody>
+<tr height="16"></tr>
+<tr>
+<td>
+<table bgcolor="#364760" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width:332px;max-width:600px;border:1px solid #e0e0e0;border-bottom:0;border-top-left-radius:3px;border-top-right-radius:3px">
+<tbody>
+<tr>
+<td height="35px" colspan="3"></td>
+</tr>
+<tr>
+<td width="32px"></td>
+<td style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:24px;color:#ffffff;line-height:1.25;min-width:300px">Order confirmed (#{{ sale_order_number}})</td>
+<td width="32px"></td>
+</tr>
+<tr>
+<td height="18px" colspan="3"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table bgcolor="#FAFAFA" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width:332px;max-width:600px;border:1px solid #f0f0f0;border-bottom:1px solid #c0c0c0;border-top:0;border-bottom-left-radius:3px;border-bottom-right-radius:3px">
+<tbody>
+<tr height="16px">
+<td width="32px" rowspan="3"></td>
+<td></td>
+<td width="32px" rowspan="3"></td>
+</tr>
+<tr>
+<td>
+<table style="min-width:300px;font-family:Roboto-Regular,Helvetica,Arial;font-size:13px;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+									Dear customer,
+                                            <p>This is a confirmation of order {{sale_order_number}} placed on {{order_date|date:"d/m/Y"}}.</p>
+<p>We have prepared invoice #{{inv_number}} with {{payment_term}} . Kindly refer the attached invoice and make payment to process your order further.</p>
+</tr>
+<tr>
+<div style="width:50%;display:inline-block;">
+<h4>Shipping address</h4>
+										{% if shipping_address != None %}
+                                                <div>{{ shipping_address.partner.name }}</div>
+<div>{{ shipping_address.street }}</div>
+<div>{{ shipping_address.street2 }}</div>
+<div>{% if shipping_address.city != '' %}{{ shipping_address.city }},{% endif %}{% if shipping_address.state != None %}{{ shipping_address.state.name }},{% endif %}{{ shipping_address.country.name }}</div>
+										{% endif %}
+                                            </div>
+<div style="width:50%;display:inline-block;">
+<h4>Invoicing address</h4>
+										{% if invoice_address != None %}
+                                                <div>{{ invoice_address.partner.name }}</div>
+<div>{{ invoice_address.street }}</div>
+<div>{{ invoice_address.street2 }}</div>
+<div>{% if invoice_address.city != '' %}{{ invoice_address.city }},{% endif %}{% if invoice_address.state != None %}{{ invoice_address.state.name }},{% endif %}{{ invoice_address.country.name }}</div>
+										{% endif %}
+                                            </div>
+</tr>
+<tr>
+<p>If you have any question about your order, please contact us at {{company_contact_email}}.</p>
+</tr>
+<tr>
+<b>Regards,</b>
+<p>{{ company_name }}</p>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr height="20"></tr>
+<tr>
+<td>
+<table style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:10px;color:#666666;line-height:18px;padding-bottom:10px">
+<tbody>
+<tr>
+<td>You have received this email because you have subscribed email notification in Siralo.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+]]>
+    </html_content>
+</template>

@@ -1,0 +1,58 @@
+<style>
+    .modal-dialog {
+        width: 40%;
+    }
+</style>
+<div>
+    <form autocomplete="off">
+        <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1"
+            placeholder="Search..."></nit-advanced-searchbox>
+    </form>
+</div>
+
+<table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover">
+</table>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+        <button class="btn btn-primary btn-sm" id="btnAddNew"><u>A</u>dd new</button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+                    <li>
+                        <input type="button" class="btn-primary btn-sm" id="delete" value="D̲elete" ng-disabled="btnModelDeleteDisable" ng-click="onDelete($event);"></input>
+                        <input type="button" class="btn-primary btn-sm" id="btnEdit" value="E̲dit" ng-disabled="btnModelEditDisable"></input>
+                        <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnUserHistory"></input>
+                    </li>
+                </ul>
+        </div>
+  </div>
+</script>
+
+
+<div class="modal fade" id="add" role="dialog" aria-labelledby="title" data-backdrop="static" tabindex="0"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="title" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body" id="performance_index">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn-primary btn-sm" aria-hidden="true" ng-click="savePerformanceIndex($event);"
+                    ng-disabled="btnDisabled">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var data = { 'permissions': {{ permissions| safe}}};
+    performance_indexesInit(data);
+</script>

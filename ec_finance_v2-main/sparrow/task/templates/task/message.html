@@ -1,0 +1,145 @@
+<style>
+    .message{
+        overflow-y: auto;
+    }
+    #divscroll{
+        overflow: auto;
+        max-height:650px;
+    }
+    .breakword{
+        overflow-wrap: break-word;
+    }
+    .message_file{
+        border-top: 1px solid #ededed;
+    }
+    .file{
+        margin-top: 18px;
+    }
+    .file-download{
+        cursor:pointer;
+        color:#2a9f00;
+        font-size: 18px;
+    }
+    .file-img{
+        margin-top: 5px;
+    }
+
+</style>
+<div class="message" id="divscroll">
+    <input type="hidden" id="id_description1" value="{{task.task_description}}" />
+    <div id="id_description" class="message_box"></div>
+    <input type="hidden" id="id_unread_task" value="{{task.id}}" />
+    <div class="message_file" id="id_row">
+        <div class="form-group" class="message_file">
+            <div class="filetype">
+            </div>
+            <div class="col-sm-3 breakword">
+                <h5 id="id_file_view">{{task.file}}</h5>
+            </div>
+
+            <div class="col-sm-2 file">
+                <a onclick="fileDownload()"> <i class="icon-arrow-2-circle-down file-download" title="File download"></a></i>
+            </div>
+        </div>
+        <input type="hidden" id="id_file_view_" value="{{task.file}}"/>
+        <input type="hidden" id="id_file_download" value="{{task.uid}}"/>
+    </div>
+</div>
+<script>
+    var data = document.getElementById("id_description1").value;
+    document.getElementById("id_description").innerHTML = data;
+    var file = $("#id_file_view_").val()
+    if (file == "None") {
+         $("#id_row").hide()
+    }
+
+    function fileDownload() {
+        var uid = $("#id_file_download").val();
+        window.open(
+          "/attachment/dwn_attachment/?uid=" +
+            uid +
+            "&model=" +
+            "task_attachment" +
+            "&app=" +
+            "task",
+            "_blank"
+        );
+    }
+     var filename = {'file': '{{task.file}}',}
+     file_name = filename.file
+    if (file_name) {
+        if (file_name.endsWith(".png") || file_name.endsWith(".jpg") || file_name.endsWith(".jpeg")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/image.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".zip")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/zip.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".xls")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/excel.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".csv")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/csv.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".pdf")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/pdf.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".ppt")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/powerpoint.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".rar")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/rar.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".txt")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/txt.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else if (file_name.endsWith(".docx")) {
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/word.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+        else{
+            var image = '<div class="col-sm-1 file-img">\
+                     <img src="/static/task/js/images/file.svg" alt="B1277973.pdf" id="img_file_img" title="{{task.file}}" width="40"\
+                    height="40"><br><br>\
+                    </div>';
+            $('.filetype').append(image);
+        }
+
+    }
+
+
+</script>

@@ -1,0 +1,118 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+<style>
+.tab-data-content {
+padding-top: 0px;
+}
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody{
+    {% comment %} max-height: 630px !important; {% endcomment %}
+    max-height: 63.7vh !important;
+}
+</style>
+<div class="lst-container">
+    <div class="col-sx-3" id="selection_option" style="display:flex;">
+        <div class="form-group col-sm-2 ">
+            <h5 style="margin-bottom: 0;">Category</h5>
+            <div style="margin-top: 5px;">
+                <input class="form-control" name="cat" id="id_cat" type="text">
+            </div>
+        </div>
+        <div class="form-group col-sm-2">
+            <h5 style="margin-bottom: 0;">Product</h5>
+            <div style="margin-top: 5px;">
+                <input class="form-control" name="product" id="id_product" type="text">
+            </div>
+        </div>
+        <div class="form-group col-sm-2">
+            <h5 style="margin-bottom: 0;">Product group</h5>
+            <div style="margin-top: 5px;">
+                <input class="form-control" name="product_group" id="id_product_group" type="text">
+            </div>
+        </div>
+        <div class="form-group col-sm-2">
+            <h5 style="margin-bottom: 0;">Stock type</h5>
+            <div style="margin-top: 5px;">
+                <select class="form-control" id="id_Stock_status" name="status_type">
+                    <option value="">--Select--</option>
+                    <option value="ec_stock">EC stock </option>
+                    <option value="on_demand">On demand</option>
+                    <option value="special">Special</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group col-lg-2" style="width:230px;">
+            <h5 style="margin-bottom: 0;">Production date range</h5>
+            <div id="id_start_datepicker" class="form-control" style="cursor: pointer;border: 1px solid #ccc;margin-top: 5px;     width:210px;">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                 <span id="dates"></span> <b class="caret"></b>
+            </div>
+        </div>
+        <div id="row-theme" class="form-group col-sm-2" style="margin-top: 30px;">
+            <button type="button" class="btn btn-primary btn-sm" id="load_btn">Load</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btnExport" ng-click="onExport($event);" style="display: none;">Export</button>
+        </div>
+    </div>
+    <div class="pull-left" style="width: 100%;">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a class="show-tab" href="#listview">List view</a>
+            </li>
+            <li class="">
+                <a class="show-tab" href="#chartview">Chart view</a>
+            </li>
+        </ul>
+        <div class="tab-content tab-data-content">
+            <div class="tab-pane active" id="listview">
+                <div class="lst-container">
+                    <div id="gridCon" class="onLoad">
+                        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+                            class="row-border hover"></table>
+                    </div>
+                    <div id="gridCon1" style="display: none;" class="onButton">
+                        <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2"
+                            class="row-border hover"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="chartview">
+                <div class="lst-container">
+                    <div class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar">
+        <input type="button" class="btn btn-primary btn-sm" id="btnClose" style="display: none;" value="Back"></input>
+        <button type="button" class="btn btn-primary btn-sm" id="btndetailExport" ng-click="onExportDetails($event);" style="display: none;">Export</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    if($('#id_start_datepicker').length != 0){
+        function cb(start, end) {
+            if(start != '' && end != ''){
+                $('#id_start_datepicker span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            }
+        }
+        var startDate = moment().subtract(1, 'year').add(1,'day')
+        var endDate = moment()
+        $('#id_start_datepicker').daterangepicker({
+            startDate: startDate,
+            endDate : endDate,
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+               'This Year': [moment().startOf('year'), moment().endOf('year')],
+               'Last Year': [moment().subtract(1, 'year').add(1,'day'), moment()]
+            }
+        }, cb);
+        cb(startDate,endDate);
+    }
+</script>

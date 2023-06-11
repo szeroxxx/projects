@@ -1,0 +1,114 @@
+<style>
+    .select_label,
+    .date-label {
+        min-width: 80px !important;
+        width: auto !important;
+    }
+
+    .select_input,
+    .date-input {
+        margin-right: 25px;
+    }
+
+    .btn-all-lhe {
+        text-align: right;
+    }
+
+    .selection_option {
+        margin-top: 10px;
+    }
+
+    .selection_option-2 {
+        margin-bottom: 12px;
+        margin-left: 10px;
+    }
+
+    .message {
+        color: #a94442;
+        display: none;
+    }
+
+    .table-shift {
+        display: None;
+    }
+    .table-customer {
+        display: None;
+    }
+    .remarks span {
+        width: 225px;
+        max-height: 3.8em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+            -webkit-line-clamp: 3;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+    }
+</style>
+<div class="lst-container">
+    <div class="col-sx-3 selection_option">
+        <div class="col-md-12 col-sm-12 selection_option-2">
+            <div class="form-group">
+                <label required for="start" class="control-label col-sm-1 date-label">Select month and year :</label>
+                <div class="col-sm-2 input-append date date-range-input date-input" id="datepicker"
+                    data-date="{{today}}" data-date-format="yyyy-mm">
+                    <div style="display:flex;">
+                        <input class="form-control" autocomplete="off" type="text" name="date" id="start" value="{{today}}" required /><b
+                            class="caret" style="margin-left:-17px;margin-top: 13px;"></b>
+                        <span class="add-on"><i class="icon-th"></i></span><br>
+                    </div>
+                    <span class="message" id="id_start_message">This field is required.</span>
+                </div>
+                <label required for="id_select" class="control-label col-sm-1 select_label">Select
+                    :</label>
+                <div class="col-sm-2 select_input">
+                    <input ng-click="Select($event)" class="form-control" id="id_select" name="select" type="text"
+                        value="[{{2}}]" required />
+                    <span class="message" id="id_select_message">This field is required.</span>
+                </div>
+                <div class="pull-right btn-all-lhe">
+                    <div class="col-sm-14">
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="saveChanges" disabled>Save</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe"
+                            id="generatereport">L<u>o</u>ad</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnExportUserwise" disabled
+                            ng-click="onExportUserwise($event);">Ex̲port</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnExportShiftWise"
+                            disabled ng-click="onExportShiftWise($event);">Ex̲port</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnExportCustomerWise" disabled
+                            ng-click="onExportCustomerWise($event);">Ex̲port</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnAllDataExportUserwise" disabled
+                            ng-click="onAllDataExportUserwise($event);">Export all data</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnAllDataExportShiftWise"
+                            disabled ng-click="onAllDataExportShiftWise($event);">Export all data</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnAllDataExportCustomerWise" disabled
+                            ng-click="onAllDataExportCustomerWise($event);">Export all data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="gridCon_user" class="onLoad">
+    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover">
+    </table>
+</div>
+<div id="gridCon_shift" class="table-shift">
+    <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2" class="row-border hover">
+    </table>
+</div>
+<div id="gridCon_customer" class="table-customer">
+    <table datatable dt-options="dtOptions3" dt-columns="dtColumns3" dt-instance="dtInstance3" class="row-border hover">
+    </table>
+</div>
+<script>
+    var data = { 'permissions': {{ permissions| safe}}};
+    var user_efficiency_reportJs = user_efficiency_reportInit(data);
+    $("#datepicker").datepicker({
+        format: "yyyy-mm",
+        viewMode: "months",
+        minViewMode: "months"
+    });
+    setAutoLookup("id_select", "/lookups/select_user_efficiency_report/", "", true, false, false, null, 1);
+</script>

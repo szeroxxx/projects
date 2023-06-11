@@ -1,0 +1,648 @@
+<style>
+    #order_file_msg{
+        display: none;
+        color: #a94442;
+    }
+</style>
+{% if order_parameter %}
+<div class="modal-body details-body">
+    <form method="POST" role="form" enctype="multipart/form-data" action="/qualityapp/save_utility_place_order/{{company_id}}/{{company_user_id}}/" class="form-horizontal ng-pristine ng-valid" id="frmUtilityPlaceOrder">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label col-sm-4 required " for="order_number">Order number</label>
+                    <div class="col-sm-8">
+                        <input id="order_number" class="form-control required" name="order_number" value='' type="text" required>
+                    </div>
+                </div>
+                {% for parameter in order_parameter %}
+                    {% if parameter.order_screen_parameter__code == "cmb_layer" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="id_cmb_layer">Layer</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_layer" name="cmb_layer">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == 'cmb_service' %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 required" for="id_service_type" {% if parameter.is_compulsory == True %} required {% endif %}>Service type</label>
+                        <div class="col-sm-8">
+                            <select class="form-control required" id="id_service_type" name="service_type">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for service in services %}
+                                <option value="{{service.code}}" {% if parameter.default_value == service.code %} selected {% endif %}>{{service.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_delivery_format" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_delivery_format">Delivery Format</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_delivery_format" name="cmb_delivery_format">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_delivery_term" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_delivery_term">Delivery term</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_delivery_term" name="cmb_delivery_term">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_pcb_separation_method" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_pcb_separation_method">PCB Separation method</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_pcb_separation_method" name="cmb_pcb_separation_method">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_board_thickness" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_board_thickness">Board thickness</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_board_thickness" name="cmb_board_thickness">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_material_tg" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_material_tg">Material Tg</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_material_tg" name="cmb_material_tg">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_outer_layer_copper_foil" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_outer_layer_copper_foil">Outer layer copper foil</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_outer_layer_copper_foil" name="cmb_outer_layer_copper_foil">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_inner_layer_copper_foil" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_inner_layer_copper_foil">Inner layer copper foil</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_inner_layer_copper_foil" name="cmb_inner_layer_copper_foil">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_inner_layer_core_thickness" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_inner_layer_core_thickness">Inner layer core thickness</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_inner_layer_core_thickness" name="cmb_inner_layer_core_thickness">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_top_soldermask" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_top_solder_mask">Top soldermask</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_top_solder_mask" name="cmb_top_solder_mask">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_bottom_soldermask" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_bottom_solder_mask">Bottom soldermask</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_bottom_solder_mask" name="cmb_bottom_solder_mask">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_top_legend" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_top_legend">Top legend</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_top_legend" name="cmb_top_legend">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_bottom_legend" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_bottom_legend">Bottom legend</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_bottom_legend" name="cmb_bottom_legend">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_surface_finish" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_surface_finish">Surface finish</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_surface_finish" name="cmb_surface_finish">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_peelable_mask" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_peelable_mask">Peelable mask</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_peelable_mask" name="cmb_peelable_mask">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_carbon_contacts" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_carbon_contacts">Carbon contacts</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_carbon_contacts" name="cmb_carbon_contacts">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_edge_connector_bevelling" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_edge_connector_bevelling">Edge connector bevelling</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_edge_connector_bevelling" name="cmb_edge_connector_bevelling">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_top_heatsink_paste" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_top_heat_sink_paste">Top heatsink paste</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_top_heat_sink_paste" name="cmb_top_heat_sink_paste">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_bottom_heatsink_paste" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_bottom_heat_sink_paste">Bottom heatsink paste</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_bottom_heat_sink_paste" name="cmb_bottom_heat_sink_paste">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_via_filling_hole_plugging" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_via_filling_hole_plugging">Via filling/Hole plugging</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_via_filling_hole_plugging" name="cmb_via_filling_hole_plugging">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {%endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_prod_panelSize" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_prod_panel_size">Production Panel Size</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_prod_panel_size" name="cmb_prod_panel_size">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_DueTime" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_due_time">Due Time</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_due_time" name="cmb_due_time">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_RemovalNFPAllowed" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_removal_nfp_allowed">Removal NFP Allowed</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_removal_nfp_allowed" name="cmb_removal_nfp_allowed">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_HolePlugging" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_hole_plugging">Hole Plugging</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_hole_plugging" name="cmb_hole_plugging">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_Uviafilling" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_u_via_filling">Uvia filling</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_u_via_filling" name="cmb_u_via_filling">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_FAI" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_fai">FAI</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_fai" name="cmb_fai">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_VentingPattern" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_venting_pattern">Venting Pattern</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_venting_pattern" name="cmb_venting_pattern">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_engineer1" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_engineer_1">Engineer1</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_engineer_1" name="cmb_engineer_1">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}> {{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "cmb_engineer2" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %} " for="id_cmb_engineer_2">Engineer2</label>
+                        <div class="col-sm-8">
+                            <select class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" id="id_cmb_engineer_2" name="cmb_engineer_2">
+                                <option value="" {% if parameter.default_value == "None" %} selected {% endif %}>Select</option>
+                                {% for res in response %}
+                                {% if parameter.order_screen_parameter_id == res.parent_id %}
+                                <option value="{{res.code}}" {% if parameter.default_value == res.code %} selected {% endif %}>{{res.name}} </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_pcb_name" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4  {% if parameter.is_compulsory == True %} required {% endif %}" for="id_pcb_name">PCB Name</label>
+                        <div class="col-sm-8">
+                            <input id="id_pcb_name" class="form-control  {% if parameter.is_compulsory == True %} required {% endif %}" name="pcb_name" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="250">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_buildup_code" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="txt_buildup_code"> Buildup code</label>
+                        <div class="col-sm-8">
+                            <input id="txt_buildup_code" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_buildup_code" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_blind_buried_via_runs" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="blind_buried_via_runs"> Blind/Buried via runs</label>
+                        <div class="col-sm-8">
+                            <input id="blind_buried_via_runs" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_blind_buried_via_runs" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_edge_connector_gold_surface" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="edge_connector_gold_surface"> Edge connector gold surface mm2</label>
+                        <div class="col-sm-8">
+                            <input id="edge_connector_gold_surface" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_edge_connector_gold_surface" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_Toolnr" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}"
+                            for="tool_nr">Tool nr</label>
+                        <div class="col-sm-8">
+                            <input id="tool_nr" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_tool_nr" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_remarks" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="remarks">Remarks</label>
+                        <div class="col-sm-8">
+                            <textarea id="remarks" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_remarks">{% if parameter.default_value %}{{parameter.default_value}}{% endif %}</textarea>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_ToolSpec" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}"
+                            for="tool_spec">Tool Spec</label>
+                        <div class="col-sm-8">
+                            <input id="tool_spec" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_tool_spec" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_LogSpec" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="logistics_spec"> Logistics Spec</label>
+                        <div class="col-sm-8">
+                            <input id="logistics_spec" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_logistics_spec" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_ExtraCoupon" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="extra_coupon"> Extra Coupon</label>
+                        <div class="col-sm-8">
+                            <input id="extra_coupon" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="txt_extra_coupon" value='{% if parameter.default_value %}{{parameter.default_value}}{% endif %}' type="text" maxlength="100">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "txt_cam_remark" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="cam_remark">Remark for Internal CAM</label>
+                        <div class="col-sm-8">
+                            <textarea id="cam_remark" class="form-control {% if order.is_compulsory == True %} required {% endif %}"name="txt_cam_remark" maxlength="100">{% if parameter.default_value %}{{parameter.default_value}}{% endif %}</textarea>
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_include_assembly" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="chk_include_assembly">Include Assembly</label>
+                        <div class="col-sm-8">
+                            <input id="chk_include_assembly" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_include_assembly" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_top_stencil" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="is_top_stencil">Top Stencil</label>
+                        <div class="col-sm-8">
+                            <input id="is_top_stencil" class="{% if parameter.is_compulsory == True %} required {% endif %}"  {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_top_stencil" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_bottom_stencil" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="is_bottom_stencil">Bottom Stencil</label>
+                        <div class="col-sm-8">
+                            <input id="is_bottom_stencil" class="{% if parameter.is_compulsory == True %} required {% endif %}"  {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_bottom_stencil" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_special_buildup" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="is_special_buildup">Special buildup</label>
+                        <div class="col-sm-8">
+                            <input id="is_special_buildup" class="{% if parameter.is_compulsory == True %} required {% endif %}"  {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_special_buildup" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_IsImpedence" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="is_defined_impedance">Defined impedance</label>
+                        <div class="col-sm-8">
+                            <input id="is_defined_impedance" class="{% if parameter.is_compulsory == True %} required {% endif %}"  {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_defined_impedance" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_bare_board_testing" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="is_bare_board_testing">Bare Board Testing</label>
+                        <div class="col-sm-8">
+                            <input id="is_bare_board_testing" class="{% if parameter.is_compulsory == True %} required {% endif %}"  {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_bare_board_testing" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_ul_marking" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="ul_marking">UL marking</label>
+                        <div class="col-sm-8">
+                            <input id="ul_marking" class="{% if parameter.is_compulsory == True %} required {% endif %}"  {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_ul_marking" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_specific_marking" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="specific_marking">Specific marking</label>
+                        <div class="col-sm-8">
+                            <input id="specific_marking" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_specific_marking" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_pth_on_the_board_edge" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="pth_on_the_board_edge">PTH on the board edge</label>
+                        <div class="col-sm-8">
+                            <input id="pth_on_the_board_edge" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_pth_on_the_board_edge" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_round_edge_plating" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="round_edge_plating">Round-edge plating</label>
+                        <div class="col-sm-8">
+                            <input id="round_edge_plating" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_round_edge_plating" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_copper_upto_board_edge" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="copper_upto_board_edge">Copper up to board edge</label>
+                        <div class="col-sm-8">
+                            <input id="copper_upto_board_edge" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_copper_upto_board_edge" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_press-fit_holes" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="press_fit_holes">Press-fit holes</label>
+                        <div class="col-sm-8">
+                            <input id="press_fit_holes" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_press_fit_holes" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_chamfered_holes" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="chamfered_holes">Chamfered holes</label>
+                        <div class="col-sm-8">
+                            <input id="chamfered_holes" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_chamfered_holes" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_depth_routing" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="depth_routing">Depth routing</label>
+                        <div class="col-sm-8">
+                            <input id="depth_routing" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="is_chk_depth_routing" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_is_nda" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="id_chk_nda">NDA</label>
+                        <div class="col-sm-8">
+                            <input id="id_chk_nda" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_nda" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "chk_IsQta" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="id_is_qta">QTA</label>
+                        <div class="col-sm-8">
+                            <input id="id_is_qta" class="{% if parameter.is_compulsory == True %} required {% endif %}" {% if parameter.default_value == "Yes" %}checked="checked" {% endif %} name="chk_qta" type="checkbox">
+                        </div>
+                    </div>
+                    {% elif parameter.order_screen_parameter__code == "order_file" %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-4 {% if parameter.is_compulsory == True %} required {% endif %}" for="order_file">Order file</label>
+                        <div class="col-sm-8">
+                            <input id="order_file" class="form-control {% if parameter.is_compulsory == True %} required {% endif %}" name="{{parameter.order_screen_parameter__code}}" value='{{parameter.default_value}}' type="file" data-rule-extension="zip|kicad|brd|rar|OBD"
+                            data-msg-extension="Only zip, kicad, brd, rar and OBD++ extension is allowed.">
+                            <span id="order_file_msg">Only zip, kicad, brd, rar and OBD++ extension is allowed.</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    <button class="btn btn-primary place-order-fbtn" ng-click="utilityPlaceOrder($event);">Place order</button>
+    <button class="btn place-order-fbtn" ng-click="goBack()" >Close</button>
+</div>
+
+{% else %}
+<div class="modal-body details-body" style="margin-left: 400px;">
+    <h5>You do not have permission to perform any action</h5>
+</div>
+{% endif %}
+<script>
+$('[name="order_number"]').focus();
+</script>

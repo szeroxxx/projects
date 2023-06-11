@@ -1,0 +1,234 @@
+{% load staticfiles %}
+{% load static %}
+{% load app_filters %}
+{% csrf_token %}
+<style type="text/css">
+    .selectOption{
+        display: none;
+    }
+    #id_task_priority .ms-sel-item{
+        background: transparent;
+        border:0;
+    }
+    .modal.right .modal-dialog {
+        position: fixed;
+        margin: auto;
+        width: 52%;
+        height: 100%;
+        -webkit-transform: translate3d(0%, 0, 0);
+            -ms-transform: translate3d(0%, 0, 0);
+             -o-transform: translate3d(0%, 0, 0);
+                transform: translate3d(0%, 0, 0);
+    }
+    .modal.right .modal-content {
+        height: 100%;
+        overflow-y: auto;
+    }
+    
+    .modal.right .modal-body {
+        padding: 15px 15px 80px;
+    }
+    /*Right*/
+    .modal.right.fade .modal-dialog {
+        right: -320px;
+        -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+           -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+             -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+                transition: opacity 0.3s linear, right 0.3s ease-out;
+    }
+    .modal-content{
+        border: 0px;
+        border-radius: 0px;
+    }
+    .modal.right.fade.in .modal-dialog {
+        right: 0;
+    }
+    .modal-footer{
+        height: 0%;
+    }
+
+</style>
+    <div class="row">
+        <div class="col-md-12 col-sm-12" style="padding-left: 15px;">
+            <div class="form-group">
+                <label for="id_task_name" class="control-label col-sm-2 required">Title</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="id_task_name" name="name" maxlength="200" type="text" value="{{ task.name }}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_due_date" class="control-label col-sm-2">Due date</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control task-date" onfocusout="showSelectOption()" name="due_date" id="id_due_date" value="{{ task.due_date|get_local_time:True }}"/>
+                </div>
+                <span class="col-sm-2" style="padding-top: 7px;text-align: right;">Reminder</span>
+                <div class="col-sm-4">
+                    <input class="form-control" id="id_reminder_on" name="reminder_on" type="text" value= '[{% if task.reminder_on_text %}"{{ task.reminder_on_text }}"{% endif %}]' >
+                </div>
+            </div>
+            <div class="form-group showReminder" {% if not task.reminder_on_text == "OTHER" %} style="display: none;" {% endif %}>
+                <label for="id_reminder" class="control-label col-sm-3 " >Due date reminder</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control task-date" name="due_date_reminder" id="id_reminder" value="{{task.reminder_on|get_local_time:True}}"/>
+                </div>
+                <span class="col-sm-2">
+                    <label class="control-label" style="margin-left: -10px; vertical-align: -webkit-baseline-middle;">GMT ({{tz_info}})</label>
+                </span>
+            </div>
+            <input type="text" name="reminder_on_text" style="display: none;">
+            <div class="form-group">
+                <label required for="id_task_status" class="control-label col-sm-2">Status</label>
+                <div class="col-sm-10">
+                    <input  class="form-control" id="id_task_status" name="status"  type="text" value='[{% if not new_task and task.status %}"{{ task.status }}"{% endif %}]' >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label required for="id_task_priority" class="control-label col-sm-2">Priority</label>
+                <div class="col-sm-10">
+                     <input  class="form-control" id="id_task_priority" name="priority"  type="text" value='[{% if not new_task and task.priority %}"{{ task.priority }}"{%else%}{% endif %}]' >
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_assign_to" class="control-label col-sm-2">Assign to</label>
+                <div class="col-sm-10">
+                    <input  class="form-control" id="id_assign_to" name="assign_to"  type="text" value="[{% if new_task %}{{ assign_to_id }}{% else %}{{ task.assign_to_id }}{% endif %}]" >
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email_notification" class="control-label col-sm-2">Email notification</label>
+                <div class="col-sm-10">
+                    <input type="checkbox" class="checkbox-margin magic-checkbox" id="id_email_notification" name="email_notification" {% if task.email_notification %}checked{% endif%}>
+                    <label for="id_email_notification"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_description" class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="id_description" name="description" rows="3" type="text">{{ task.description }}</textarea>
+                </div>
+            </div>
+     <!--        {% if show_private %} -->
+
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <input type="radio" class="magic-radio" id="id_private" name="private" checked value="True" {% if task.private%} checked="checked" {% endif %}>
+
+                    <label for="id_private" class="control-label" title="Task will be visible to you and to the assigned person only" style="margin-top: 9px !important;">Make as private task
+            <!-- {% endif %} -->
+                    &nbsp;&nbsp;&nbsp;<input type="radio" class="magic-radio" id="id_public" name="private" value="False" {% if task.private == False %} checked="checked" {% endif %}>
+                    <label for="id_public" class="control-label" title="Task will be visible" style="margin-top: 9px !important;">Make as public task
+                </div>
+            </div>
+
+
+            <div id="OrderModel" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel" ng-bind="OrderDialogTitle"></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="order_form"></div>
+                    <div id="orderMsg"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" ng-click="saveOrder($event);" ng-disabled="btnDisabled">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-dialog -->
+
+            
+
+            {% if is_remark %}
+            <div class="operationTab" >
+                <ul class="nav nav-tabs" style="margin-top: 20px;">
+                    <li  class="active">
+                        <a class="show-tab" href="#taskRemarks">Remark <span class="tab-count" id="id_remarks_count"></span></a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div  role="tabpanel" class="tab-pane active" id="taskRemarks">
+                       <ang-comments app-name="task" model-name="Task" entity-id="{{task.id}}" model-remark-field="remarks" count-id="id_remarks_count" mentioned_in = "task (#{{task.name}})"></ang-comments>
+                    </div>
+                </div>
+            </div>
+            {%endif%}
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+
+
+
+    $(function() {
+        $('.task-date').daterangepicker({
+            autoUpdateInput: false,
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerIncrement: 1,
+            timePicker24Hour : true,
+            locale: {
+                format: 'DD/MM/YYYY',
+            }
+        });
+        $('.task-date').on('apply.daterangepicker', function(ev, picker) {
+
+            $(this).val(picker.startDate.format('DD/MM/YYYY H:mm'));
+            showSelectOption();
+        });
+
+    });
+
+    var task_data = {
+          'task_status':{{task_status|safe}},
+          'task_priority':{{task_priority|safe}}
+    }
+    $('#id_due_date').ready(function(){
+        showSelectOption();
+    });
+    function showSelectOption(){
+        due_date = $('#id_due_date').val();
+        if (due_date != '' && due_date != null) {
+            $('.selectOption').css('display', 'block');
+        }else{
+            $('.selectOption').css('display', 'none');
+        }
+    }
+    showSelectOption();
+
+
+
+</script> 
+    
+{% if new_task %}
+  <script type="text/javascript">
+    $('#id_email_notification').attr('checked','checked');
+  </script>
+{% endif %}
+
+
+    
+
+{% if not task.due_date %}
+    <!-- <script type="text/javascript">
+        var date = new Date();
+        var hour = date.getHours();
+        var minutes = date.getMinutes()
+        minutes = 1 * Math.ceil(minutes / 1);
+        $('#id_due_date').click(function(){
+            $('.hourselect').val(hour);
+            $('.minuteselect').val(minutes);
+        })  
+              
+    </script> -->
+{% endif %}

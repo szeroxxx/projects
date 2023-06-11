@@ -1,0 +1,65 @@
+<style>
+    .detail-input{
+        margin-left:10px;
+    }
+    .main-category-input{
+        display: none;
+    }
+</style>
+<form id="frmSaveNCdetails" action="/qualityapp/save_nc_detail/" method="POST" role="form" class="form-horizontal"
+    enctype="multipart/form-data" autocomplete="off">{% csrf_token %}
+
+    <input class="form-control" id="nc_detail_id" name="nc_detail_id" value="{{nc_detail.id}}"
+        type="hidden">
+
+    <div class="row">
+        <div class="col-md-9">
+            <label for="id_category_name" class="col-form-label detail-input">Please enter a new category name : </label>
+        </div>
+        <div class="col-md-9 detail-input">
+            <input type="text" class="form-control" id="id_category_name" name="category_name" value="{{nc_detail.name}}" >
+        </div>
+    </div><br>
+    {% if nc_detail.parent_id_id %}
+        <div class="row" >
+            <div class="detail-input">
+                <input type="checkbox" id="id_check" name="check" value="check" checked>
+                <label for="id_check">Add category under :</label><br>
+            </div>
+        </div></br>
+        <div class="row">
+            <div class="col-md-9 detail-input">
+                <input type="text" id="id_main_category" name="main_category" value="[{{nc_detail.parent_id_id}}]">
+            </div>
+        </div><br>
+    {% else %}
+        <div class="row">
+            <div class="detail-input">
+                <input type="checkbox" id="id_check" name="check" value="check">
+                <label for="id_check">Add category under :</label><br>
+            </div>
+        </div></br>
+        <div class="row">
+            <div class="col-md-9 detail-input main-category-input" id="id_main_categ_show">
+                <input type="text" id="id_main_category" name="main_category"
+                    value="[{{nc_detail.parent_id_id}}]">
+            </div>
+        </div><br>
+    {% endif %}
+
+</form>
+
+<script>
+    setAutoLookup("id_main_category", "/b/lookups/main_category/", "", false, true);
+    $(document).ready(function () {
+        $('#id_check').click(function (e) {
+            if ($('#id_check').prop('checked')) {
+                $('#id_main_category').show();
+                $('#id_main_categ_show').show();
+            } else {
+                $('#id_main_category').hide();
+                $('#id_main_categ_show').hide();
+            }
+        });
+    });
+</script>

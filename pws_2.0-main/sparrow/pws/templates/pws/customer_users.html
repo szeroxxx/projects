@@ -1,0 +1,33 @@
+<div class="lst-container">
+    <div>
+      <form autocomplete="off">
+        <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1" placeholder="Search..."></nit-advanced-searchbox>
+      </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <input type="button" class="btn btn-primary btn-sm" id="addNew" value="A̲dd new" ng-click="onAdd($event);"></input>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="D̲elete" ng-click="onDelete($event);" ng-disabled="btnModelDeleteDisable"></input>
+                <input type="button" class="btn btn-primary btn-sm" value="E̲dit" id="btnEditMo" ng-click="onEdit($event);" ng-disabled="btnModelEditDisable"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data"></input>
+            </li>
+        </ul>
+      </div>
+  </div>
+</script>
+<script>
+  var data = {'permissions': {{ permissions| safe}}};
+  customer_usersInit(data);
+</script>

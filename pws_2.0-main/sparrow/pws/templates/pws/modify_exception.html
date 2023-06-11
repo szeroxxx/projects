@@ -1,0 +1,217 @@
+<style>
+#divscroll{
+   overflow: auto;
+   max-height:220px;
+}
+.breakword{
+    overflow-wrap: break-word;
+}
+ .attachFiles .attachments {
+  width: 110px;
+  text-align: center;
+  display: inline-block;
+  margin: 5px 5px;
+  max-height: 130px;
+  max-width: 110px;
+}
+input[type="file"] {
+    white-space: normal;
+    word-wrap: break-word;
+    width: 185px;
+    overflow: auto;
+}
+.cursor{
+    cursor: not-allowed;
+}
+.msg-show{
+    color:#a94442;
+    display: none;
+}
+</style>
+<div class="modal-body details-body">
+        <form
+            id="frmSaveExceptionProblem"
+            action="/pws/modify_exception_save/"
+            method="POST"
+            role="form"
+            class="form-horizontal"
+            enctype="multipart/form-data"
+        >
+            <div class="container">
+                <div class="form-group">
+                    <label for="id_pws_id" class="control-label col-sm-3 required">PWS ID :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_pws_id"
+                        name="pws_id"
+                        type="text"
+                        value="{{order_exception.order__order_number}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_order_number" class="control-label col-sm-3 required">Order number :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_order_number"
+                        name="order_number"
+                        type="text"
+                        value="{{order_exception.order__customer_order_nr}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_problem_department" class="control-label col-sm-3 required">Problem department :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_problem_department"
+                        name="problem_department"
+                        type="text"
+                        value="{{order_exception.order_status}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_pws_id" class="control-label col-sm-3 required">Exception date :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control cursor"
+                        id="id_exception_date"
+                        name="exception_date"
+                        type="text"
+                        value="{{order_exception.created_on}}"
+                        required
+                        readonly
+                    />
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="id_pre_defined_problem" class="control-label col-sm-3 required">Pre-defined problem :</label>
+                    <div class="col-sm-6">
+                    <input
+                        class="form-control"
+                        id="id_pre_defined_problem"
+                        name="pre_defined_problem"
+                        type="text"
+                        value="[{{order_exception.pre_define_problem__id}}]"
+                        required
+                    />
+                    <span class= "msg-show" id="id_message_pre_defined_problem">This field is required.</span>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group internal_remark">
+                    <label for="id_internal_remark" class="control-label col-sm-3 required">Internal remark :</label>
+                    <div class="col-sm-6">
+                    <textarea
+                        class="form-control"
+                        id="id_internal_remark"
+                        name="internal_remark"
+                        type="text"
+                        required
+                    >{{order_exception.internal_remark}}</textarea>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group attachments" id="upload_image">
+                    <label for="id_upload_image" class="control-label col-sm-3" id="id_si_file_label">Exception file :</label>
+                    <div class="col-sm-3">
+                        <input type="file" id="id_upload_image" name="upload_image">
+                        <img src="/static/images/image.svg" alt="" class="img_file_img" width="40" height="40"><br><br>
+                        <a onclick ="imgFile()"  class="img_file_img" id="btnImgModify">Modify</a>
+                    </div>
+                    {% if upload_image %}
+                        <div class="col-sm-4 breakword img_file_img">
+                            {{upload_image.name}}
+                        </div>
+                        <div class="col-sm-2">
+                            <a onclick ="fileDownload('{{upload_image.uid}}')">Download</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="form-group" id="si_file">
+                    <label for="id_si_file" class="control-label col-sm-3" id="si_file_label">SI file :</label>
+                    <div class="col-sm-3">
+                        <input type="file" id="id_si_file" name="si_file" accept=".zip,">
+                        <img src="/static/images/zip.svg" alt="" class="si_file_img"  width="40" height="40"><br><br>
+                        <a onclick ="siFile()"  class="si_file_img" id="btnSiModify">Modify</a>
+                    </div>
+                    {% if si_file %}
+                        <div class="col-sm-4 breakword si_file_img">
+                            {{si_file.name}}
+                        </div>
+                        <div class="col-sm-2">
+                            <a onclick ="fileDownload('{{si_file.uid}}')">Download</a>
+                        </div>
+                    {% endif %}
+
+                </div>
+                <br>
+                <input type="hidden" value="{{upload_image.name}}" id="image_name_id">
+                <input type="hidden" value="{{si_file.name}}" id="si_name_id">
+                <input class="form-control" id="id_order_exception"  name="order_exception" type="hidden" required/>
+                <input class="form-control" id="id_order_id"  name="order_id" type="hidden"  value="{{order_exception.order__id}}" required/>
+
+            </div>
+        </form>
+</div>
+<script>
+
+    function fileDownload(id) {
+        var model ="order_attachment"
+        var app = "pws"
+        window.open("/attachment/dwn_attachment/?uid=" +id +"&model=" +model +"&app=" +app,"_parent");
+    }
+    const si_file_btn = document.getElementById("si_file_btn");
+    $("#id_si_file").hide()
+    $(".si_file_img").show()
+    $(".img_file_img").show()
+    $("#id_upload_image").hide()
+
+    function siFile() {
+        $(".si_file_img").hide()
+        $("#id_si_file").show()
+    }
+     function imgFile() {
+        $(".img_file_img").hide()
+        $("#id_upload_image").show()
+    }
+    var image_name = document.getElementById("image_name_id").value;
+    if(image_name){
+        const fileInput = document.querySelector('input[name="upload_image"]');
+        const myFile = new File(['Image File'], image_name, {type: 'text/plain', lastModified: new Date(),});
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(myFile);
+        fileInput.files = dataTransfer.files;
+    }
+    else{
+        imgFile()
+    }
+
+    var si_name = document.getElementById("si_name_id").value;
+    if (si_name){
+        const fileInput2 = document.querySelector('input[name="si_file"]');
+        const myFile2 = new File(['Si File'], si_name, {type: 'text/plain', lastModified: new Date(),});
+        const dataTransfer2 = new DataTransfer();
+        dataTransfer2.items.add(myFile2);
+        fileInput2.files = dataTransfer2.files;
+    }
+    else{
+        siFile()
+    }
+
+</script>

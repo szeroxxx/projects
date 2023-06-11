@@ -1,0 +1,111 @@
+<template>
+    <name>mfg_order_finished</name>
+    <description>Sent mail for finished mfg order</description>
+    <subject>Sparrow - Manufacturing order {{ mo_number}} finished</subject>
+    <html_content>
+        <![CDATA[
+<table border="0" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto; width: 700px;">
+<tbody>
+<tr height="16"></tr>
+<tr>
+<td>
+<table bgcolor="#364760" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width:332px;max-width:600px;border:1px solid #e0e0e0;border-bottom:0;border-top-left-radius:3px;border-top-right-radius:3px">
+<tbody>
+<tr>
+<td height="35px" colspan="3"></td>
+</tr>
+<tr>
+<td width="32px"></td>
+<td style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:24px;color:#ffffff;line-height:1.25;min-width:300px">Manufacturing order {{ mo_number}} finished</td>
+<td width="32px"></td>
+</tr>
+<tr>
+<td width="32px"></td>
+<td style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:11px;color:#ffffff;">By {{ user_name}}</td>
+<td width="32px"></td>
+</tr>
+<tr>
+<td height="18px" colspan="3"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table bgcolor="#FAFAFA" width="100%" border="0" cellspacing="0" cellpadding="0" style="min-width:332px;max-width:600px;border:1px solid #f0f0f0;border-bottom:1px solid #c0c0c0;border-top:0;border-bottom-left-radius:3px;border-bottom-right-radius:3px">
+<tbody>
+<tr height="16px">
+<td width="32px" rowspan="3"></td>
+<td></td>
+<td width="32px" rowspan="3"></td>
+</tr>
+<tr>
+<td>
+<table style="min-width:300px;font-family:Roboto-Regular,Helvetica,Arial;font-size:13px;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="150px" style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">Product</td>
+<td style="color:#202020;line-height:1.5;padding-bottom:4px">
+<b>{{product}}</b>
+</td>
+</tr>
+<tr>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">Quantity</td>
+<td style="color:#202020;line-height:1.5;padding-bottom:4px">
+<b>{{quantity}}</b>
+</td>
+</tr>
+<tr>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">Source document</td>
+<td style="color:#202020;line-height:1.5;padding-bottom:4px">
+<b>{% if source_doc != None and source_doc != '' %}{{source_doc}}{% else %}-{% endif %}</b>
+</td>
+</tr>
+<tr>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">Finished on</td>
+<td style="color:#202020;line-height:1.5;padding-bottom:4px">
+<b>{{created_on}}</b>
+</td>
+</tr>
+<tr>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">Planned start date</td>
+<td style="color:#202020;line-height:1.5;padding-bottom:4px">
+<b>{{planned_start_date}}</b>
+</td>
+</tr>
+<tr>
+<td style="color:#515151;line-height:1.5;padding-bottom:4px;font-size:12px;">Planned end date</td>
+<td style="color:#202020;line-height:1.5;padding-bottom:4px">
+<b>{{planned_end_date}}</b>
+</td>
+</tr>
+<tr height="16px"></tr>
+<tr>
+<td colspan="10" style="font-size:12px;color:#b9b9b9;line-height:3">This email can't receive replies.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr height="20"></tr>
+<tr>
+<td>
+<table style="font-family:Roboto-Regular,Helvetica,Arial,sans-serif;font-size:10px;color:#666666;line-height:18px;padding-bottom:10px">
+<tbody>
+<tr>
+<td>You have received this email because you have subscribed email notification in sparrow.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+]]>
+    </html_content>
+</template>

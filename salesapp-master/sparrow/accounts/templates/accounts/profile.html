@@ -1,0 +1,487 @@
+<style>
+    table {
+        width: 100%;
+    }
+
+    th,
+    td {
+        padding: 4px 4px;
+        text-align: center;
+    }
+
+    tr {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .row-group {
+        text-align: left;
+        font-weight: 600;
+    }
+
+    #notificatipon_table th,
+    #notificatipon_table td {
+        width: 20%;
+    }
+
+    .cell-event {
+        text-align: left;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    input[type=radio],
+    input.radio {
+        margin-top: 0px;
+        width: 15px;
+        height: 14px;
+    }
+
+    input[type="file"] {
+        display: none !important;
+    }
+
+    .btnImageLabel {
+        color: #266EBB;
+        cursor: pointer;
+    }
+
+    .changes {
+        padding-top: -1px !important;
+    }
+
+    .color-input {
+        width: auto;
+    }
+</style>
+
+<div class="modal-body details-body">
+    <form id="frmProfile" action="/accounts/save_profile/" method="POST" role="form" class="form-horizontal">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="col-md-6 col-sm-6 form-group">
+                    <div class="col-sm-3">
+                        <div class="avatar-image">
+                            {% if profile_image %}
+                            <img id="avatar_image" src="{{profile_image}}"
+                                style="display: inline-block;width: 118px; background-color: #e7e7e7;" />
+                            {% else %}
+                            <span class="icon-user" style="height:90px;"></span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group" style="height: 0px;">
+                            <label for="user_img" class="btnImageLabel" style="padding-left: 50px;">Edit</label>
+                            <input id="user_img" name="profile_image" type="file"
+                                data-rule-extension="png|jpg|jpeg|bmp|gif"
+                                data-msg-extension="Only .png, .jpg, .jpeg, .gif and .bmp extension is allowed.">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_first_name" class="control-label col-sm-3 required">First name</label>
+                        <div class="col-sm-9" style="margin-top: 6px; ">
+                            <input type="text" class="form-control" id="id_first_name" name="first_name"
+                                value="{{first_name}}" data-rule-maxlength="200" readonly="readonly" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_last_name" class="control-label col-sm-3 required">Last name</label>
+                            <div class="col-sm-9" style="margin-top: 6px;">
+                                <input type="text" class="form-control " id="id_last_name" name="last_name"
+                                    value="{{last_name}}" maxlength=100 readonly="readonly" data-rule-required="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label for="id_email" class="control-label col-sm-3">Email</label>
+
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control read-only-mode" id="id_email" name="email"
+                            value="{{email}}" data-rule-email="true" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Display row</label>
+
+                    <div class="col-sm-9">
+                        <select name="display_row" value="{{display_row}}" class=" form-control">
+                            <option {% if display_row == 10 %} selected {% endif %} value="10">10</option>
+                            <option {% if display_row == 25 %} selected {% endif %} value="25">25</option>
+                            <option {% if display_row == 50 %} selected {% endif %} value="50">50</option>
+                            <option {% if display_row == 100 %} selected {% endif %} value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:none;">
+                    <label for="id_default_page" class="control-label col-sm-3 ">Default page
+                        <span style="float:right;color:#4c81d2;margin-top: 9px;" class="icon-question fa-1"
+                            aria-hidden="true"
+                            title=" This will be your default page after login. Input page URL from address bar for the page you want to load. (e.g. http://servername/b/#/purchasing/dashboard/)"></span></label>
+                    <div class="col-sm-9">
+                        <input type="url" class="form-control" id="id_default_page" value="{{default_page}}"
+                            name="default_page">
+                    </div>
+                </div>
+
+
+
+                <div class="form-group" id="id_change_password_field" style="display:none;">
+                    <label class="col-sm-3"></label>
+                    <div class="col-sm-9" style="margin-top: 15px;">
+                        <a id="id_change_password" name="change_password" class="link">Change password</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-sm-6" style="display:none;">
+                <!-- <div class="form-group">
+                    <label class="control-label col-sm-3">Display row</label>
+
+                    <div class="col-sm-9">
+                        <select name="display_row" value="{{display_row}}" class=" form-control">
+                            <option {% if display_row == 10 %} selected {% endif %} value="10">10</option>
+                            <option {% if display_row == 25 %} selected {% endif %} value="25">25</option>
+                            <option {% if display_row == 50 %} selected {% endif %} value="50">50</option>
+                            <option {% if display_row == 100 %} selected {% endif %} value="100">100</option>
+                        </select>
+                    </div>
+                </div> -->
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Menu navigation</label>
+
+                    <div class="col-sm-9">
+                        <input type="radio" id="menu_launcher" class="magic-radio" value="True" name="menu_launcher"
+                            {% if menu_launcher %} checked="checked" {% endif %}>
+                        <label for="menu_launcher" style="float: none ; padding-left:20px;">Launcher menu</label>
+                        <input type="radio" style="padding-left:20px;" id="id_left_menu" value="False"
+                            class="magic-radio" name="menu_launcher" {% if not menu_launcher %} checked="checked"
+                            {% endif %}>
+                        <label for="id_left_menu" style="float: none; margin-left: 20px; padding-left:20px;">Left
+                            menu</label>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <ul class="nav nav-tabs" style="margin-top: 9px;">
+            <li class="active"><a class="show-tab" href="#application-theme-lines">Application theme</a></li>
+
+        </ul>
+        <div class="panel-body">
+            <div class="col-sx-3">
+                <div id="background-theme" class="form-group col-sm-3 ">
+                    <h5 style="margin-bottom: 0;">Background color (on left menu)</h5>
+                    <div style="margin-top: 5px;">
+                        <input class="form-control color-input" name="background-theme-color"
+                            id="background-theme-color" type="text" value="{{ bg_color }}" required>
+                        <div class="div-toggles color-picker-custom">
+                            <div class="trigger" id="themeColor" value="{{ bg_color }}"
+                                target-id="background-theme-color">
+                                <div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top:5px; width: 200px;">
+                        Or
+                    </div>
+                    <div style="margin-top:5px; width: 200px;">
+                        <div id="imageSelection"
+                            style="text-align: center; padding: 10px; border: 1px solid #cccccc; padding-bottom: 0;{% if not image_name.strip %} display:none; {% endif %}">
+                            {% if image_url != '' %}
+                                <img style="width:100%;" src="{{image_url}}" />
+                            {% endif %}
+                            <a href="#" id="clearImageSelection">Clear</a>
+                        </div>
+                        <a href="#" id="select_backgorund"
+                            style="margin-top: 5px; display: block; margin-left: 25px;">Select background image</a>
+                        <input name="bgImage" id="id_bgImage" value="{{ image_name }}" style="display: none;" />
+                    </div>
+                </div>
+                <div id="button-theme" class="form-group col-sm-3">
+                    <h5 style="margin-bottom: 0;">Button color</h5>
+                    <div style="margin-top: 5px;">
+                        <input class="form-control color-input" name="button-color" id="button-color" type="text"
+                            value="{{ button_color }}" required>
+                        <div class="div-toggles color-picker-custom">
+                            <div class="trigger" id="buttonColor" value="{{ button_color }}" target-id="button-color">
+                                <div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="link-theme" class="form-group col-sm-3">
+                    <h5 style="margin-bottom: 0;">Hyperlink color</h5>
+                    <div style="margin-top: 5px;">
+                        <input class="form-control color-input" name="link-color" id="link-color" type="text"
+                            value="{{ link_color }}" required>
+                        <div class="div-toggles color-picker-custom">
+                            <div class="trigger" id="linkColor" value="{{ link_color }}" target-id="link-color">
+                                <div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="row-theme" class="form-group col-sm-3">
+                    <h5 style="margin-bottom: 0;">Row selection color</h5>
+                    <div style="margin-top: 5px;">
+                        <input class="form-control color-input" name="row-color" id="row-color" type="text"
+                            value="{{ row_color }}" required>
+                        <div class="div-toggles color-picker-custom">
+                            <div class="trigger" id="rowColor" value="{{ row_color }}" target-id="row-color">
+                                <div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if sub_group_data %}
+        <ul class="nav nav-tabs" style="margin-top: 5px;">
+            <li class="active"><a class="show-tab " data-toggle="collapse" data-target="#manage-notifications-lines"
+                    style="cursor: pointer;">Manage notifications
+                    <span id="servicesButton" data-toggle="tooltip " data-original-title="Click Me!"
+                        style="cursor: pointer; "> </span>
+                    <span class="servicedrop glyphicon glyphicon-chevron-up"
+                        style="text-align: center; vertical-align: middle; margin-left: 5px "></span>
+                </a></li>
+
+        </ul>
+
+        <div class="tab-content tab-data-content">
+            <div class="collapse in" id="manage-notifications-lines">
+
+                <div class="panel-body ">
+                    <div class="row form-group">
+                        <label class="control-label col-sm-1">Email</label>
+                        {% if notification_email %}
+                        <span class="icon-email"></span>
+                        <span id="id_notification_email" value="{{notification_email}}">{{ notification_email }}</span>
+                        <a id="id_edit_email" class="icon-edit-2"
+                            style="margin-left:0px;cursor: pointer; font-size: 16px;margin-top: -2px;"
+                            title="Change email" ng-click="onAddEmail($event);"></a>
+                        <a id="id_delete_email" class="icon-cancel-circle"
+                            style="margin-left:0px;cursor: pointer; font-size: 16px;margin-top: -2px;"
+                            title="Delete email" ng-click="onDeleteMobMail('mail');"></a>
+                        {% else %}
+                        <a id="id_add_email" class="icon-plus-circle"
+                            style="margin-left:0px;cursor: pointer; font-size: 16px;margin-top: 7px;" title="Add email"
+                            ng-click="onAddEmail($event);"></a>
+                        {% endif %}
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="control-label col-sm-1">Mobile number</label>
+                        {% if notification_mob %}
+                        <span class="icon-answer"></span>
+                        <span id="id_notification_mob" value="{{notification_mob}}">{{ notification_mob }}</span>
+                        <a id="id_edit_mobile" class="icon-edit-2"
+                            style="margin-left:0px;cursor: pointer; font-size: 16px;margin-top: -2px;"
+                            title="Change mobile number" ng-click="onAddMobile($event);"></a>
+                        <a id="id_delete_mobile" class="icon-cancel-circle"
+                            style="margin-left:0px;cursor: pointer; font-size: 16px;margin-top: -2px;"
+                            title="Delete mobile number" ng-click="onDeleteMobMail('mobile');"></a>
+                        {% else %}
+                        <a id="id_add_mobile" class="icon-plus-circle"
+                            style="margin-left:0px;cursor: pointer; font-size: 16px;margin-top: 7px;"
+                            title="Add mobile number" ng-click="onAddMobile($event);"></a>
+                        {% endif %}
+                    </div>
+
+                    <table id="notificatipon_table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Email notification</th>
+                                {% if ftr_sms_service  %}
+                                <th>SMS notification</th>
+                                {% endif %}
+                                <th>Push notification</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub_group in sub_group_data %}
+                            <tr>
+                                <td class="row-group">{{sub_group.group_name}}</td>
+                                <td></td>
+                                {% if ftr_sms_service  %}
+                                <td></td>
+                                {% endif %}
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% for notification in sub_group.notifications %}
+                            <tr>
+                                <td class="text-left" style="padding-left: 25px; ">{{ notification.event_name }}</td>
+                                <td><input type="checkbox"
+                                        id="id_email_{{ sub_group.group }}_{{notification.event_code}}"
+                                        class="by_email magic-checkbox"
+                                        name="by_email_{{ sub_group.group }}_{{notification.event_code}}"
+                                        {% if notification.by_email %}checked="checked" {% endif %}>
+                                    <label for="id_email_{{ sub_group.group }}_{{notification.event_code}}"></label>
+                                </td>
+                                {% if ftr_sms_service  %}
+                                <td><input type="checkbox" id="id_sms_{{ sub_group.group }}_{{notification.event_code}}"
+                                        class="by_sms magic-checkbox"
+                                        name="by_sms_{{ sub_group.group }}_{{notification.event_code}}"
+                                        {% if notification.by_sms %}checked="checked" {% endif %}>
+                                    <label for="id_sms_{{ sub_group.group }}_{{notification.event_code}}"></label></td>
+                                {% endif %}
+                                <td><input type="checkbox" class="in_systemt magic-checkbox"
+                                        id="id_push_{{ sub_group.group }}_{{notification.event_code}}"
+                                        name="in_system_{{ sub_group.group }}_{{notification.event_code}}"
+                                        {% if notification.in_system %}checked="checked" {% endif %}>
+                                    <label for="id_push_{{ sub_group.group }}_{{notification.event_code}}"></label></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </form>
+</div>
+<div id="BgImageModel" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="BgImageLabel" ng-bind="BgImageDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="BgImage_form"></div>
+                <div id="BgImageMsg"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" ng-click="saveBgImage($event);">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="msg"></div>
+</div>
+<div class="modal-footer">
+    <!-- <button class="btn" data-dismiss="modal" aria-hidden="true" ng-click="goBack($event)">Close</button> -->
+    <button class="btn btn-primary" ng-click="saveProfile($event)" ng-disabled="btnDisabled">Save</button>
+</div>
+
+
+<div id="notificationModel" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="width:60%; margin-left: 200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" ng-bind="notificationModelTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 50px;" ng-if="notifyEmail">
+                    <label for="id_notfiy_email" class="control-label col-sm-2 required">Email</label>
+                    <div style="width: 83%;float: right;">
+                        <input class="form-control" id="id_notfiy_email" maxlength="200" name="notification_email"
+                            type="text" data-rule-email="true" />
+                    </div>
+                </div>
+                <div style="margin-bottom: 50px;" ng-if="notifyMobile">
+                    <label for="id_notfiy_mobile" class="control-label col-sm-3 required">Mobile number</label>
+                    <div style="width: 75%;float: right;">
+                        <input class="form-control" id="id_notfiy_mobile" maxlength="200" name="notification_email"
+                            type="number" data-rule-number="true" minlength="10" maxlength="12" />
+                    </div>
+
+                </div>
+                <div style="margin-bottom: 105px;" ng-if="verifyOTP">
+                    <div class="col-md-12 col-sm-12">
+                        <p>A OTP(One Time Passcode) has been sent to <b> {[{notifyData}]} </b></p>
+                        <p>Please enter the OTP below to verify your <span ng-if="ForEmail">email address.</span> <span
+                                ng-if="ForMob">phone number.</span></p>
+                        <input class="form-control" id="id_otp" name="notification_email" type="number"
+                            data-rule-number="true" style="margin-bottom: 7px;" />
+                        <label ng-if="timer">OTP will expire after</label><label id="timer" ng-if="timer">02:00</label>
+                        <label ng-if="timeOut" style="color: red;">OTP is expired.</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button ng-if="notifyEmail || notifyMobile || timeOut" class="btn" data-dismiss="modal"
+                    aria-hidden="true">Close</button>
+                <button ng-if="notifyEmail || notifyMobile" class="btn btn-primary"
+                    ng-click="saveNotificationData($event);">Save</button>
+                <button ng-if="verifyOTP && timeOut==false" class="btn btn-primary"
+                    ng-click="verifyOtp($event);">Validate OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="passwordChangeModel" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="width: 26%">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 8px 10px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="changepasswordModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="frmchangedpassword" action="" role="form" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="changepassword" id="changepassword_form" class="control-label col-sm-5 required"
+                                style="padding-left: 8px;"></label>
+                            <div class="col-sm-7" style="padding-right: 10px; right: 10px">
+                                <input type="password" class="form-control" id="changepassword" name="changepassword"
+                                    data-rule-minlength="6" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmchangepassword" id="confimrchangedpassword_form"
+                                class="control-label col-sm-5 required" style="padding-left: 8px;"></label>
+                            <div class="col-sm-7" style="padding-right: 10px; right: 10px">
+                                <input type="password" class="form-control" id="confirmchangepassword"
+                                    data-rule-equalto="#changepassword" required />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" id="changePass" ng-click="changePass($event);"
+                    ng-disabled="btnDisabled">Update password</button>
+                <button class="btn btn-primary" id="passwordSave" style="display: none"
+                    ng-disabled="btnDisabled">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

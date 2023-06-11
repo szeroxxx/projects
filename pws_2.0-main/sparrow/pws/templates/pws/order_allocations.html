@@ -1,0 +1,293 @@
+<style>
+  .bottom{
+    margin-bottom: 50px;
+  }
+  .lst-container{
+    margin-bottom:45px;
+  }
+  .customer-lable{
+    margin-left: 10px;
+    min-width: 80px !important;
+    width: auto !important;
+  }
+  .customer-input{
+    margin-right: 25px;
+  }
+  .process-lable, .search-button{
+    min-width: 80px !important;
+    width: auto !important;
+  }
+  .company-allocation-show{
+    min-width: 200px !important;
+    width: auto !important;
+    margin-top:7px;
+  }
+  .company_allocation_for_show{
+    display:none;
+  }
+  .allocation_header{
+    font-size: 20px;
+  }
+  .allo-row{
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+  .msg-show{
+    color:#a94442;
+    display: none;
+  }
+  .mlr-10{
+    margin: 0px 10px !important;
+  }
+  .remove-auto-allo-dlt{
+    margin-top:7px;
+  }
+  .mlr-10{
+    margin: 0px 10px !important;
+  }
+  .custom-body p{
+    max-height:500px;
+    overflow-wrap: break-word;
+    overflow:auto;
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <button class="btn btn-primary btn-sm" id="btnReserve" ng-disabled="btnReserveDisable"><u>R</u>eserve</button>
+      <button class="btn btn-primary btn-sm" id="btnRelease" ng-disabled="btnReleaseDisable">Re<u>l</u>ease</button>
+      <button class="btn btn-primary btn-sm" id="btnReserveMultiple" >Reserve multiple records</button>
+      {% comment %} <input type="button" class="btn btn-primary btn-sm" id="auto_assignment" value="Auto Assignment"></input> {% endcomment %}
+      <input type="button" class="btn btn-primary btn-sm" id="define_auto_assignment_flow" value="Define auto assignment flow"></input>
+      <input type="button" class="btn btn-primary btn-sm" id="btnSkillMatrix" value="Skill matrix" ng-click="onSkillMatrix($event);"></input>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" id="btnManageAutoallocation" value="Manage Auto allocation" ng-click="onManageAutoallocation($event);"></input>
+            <input type="button" class="btn btn-primary btn-sm" value="Ex̲port" id="btnExport"></input>
+            <input type="button" class="btn btn-primary btn-sm" value="Export all data" id="btnAllDataExport"></input>
+          </li>
+        </ul>
+      </div>
+  </div>
+</script>
+<div class="lst-container"><br><br>
+    <div>
+        <div class="col-md-12 col-sm-12">
+            <div class="form-group">
+                <label required for="id_company" class="control-label col-sm-1 customer-lable">Customer :</label>
+                <div class="col-sm-2 customer-input">
+                  <input class="form-control" id="id_company" name="company" />
+                </div>
+                <label required for="id_process" class="control-label col-sm-1 process-lable">Process :</label>
+                <div class="col-sm-2">
+                  <input class="form-control" id="id_process" name="process" />
+                </div>
+                <div class="col-sm-1 search-button">
+                  <button class="btn btn-primary btn-sm"  id="load_btn" ><u>S</u>earch</button>
+                </div>
+                <div class="col-sm-4 company-allocation-show">
+                  <b id="company_allocation_for_show" class="company_allocation_for_show"></b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="gridCon">
+  <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+</div>
+
+<div class="modal fade" id="allocationFlow" role="dialog" data-backdrop="static" tabindex="-1" aria-labelledby="title" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close allo-close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="title">Allocation Flow For Customer</h5>
+        <span class="modal-title allocation_header" id="user_header"></span>
+      </div>
+        <div class="modal-body">
+          <div class="row allo-row">
+              <div class="col-md-12 col-sm-12">
+                  <div class="form-group">
+                      <label required for="id_company_allocation" class="control-label col-sm-3 required">Customer : </label>
+                      <div class="col-sm-8">
+                          <input class="form-control" id="id_company_allocation" name="company_allocation" />
+                          <span class="msg-show" id="id_message_company_allocation">This field is required.</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row allo-row">
+              <div class="col-md-12 col-sm-12">
+                  <div class="form-group">
+                      <label required for="id_order_allocation" class="control-label col-sm-3 required">Allocation flow : </label>
+                      <div class="col-sm-8">
+                          <input class="form-control" id="id_order_allocation" name="order_allocation" />
+                          <span class="msg-show" id="id_message_order_allocation">This field is required.</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn allo-close" data-dismiss="modal" aria-hidden="true">Close</button>
+          <button type="submit" class="btn btn btn-primary" ng-click="saveAllocationFlow($event);">Save</button>
+      </div>
+  </div>
+</div>
+</div>
+<div id="viewManageAutoallocationModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeManageAutoallocationModel($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="viewManageAutoallocationTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body mlr-10">
+        <div id="viewManageAutoallocationBody" class="my-custom-scrollbar">
+          <form id="frmSaveManageAutoallocation" action="/pws/add_manage_auto_allocation_data/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label class="send-to-next-model-file"><b>Stop auto allocation in time between:</b></label>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12">
+                  <div class="col-md-6 col-sm-6">
+                      <div class="form-group">
+                          <label required for="id_stop_start_time" class="control-label col-sm-5 required">Stop start time:</label>
+                          <div class="col-sm-6">
+                              <input class="form-control" id="id_stop_start_time" name="stop_start_time" value="" type="time" placeholder="Stop start time" required/>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                      <div class="form-group">
+                          <label required for="id_stop_end_time" class="control-label col-sm-5 required">Stop end time : </label>
+                          <div class="col-sm-6">
+                              <input class="form-control" id="id_stop_end_time" name="stop_end_time" value="" type="time" placeholder="Stop end time" required/>
+                          </div>
+                          <div class="col-sm-1">
+                            <button class="btn btn-primary btn-sm" ng-click="saveManageAutoallocation($event);" ng-disabled="btnDisabled"  edit-mode="true" title="Save auto allocation">Add</button>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-12 col-sm-12 manage_save_after"  id="id_datata">
+                </div>
+                {% for data in manage_auto_allocation %}
+                  <div class="col-md-12 col-sm-12 manage_save_before">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label required class="control-label col-sm-5">Stop start time:</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" value="{{data.stop_start_time}}" readonly/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label required class="control-label col-sm-5">Stop end time : </label>
+                            <div class="col-sm-6">
+                                <input class="form-control" value="{{data.stop_end_time}}" readonly/>
+                            </div>
+                            <div class="col-sm-1">
+                              <i class="fa fa-trash-o remove-auto-allo-dlt" ng-click="removeManageAutoallocation({{data.id}});" title="Remove auto allocation"></i>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                {% endfor %}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="viewReserveModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveModel($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="viewReserveTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body">
+        <div id="viewReserveBody" class="my-custom-scrollbar">
+          <form id="frmSaveReserve" action="/pws/reserve_operator/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label required for="id_operator" class="control-label col-sm-2 required">Operator : </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="id_operator" name="operator" value=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" role="tablist">
+        <button type="submit" class="btn btn-primary btn-sm" ng-click="saveReserve($event);" ng-disabled="btnDisabled"  edit-mode="true">Reserve</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="viewReserveMultipleModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveMultipleModel($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="viewReserveMultipleTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body mlr-10">
+        <div id="viewReserveMultipleBody" class="my-custom-scrollbar">
+          <form id="frmSaveReserveMultiple" action="/pws/reserve_multiple/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data" autocomplete="off">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label required for="id_order_resrve_multiple" class="control-label col-sm-4 required">Select multiple records: </label>
+                        <div class="col-sm-8 order_resrve_multiple">
+                            <input class="form-control" style="height:auto;" id="id_order_resrve_multiple" name="order_resrve_multiple" type="text" value="" required placeholder="Enter record's here"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required for="id_operator_resrve_multiple" class="control-label col-sm-4 required">Operator: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="id_operator_resrve_multiple" name="operator_resrve_multiple" value=""/>
+                            <span class="msg-show" id="id_message_oper_resrve_multiple">This field is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" role="tablist">
+        <button class="btn btn-primary btn-sm" ng-click="saveReserveMultiple($event);" ng-disabled="btnDisabled"  edit-mode="true">Reserve</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    var data = {'permissions': {{ permissions| safe}}};
+    order_allocationsInit(data);
+    setAutoLookup("id_operator", "/lookups/operators/", "", true, false, false, null, 1);
+    setAutoLookup("id_operator_resrve_multiple", "/lookups/operators/", "", true, false, false, null, 1);
+</script>

@@ -1,0 +1,318 @@
+
+<style>
+    .column-rt-pad{
+        padding-right: 30px;
+
+    }
+    .pad-btm{
+        padding-bottom: 10px;
+    }
+    .tab-pane{
+        padding-left: 10px;
+    }
+
+</style>
+<div style="display:none;" id = "idCompanyName">{{CompanyName}}</div>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab1">Credit limit <span class="tab-count"
+                id="id_tab1"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab1">
+
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                System limit :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_SystemLimit}}
+            </div>
+        </div>
+
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Insurance limit :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_InsuranceLimit}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Available credit :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_AvailableCredit}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Credit usage 90 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_CreaditUsage90Days}}
+            </div>
+            <div class="col-md-2 col-sm-2">
+                Turn over 90 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_TurnOver90}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Credit usage 180 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_CreaditUsage180Days}}
+            </div>
+            <div class="col-md-2 col-sm-2">
+                Turn over 180 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_TurnOver180}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Credit usage 360 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_CreaditUsage360Days}}
+            </div>
+            <div class="col-md-2 col-sm-2">
+                Turn over 360 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_TurnOver360}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab2">Payment term <span class="tab-count" id="id_tab2"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab2">
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Average item :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{CL_CreaditUsage180Days}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Average payment term 90 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{PT_Averageterm}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Average payment term 180 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{PT_Averageterm180}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Average payment term 360 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{PT_Averageterm360}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Maximum payment delay 90 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{PT_Averagedelay90}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Maximum payment delay 180 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{PT_Averagedelay180}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Maximum payment delay 360 days :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{PT_Averagedelay360}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab2">Reminder status<span class="tab-count" id="id_tab3"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab3">
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Last 1st reminder :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_LastFirstReminder}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Last 2nd reminder :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_LastSecondReminder}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Last 3rd reminder :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_LastThirdReminder}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Account blocked :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_AccountBlocked}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-2 col-sm-2">
+                Last payment date :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_LastPaymentDate}}
+            </div>
+            <div class="col-md-1 col-sm-1">
+                Invoice no :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_InvoiceNumber}}
+            </div>
+            <div class="col-md-1 col-sm-1">
+                Paid amount :
+            </div>
+            <div class="col-md-2 col-sm-2">
+                {{RS_PaidAmount}}
+            </div>
+        </div>
+    </div>
+</div>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab4">Outstanding invoices<span class="tab-count" id="id_tab4"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab4">
+        <div style="overflow-y: auto;max-height: 350px;border-bottom: 1px solid #ddd;">
+        <table>
+            <tr>
+                <th class="column-rt-pad pad-btm">
+                    Invoice no.
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Invoice date
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Due date
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Financial blocked
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Reminder
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Invoice amount
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Open amount
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Days outstanding
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Status
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Secondary status
+                </th>
+            </tr>
+        {% if OutStandingInvoices|length == 0 %}
+        </table>
+        <p style="text-align: center;padding-top:10px;">No data available</p>
+        {% else %}
+        {% for line in OutStandingInvoices %}
+        <tr>
+            <td class="column-rt-pad pad-btm">
+                <a style="cursor:pointer;" onclick="onCustInvoice('{{line.Invoice_number}}');">{{line.Invoice_number}}</a>
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Invoice_date}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Due_date}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Financial_blocked}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Reminder}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Invoice_amount}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Open_amount}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Days_outstanding}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Status}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{line.Secondary_status}}
+            </td>
+        </tr>
+        {% endfor %}
+
+        </table>
+        {% endif %}
+        </div>
+        <p style="padding-top: 15px;">
+            <span style="padding-right: 10px;">
+                <b>No. of invoice</b> : {{ TotalInvoice }}
+            </span>
+            <span style="padding-right: 10px;">
+                <b>Total invoice amount</b> : {{ TotalInvoiceAmount }}
+            </span>
+            <span>
+                <b>Total open amount</b> : {{ TotalOpenAmount }}
+            </span>
+        </p>
+
+    </div>
+</div>

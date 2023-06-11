@@ -1,0 +1,160 @@
+{% load staticfiles %}
+{% load app_filters %}
+<style type="text/css">
+    #permContainer{
+        padding: 0 15px;
+        margin-bottom: 10px;
+        cursor :pointer;
+    }
+    #permContainer .active a{
+        background: #fff !important;
+    }
+
+    #permContainer li  a:hover{
+        color: #515356 !important;
+    }
+    #permContainer li a{
+        color: #515356 !important;
+    }
+    #permContainer .child_menu  li  a{
+        font-size: 12px;
+        padding: 8px;
+    }
+    .perm,.check-all{
+        display: none;
+        margin-left: 10px;
+    }
+    #permContainer  li  a{
+        margin-bottom: -5px;
+    }
+    .role_menus {
+        list-style-type: none;
+        cursor: pointer;
+        padding: 5px;
+        margin-left: 10px;
+        margin-bottom: -1px;
+    }
+    .perm_section {
+        margin-bottom: -15px;
+    }
+    #permContainer li ul.nav.child_menu li:before{
+        height: 6px !important;
+        width: 6px !important;
+    }
+
+    #permContainer li ul.nav.child_menu li:after {
+        border-left: none !important;
+    }
+    .permission{
+        height: 35px;
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+    }
+    .permCheckbox{
+        margin: 0px;
+        float: right;
+        height: 18px;
+        width: 18px;
+    }
+    .permissionItem{
+        font-weight: bold;
+        height: 35px;
+        display: block;
+        padding: 10px;
+        margin-left: 10px;
+        background-color: antiquewhite;
+    }
+    .selectAll{
+        float: right;
+        margin-right: -80px;
+    }
+    .onActive{
+        font-weight: bold;
+    }
+</style>
+
+<div class="modal-body details-body">
+    <span id="loading-image" class="ele-center loader loader-double"></span>
+    <!-- <img id="loading-image" class="ele-center" src="{% static 'base/images/spinner_68.gif' %}?v=2" alt="Loading..." /> -->
+    <form id="frmRole" action="/accounts/role/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label required for="id_name" class="control-label col-sm-2">Role name</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="id_name" style="width:118%;" name="name" type="text" value="{{ group.name }}" required/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+                <div class="row col-md-7 col-sm-7" style="margin-left:-3px;" >
+                <div>
+                    <div style="font-size: 15px;margin-bottom: 20px;">Set rights for role:
+                        <span><input type="checkbox" data-id ="selectAll" class="permCheckbox" style="margin: 0px; margin-right: 54%;" id="selectAllId"></span>
+                        <span style="float: left;margin-left: 35%;position: absolute;align-items: stretch;" id="display_msg_id">Select all permissions</span>
+                    </div>
+                    <div>
+                        <div class="col-md-5 col-sm-5" style = "border: 1px solid #ddd;">
+                            {% for list in lists %}
+                            <div class="perm_section active">
+                                <li id="permContainer" class="nav side-menu">
+                                    {% if list.content_name|length > 1 %}
+                                        <a class="sub-menu" style="font-size: 12px;display: block;padding: 10px 0;color: #000">
+                                        <span class="icon-arrow-1-down" style="float: right;margin-top: 3   px;right: 3px;font-size: 12px;font-weight:bold;"></span>
+                                            {{list.content_group}}
+                                        </a>
+                                    {% for perm_menu in list.content_name %}
+                                    <ul  class="role_menus {{list.content_group}}" id="menu_{{perm_menu.id}}" style="display: none" ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name|get_name_string}}','{{list.content_group}}')">{{perm_menu.content_name}}</ul>
+                                    {% endfor %}
+
+                                    {% else %}
+                                        {% for perm_menu in list.content_name %}
+                                        <div  style="margin-top: 10px;margin-bottom: 10px;display: block;" class="single_menu" id="menu_{{perm_menu.id}}" ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name}}','{{list.content_group}}')">{{list.content_group}}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </li>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+
+                        <div id = "menu_perm" class="col-md-7 col-sm-7" >
+                            <div style="border-right: 1px solid #ddd;">
+                                <div class = "head " style="margin-left: 10px;background-color: #d0cfcf5e;"><span id="menu_name"></span><span class="check-all"><input type="checkbox" title="Select all permission(s)" class="select-all permCheckbox" style="margin: 0px; margin-right: 15%;"   id=""></span><span  id="select_id" style="display: none;">Select all</span></div>
+                                {% if permissions|length > 0 %}
+                                    {% for avail_perm in permissions %}
+                                       <div data-id="{{avail_perm.content_id}}" class="perm" >
+                                            <div class="permission">{{avail_perm.act_name}}<input class="permCheckbox ch" style="margin: 0px; margin-right: 15%;" data-type="{{ avail_perm.act_code }}"  type="checkbox" {% if avail_perm.id in applied_perms %}checked{% endif %} value="{{avail_perm.id}}"
+                                                data-id="{{avail_perm.content_id}}" id="checkboxs"></div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+    </form>
+    <div id="msg"></div>
+</div>
+<div class="modal-footer details-footer" role="tablist">
+    <button class="btn" data-dismiss="modal" aria-hidden="true" ng-click="goBack($event, '#/accounts/roles')">Close</button>
+    <button id = "idSavebtn" class="btn btn-primary" style="display: none;" ng-click="SaveRole($event);" ng-disabled="btnDisabled" edit-mode="true">Save</button>
+    <button id="idEditBtn" class="btn btn-primary pull-right" ng-click="applyEditMode($event);"
+            ng-disabled="btnDisabled" edit-mode="false">Edit</button>
+
+</div>
+
+{% if group.name != None %}
+<script type="text/javascript">
+    sparrow.setTitle('Role permissions - {{ group.name }}');
+</script>
+{% endif %}
+

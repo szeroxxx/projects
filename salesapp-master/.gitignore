@@ -1,0 +1,9 @@
+settings.py
+venv/
+files/
+*.pyc
+__pycache__/
+my-credentials.data
+
+*.db
+web.config

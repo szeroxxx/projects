@@ -1,0 +1,361 @@
+[2020-12-10 17:18:27] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2020-12-10 17:18:32] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2020-12-11 10:29:37] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2020-12-11 10:33:29] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2020-12-11 10:36:39] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2020-12-11 10:36:40] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2020-12-11 15:17:59] | ERROR | column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedColumn: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 2419, in mfrs_series_search
+    for mfr_series in mfrs_series:
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 274, in __iter__
+    self._fetch_all()
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 1242, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 113, in __iter__
+    for row in compiler.results_iter(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size):
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1052, in results_iter
+    results = self.execute_sql(MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1100, in execute_sql
+    cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 99, in execute
+    return super().execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 76, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\utils.py", line 89, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: column eda_mfrseries.manufacturer_id does not exist
+LINE 1: ..."eda_mfrseries" INNER JOIN "eda_manufacturer" ON ("eda_mfrse...
+                                                             ^
+
+[2021-02-25 11:52:28] | ERROR | Cannot resolve keyword 'package' into field. Choices are: category, category_id, col_pin, col_pitch, comp_height, comp_length, comp_width, created_by, created_by_id, created_on, descr, diameter, doc_altium, doc_altium_id, doc_fpx, doc_fpx_id, doc_kicad, doc_kicad_id, doc_step, doc_step_id, doc_wrl_id, doc_wrl_id_id, drill_class, egl_lib_uid, id, ipc_name, is_deleted, is_wrl_transparent, name, package_category, package_category_id, part, pattern_class, pin, pin_table, pitch, productionqtymargin, row_pin, row_pitch, source, total_solder_points, type, vcdb_package_id
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 208, in packages_search
+    .values("id", "name", "ipc_name", "descr", "egl_lib_uid", "package__doc_wrl_id__docuid", "created_by__last_name", "created_by__first_name")
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 798, in values
+    clone = self._values(*fields, **expressions)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\query.py", line 793, in _values
+    clone.query.set_values(fields)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\query.py", line 2020, in set_values
+    self.add_fields(field_names, True)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\query.py", line 1768, in add_fields
+    join_info = self.setup_joins(name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m)
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\query.py", line 1504, in setup_joins
+    names[:pivot], opts, allow_many, fail_on_missing=True,
+  File "F:\production\sparrow_v2\venv\lib\site-packages\django\db\models\sql\query.py", line 1420, in names_to_path
+    "Choices are: %s" % (name, ", ".join(available)))
+django.core.exceptions.FieldError: Cannot resolve keyword 'package' into field. Choices are: category, category_id, col_pin, col_pitch, comp_height, comp_length, comp_width, created_by, created_by_id, created_on, descr, diameter, doc_altium, doc_altium_id, doc_fpx, doc_fpx_id, doc_kicad, doc_kicad_id, doc_step, doc_step_id, doc_wrl_id, doc_wrl_id_id, drill_class, egl_lib_uid, id, ipc_name, is_deleted, is_wrl_transparent, name, package_category, package_category_id, part, pattern_class, pin, pin_table, pitch, productionqtymargin, row_pin, row_pitch, source, total_solder_points, type, vcdb_package_id
+[2021-02-25 11:55:32] | ERROR | 'dict' object has no attribute 'get_type_display'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 224, in packages_search
+    "type": package.get_type_display(),
+AttributeError: 'dict' object has no attribute 'get_type_display'
+[2021-02-25 12:00:57] | ERROR | 'created_by'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 230, in packages_search
+    "created_by": package["created_by__first_name"] + " " + package["created_by__last_name"] if package["created_by"] is not None else "",
+KeyError: 'created_by'
+[2021-02-25 12:14:13] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:15] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:16] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:35] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:36] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:37] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:41] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'
+[2021-02-25 12:14:41] | ERROR | 'others'
+Traceback (most recent call last):
+  File "F:\production\sparrow_v2\sparrow\eda\views.py", line 227, in packages_search
+    "type": dict(choices.package_type)[package["type"]] if package["type"] else "",
+KeyError: 'others'

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>eC_QualityApp: Sign-in</title>
+    {% load staticfiles %}
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'base/images/favicon_pp.ico' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap-theme.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/signin.css' %}" />
+
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" />
+    <script src="{% static 'base/js/jquery-1.11.2.min.js' %}"></script>
+    <script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'base/js/bootstrap.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="https://euroc-static.s3.eu-west-1.amazonaws.com/media/login_images/style.css">
+    <style>
+      #company_logo{
+         width: 120px;
+      }
+      .image_text a{
+         color: white;
+         font-size:20px;
+      }
+      .image_text a:hover{
+         color: white;
+         font-size:20px;
+      }
+      .image_text{
+         margin-top: 20px;
+      }
+      .sp_login-head h1{
+         font-weight: 500;
+         font-size: 25px;
+      }
+      .welcome_title_disc{
+         margin-top: 10px;
+         color: rgb(119, 116, 116) !important;
+         font-size: 20px;
+      }
+    </style>
+   </head>
+
+  <body class="background-login">
+    <span id="loading-image" class="ele-center loader loader-double"></span>
+    <section class="sp_login-section">
+         <div class="container-sp_login">
+            <div class="box-s">
+               <div class="row col-rev">
+                  <div class="col-md-6 padd-n-1">
+                     <div class="pcb-bg_g sp_slider-main">
+                        <div id="myCarousel" class="carousel slide poss-slide" data-ride="carousel" data-interval="4000" data-pause="false">
+                           <!-- Indicators -->
+                           <ol class="carousel-indicators">
+                              <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                              <li data-target="#myCarousel" data-slide-to="1"></li>
+                              <li data-target="#myCarousel" data-slide-to="2"></li>
+                           </ol>
+                           <div class="carousel-inner carousel-viss" role="listbox">
+                              {% for item in crousel_image|slice:":3" %}
+                                  {% if forloop.first %}
+                                      <div class="active item">
+                                  {% else %}
+                                      <div class="item">
+                                  {% endif %}
+                                  <div class="carousel-img">
+                                    <a target="_blank" href="{{item.image_url}}"><img class="frame image_size" src="{{item.image_path}}"></a>
+                                  </div>
+                                 <div class="carousel-caption">
+                                    <span class="image_text_span" >{{item.image_text | safe}}</span>
+                                 </div>
+                                </div>
+                              {% endfor %}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6 padd-n">
+                     <div class="sp_bg_w">
+                        <div class="sp-main-heading">
+                           <div class="sp_login-head">
+                              <img id="company_logo" src="{{company_logo}}">
+                              <h1 class="welcome_title">eC Quality</h1>
+                              <p className="welcome_title_disc">Eurocircuits Quality App</p>
+                           </div>
+                           <form class="form-signin sp-login-form"  id="frmsignin" action="/accounts/authcheck" method="POST">
+                              {% csrf_token %}
+                              <div class="sp_dis">
+                                 <input type="text"  name="txt_user" id="inputEmail" class="form-control" placeholder="Username" required autofocus>
+                                 <i class="fa fa-user poss-icon" aria-hidden="true"></i>
+                              </div>
+                              <div class="sp_dis">
+                                 <input type="password" name="txt_pwd" id="inputPassword" class="form-control" placeholder="Password" required>
+                                 <i class="fa fa-lock poss-icon" aria-hidden="true"></i>
+                              </div>
+                              <div class="checkbox sp_login-check">
+                                 <label>
+                                  <div>
+                                    <div class="alert-error" style="display:none;" id="msg"></div>
+                                  </div>
+                                 </label>
+                                 <label class="sp_lable">
+                                    <a class="reset_pass" href="/accounts/passwrecv/">Lost your password?</a>
+                                  </label>
+                              </div>
+                              <input class="btn btn-lg  btn-block btn-block_g" type="submit" id="btnSignin" value="Login">
+                           </form>
+                           <div>
+                              <script type="text/javascript">
+                                var dt = new Date();
+                                document.write("<p style = 'padding-left: 126px;margin-top:40px;color:black;'> ©" + dt.getFullYear());
+                              </script> All Rights Reserved.</p>
+                            </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+    <script>
+          $(document).ready(function() {
+              //If signin page is opened inside the app controller, page is reloaded to open signin page indepedantly.
+              var power = window.location.search.slice(-5)
+              var ec = window.location.search.slice(-2)
+
+              if (power == 'power'){
+                $('.logo_ppm_img').css('display', 'block');
+              }
+
+              if (ec == 'ec'){
+                $('.logo_ec_img').css('display', 'block');
+              }
+
+              if( $('#viewContainer').length == 1) {
+                window.location = '/';
+              }
+          });
+
+          $.urlParam = function (name) {
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.search);
+            return (results !== null) ? results[1] || 0 : false;
+          }
+
+          function setStorage(key,value,expires) {
+            if (expires===undefined || expires===null) {
+                expires = (24*60*60*30);  // default: for 30 day
+            } else {
+                expires = 24*60*60*(Math.abs(expires)); //make sure it's positive
+            }
+            var now = Date.now();  //millisecs since epoch time, lets deal only with integer
+            var schedule = now + expires*1000;
+            try {
+                localStorage.setItem(key, value);
+                localStorage.setItem(key + '_expiresIn', schedule);
+            } catch(e) {
+                console.log('setStorage: Error setting key ['+ key + '] in localStorage: ' + JSON.stringify(e) );
+                return false;
+            }
+            return true;
+          };
+
+          $("#frmsignin").submit(function(e) {
+              e.preventDefault();
+
+              var url_data = ''
+              var data = $(this).serializeArray();
+              var formURL = $(this).attr("action");
+
+              if(window.location.href.indexOf("/base/app_view_redirect/") != -1) {
+                url_data = $.urlParam('next').replace("/base/","");
+              }
+
+              if(window.location.hash != '') {
+                url_data = window.location.hash;
+              }
+
+              var postData = {
+                'data' : data ,
+                'url_data' : url_data,
+              }
+
+              $.ajax({
+                  dataType: "json",
+                  type: "POST",
+                  url: formURL,
+                  data: postData,
+                  beforeSend: function() {
+                    $('#loading-image').show();
+                  },
+                  complete: function() {
+                    $('#loading-image').hide();
+                  },
+                  success: function (data) {
+                    var success = data.code == 0 ? false : true;
+                    if(success) {
+                      setStorage("loc_history", "", 0);
+                      window.location = data.msg ;
+                    }
+                    else {
+                        $('#msg').show().text(data.msg);
+                    }
+                  },
+                  error: function(data) {
+                    $('#msg').removeClass('alert-success').addClass("alert-danger").show().text(data.msg);
+                  }
+            });
+
+          });
+
+          $("#ajaxform").submit(); //Submit  the FORM
+
+
+    </script>
+
+
+  </body>
+</html>

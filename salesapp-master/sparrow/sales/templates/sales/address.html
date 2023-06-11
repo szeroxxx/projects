@@ -1,0 +1,101 @@
+<form id="frmAddress" action="/sales/save_customer_address/" method="POST" role="form" class="form-horizontal">
+    {% csrf_token %}
+    <fieldset id="id_add_form">
+
+    <div class="form-group">
+        <label for="id_first_name" class="control-label col-sm-4 required">Address type</label>
+        <div class="col-sm-8">
+            <label id = "id_addtype">{{address.AddressType}}</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-4 ">Primary address</label>
+        <div class="col-sm-8">
+            <!-- <input type="checkbox" class="checkbox-margin"  id="is_primary_address"  {% if address.IsPrimaryAddress == 'Yes' %}checked{% endif%}> -->
+            <label>{{address.IsPrimaryAddress}}</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4">Address name</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="AddressName" type="text" value="{% if address.AddressName != None %}{{address.AddressName}}{% endif %}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4">Contact name</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="ContactName" type="text" value="{% if address.ContactName != None %}{{address.ContactName}}{% endif %}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 required">Street name</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="StreetName" type="text" value="{% if address.StreetName != None %}{{address.StreetName}}{% endif %}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 required">Street no.</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="StreetNo" type="text" value="{% if address.StreetNo != None %}{{address.StreetNo}}{% endif %}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4">Box no.</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="BoxNo" type="text" value="{% if address.BoxNo != None %}{{address.BoxNo}}{% endif %}"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4">Address1</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="Address1" type="text" value="{% if address.Address1 != None %}{{address.Address1}}{% endif %}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4">Address2</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="Address2" type="text" value="{% if address.Address2 != None %}{{address.Address2}}{% endif %}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 required">Zip</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="PostalCode" type="text" value="{% if address.PostalCode != None %}{{address.PostalCode}}{% endif %}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 required">City</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="City" type="text" value="{% if address.City != None %}{{address.City}}{% endif %}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4">Country</label>
+        <div class="col-sm-8">
+            <label>{{address.Country}}</label>
+        </div>
+    </div>
+
+    <h5 style="margin-top: 25px;font-weight: bold;">
+        Communication details
+    </h5>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 required">Telephone</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="Telephone" type="text" value="{% if address.Telephone != None %}{{address.Telephone}}{% endif %}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 required">Email</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="Email" type="text" value="{% if address.Email != None %}{{address.Email}}{% endif %}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_last_name" class="control-label col-sm-4 ">Fax</label>
+        <div class="col-sm-8">
+            <input class="form-control" name="Fax" type="text" value="{% if address.Fax != None %}{{address.Fax}}{% endif %}" />
+        </div>
+    </div>
+    </fieldset>
+</form>

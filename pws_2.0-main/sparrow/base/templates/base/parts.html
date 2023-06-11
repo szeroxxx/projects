@@ -1,0 +1,49 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+<style>
+.tab-data-content {
+padding-top: 0px;
+}
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody{
+    max-height: 680px !important;
+}
+</style>
+<div class="lst-container">
+     <div style="width: 95%;float:left;">
+        <nit-advanced-searchbox
+                ng-model="searchParams1"
+                parameters="availableSearchParams1"
+                index = "1"
+                placeholder="Search...">
+        </nit-advanced-searchbox>
+      </div>
+    <div style="float:right;margin-top: 5px;">
+        <button type="button" class="btn btn-primary btn-sm"  ng-click="onExportPart($event);">Export</button>
+    </div>
+
+    <div class="pull-left" style="width: 100%;">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a class="show-tab" href="#listview">List view</a>
+            </li>
+            <li class="">
+                <a class="show-tab" href="#chartview">Chart view</a>
+            </li>
+        </ul>
+        <div class="tab-content tab-data-content">
+            <div class="tab-pane active" id="listview">
+                <div class="lst-container">
+                    <div id="gridCon">
+                        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+                            class="row-border hover"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="chartview">
+                <div class="lst-container">
+                    <div class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

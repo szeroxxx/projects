@@ -1,0 +1,23 @@
+{% load widget_tweaks %}
+<!-- <div>
+    <nit-advanced-searchbox
+            ng-model="searchParams"
+            parameters="availableSearchParams"
+            placeholder="Search...">
+    </nit-advanced-searchbox>
+</div> -->
+<div class="lst-container">
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+    <button class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true" ng-click="goBack($event,prevUrl,true)">Back</button>
+  </div>
+</script>
+
+<script type="text/javascript">
+  var data = {'customer_user' : "{{customer_user}}",'order_attachment':"{{order_attachment}}"};
+  logsInit(data);
+</script>

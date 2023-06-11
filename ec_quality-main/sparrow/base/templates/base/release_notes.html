@@ -1,0 +1,88 @@
+{% load staticfiles %}
+{% load static %}
+<style>
+    .img-fluid{
+        height: 100px;
+        width: 100px;
+    }
+
+    div#dialogReleaseNotes {
+        margin-left: 40px;
+        margin-right: 40px;
+        margin-top: 20px;
+    }
+</style>
+{% if request.user.is_superuser %}
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+     <input type="button" class="btn btn-primary btn-sm" id="btnAddOrder" value="Add new" ng-click="onAddRelese($event);"></input>
+  <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Edit" id="btnEditRelease"  ng-click="onEdit($event);" ng-disabled="btnModelEditDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Delete" id="btnDeleteRelease" ng-click="onDelete($event);" ng-disabled="btnModelDeleteDisable"></input>
+            </li>
+        </ul>
+    </div>
+</script>
+{% endif %}
+<!-- <div style="width: 800px; float:right;">
+    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1"
+        placeholder="Search...">
+    </nit-advanced-searchbox>
+</div> -->
+<div class="lst-container">
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+            class="row-border hover"></table>
+    </div>
+</div>
+
+
+<div id="dialogReleaseNotes" class="modal fade" tabindex="-1" role="dialog" data-backdrop="false">
+    <div role="document">
+        <div class="modal-content" >
+            <div class="modal-header" style="display: flex;">
+                <h4 class="modal-title" >Add release note</h4>
+                <span id="is_saved" style="margin-top: -7px; margin-left: 8px;">
+                    <h4>(Unsaved)</h4>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="col-sm-2">Release version:</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="id_release_version" name="version" type="text" value=""
+                            required />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="col-sm-2">Release date</label>
+                        <div class="input-group input-append date datePicker col-sm-2">
+                            <input type="text" class="form-control" id="id_release_date" name="created_on"
+                                value='' required />
+                            <span class="input-group-addon add-on">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <label class="col-sm-12">Release note:</label>
+                    <div class="col-sm-12">
+                        <textarea class="release_note" id="id_release_note" name="message" rows="6"></textarea>
+                    </div>
+                    <input style = 'display:none' class="form-control" id="edit_id" name="version" type="text" value="0" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true" ng-click="cencelReleaseNote($event)">Cancel</button>
+                <button class="btn btn-primary" ng-click="saveReleaseNote($event)">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

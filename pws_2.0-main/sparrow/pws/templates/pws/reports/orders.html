@@ -1,0 +1,400 @@
+<style>
+.operator{
+    overflow-wrap: break-word;
+}
+.remarks span {
+    width: 225px;
+    max-height: 3.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+}
+@media only screen and (max-width: 1366px) and (min-width:1111px) {
+    .btn-group{
+        float: right;
+    }
+   .button-bar{
+       display: inline-flex;
+       float: right;
+       margin-right: 0;
+   }
+   .btn{
+        margin-top: 2px;
+    }
+}
+@media only screen and (max-width: 1111px) {
+    .btn-group{
+        float: right;
+    }
+   .button-bar{
+       display: block;
+       float: right;
+       margin-right: 0;
+   }
+   .btn{
+        margin-top: 2px;
+    }
+}
+.send-to-next-model, .back-to-previous-model{
+    width: 650px;
+    margin-top:30px;
+    margin-left:18%;
+}
+.msg-show{
+    color:#a94442;
+    display: none;
+}
+.generate-exception-model{
+    margin-left: 10%
+}
+.generate-exception-model-title{
+    font-size: 20px
+}
+.order-add-nc-model{
+    width: 52%;
+}
+.order-add-remark-model{
+    margin-left: 10%;
+}
+.order-add-remark-model-title{
+    font-size: 20px
+}
+.order-add-remark-model-textarea{
+    resize: none;
+}
+.mlr-10{
+    margin: 0px 10px !important;
+}
+.custom-body p{
+    max-height:500px;
+    overflow-wrap: break-word;
+    overflow:auto;
+}
+</style>
+<div class="lst-container" >
+    <div>
+        <form autocomplete="off">
+            <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1"
+                placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable  id="example" dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+            class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar">
+
+        <button class="btn btn-primary btn-sm" id="btnReserve" ng-disabled="btnReserve"><u>R</u>eserve</button>
+        <button class="btn btn-primary btn-sm" id="btnRelease" value="Release" ng-disabled="btnRelease">Re<u>l</u>ease</button>
+        <button class="btn btn-primary btn-sm" id="btnSendtonext" ng-disabled="btnSendtonext">Send to <u>n</u>ext stage</button>
+        <button class="btn btn-primary btn-sm" id="btnBackToprevious" ng-disabled="btnBackToprevious">Back to <u>p</u>revious stage</button>
+        <button class="btn btn-primary btn-sm" id="btnGenerateException" ng-disabled="btnGenerateException">Reg̲ister exception</button>
+        <button class="btn btn-primary btn-sm" id="btnFiles" value="F̲iles" ng-disabled="btnReserveDisable">F̲iles</button>
+        <button class="btn btn-primary btn-sm" value="H̲istory" id="btnHistory" ng-disabled="btnHistory">H̲istory</button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnReserveMultiple" value="Reserve multiple records"></input>
+                </li>
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnChangeStatus" value="Change st̲atus" ng-disabled="btnChangeStatus"></input>
+                </li>
+                <li>
+                   <input type="button" class="btn btn-primary btn-sm" id="btnSendToFQC" ng-disabled="btnSendToFQC" value="Send to FQ̲C"></input>
+                </li>
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" value="Add NC̲" id="btnNCreport" ng-disabled="btnNCreport"></input>
+                </li>
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" value="Add Remark̲" id="btnRemark" ng-disabled="btnRemark"></input>
+                </li>
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" value="Ex̲port" id="btnExport"></input>
+                </li>
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" value="Export all data" id="btnAllDataExport"></input>
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+<div class="modal fade" id="ChangeStatus" data-backdrop="static" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title" id="title" ng-bind="sourcingTitle"></h5>
+            </div>
+            <div class="modal-body" id="status">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn-primary btn-sm" aria-hidden="true" id="btnSaveOrderStatus" ng-click="saveOrderStatus($event);">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="AddNCReport" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+    <div class="modal-dialog order-add-nc-model" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title" id="label" ng-bind="sourcingTitle"></h5>
+            </div>
+            <div class="modal-body" id="addNC">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn-primary btn-sm" aria-hidden="true" id="btnSaveNCReport" ng-click="saveNCReport($event);">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="addRemark" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content order-add-remark-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4>Add remark</h4>
+                <span class="modal-title order-add-remark-model-title" id="user_header"></span>
+            </div>
+            <div class="modal-body tab-data-content">
+                <div class="modal-body details-body">
+                    <form id="frmSaveRemarks" action="/pws/add_remark/" method="POST" role="form"
+                        class="form-horizontal" enctype="multipart/form-data">
+                        <div class="container">
+                            <div class="form-group">
+                                <label required for="id_remarks_type_add" id="id_message_lable_remarks" class="control-label col-sm-2 required">Remark type</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="id_remarks_type_add" name="remarks_type_add" value=""/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label required for="id_remarks_add" class="control-label col-sm-2 required">Remarks</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control order-add-remark-model-textarea" oninput="validate_add(this)" id="id_remarks_add" name="remarks_add" type="text" required></textarea>
+                                </div>
+                                <script>
+                                    function validate_add(input){
+                                        if(/^\s/.test(input.value))
+                                        input.value = '';
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" ng-click="$dismiss()" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn btn-primary" id="btnSaveRemarks" ng-click="SaveRemarks($event)">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewReserveModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveModel($event);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title" id="viewReserveTitle" ng-bind="sourcingTitle"></h5>
+            </div>
+            <div class="modal-body">
+                <div id="viewReserveBody" class="my-custom-scrollbar">
+                    <form id="frmSaveReserve" action="/pws/reserve_operator/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label required for="id_operator" class="control-label col-sm-2 required">Operator :
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="id_operator" name="operator" value=""/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" role="tablist">
+                <button type="submit" class="btn btn-primary btn-sm" ng-click="saveReserve($event);" id="btnSaveReserve" ng-disabled="btnDisabled" edit-mode="true">Reserve</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewReserveMultipleModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeReserveMultipleModel($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="viewReserveMultipleTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body mlr-10">
+        <div id="viewReserveMultipleBody" class="my-custom-scrollbar">
+          <form id="frmSaveReserveMultiple" action="/pws/reserve_multiple/" method="POST" role="form" class="form-horizontal"enctype="multipart/form-data" autocomplete="off">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label required for="id_order_resrve_multiple" class="control-label col-sm-4 required">Select multiple records: </label>
+                        <div class="col-sm-8 order_resrve_multiple">
+                            <input class="form-control" style="height:auto;" id="id_order_resrve_multiple" name="order_resrve_multiple" type="text" value="" required placeholder="Enter record's here" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required for="id_operator_resrve_multiple" class="control-label col-sm-4 required">Operator: </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="id_operator_resrve_multiple" name="operator_resrve_multiple" value=""/>
+                            <span class="msg-show" id="id_message_oper_resrve_multiple">This field is required.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" role="tablist">
+        <button type="submit" class="btn btn-primary btn-sm" id="btnSaveReserveMultiple" ng-click="saveReserveMultiple($event);" ng-disabled="btnDisabled"  edit-mode="true">Reserve</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="viewSendToNextModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content send-to-next-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewSendToNextTitle" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body" id="send_to_next_form">
+                <div id="send_to_next_form_"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              <button type="submit" class="btn btn-primary btn-sm" ng-click="saveSendToNext($event);" id="btnSaveSendToNext" ng-disabled="btnDisabled"  edit-mode="true">Save & Send to next</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="viewBackToPreviousModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content back-to-previous-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewBackToPreviousTitle" ng-bind="LabelDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="back_to_previous_form"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="btnBackToPrevious" ng-click="saveBackToPrevious($event);" ng-disabled="btnDisabled"  edit-mode="true">Save & Send back to previous</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="generateException" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content generate-exception-model">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4>Generate Exception</h4>
+                <span class="modal-title" id="user_header generate-exception-model-title"></span>
+            </div>
+            <div class="modal-body tab-data-content">
+                <div class="modal-body details-body">
+                    <form id="frmSaveExceptionProblem" action="/pws/generate_exception_problem_save/" method="POST"
+                        role="form" class="form-horizontal" enctype="multipart/form-data">
+                        <div class="container">
+                            <div class="form-group">
+                                <label for="id_problem_department" class="control-label col-sm-3 required">Problem department :</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="id_problem_department" name="problem_department" type="text" required readonly />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="id_order_number" class="control-label col-sm-3 required">Order number :</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="id_order_number" name="order_number" type="text" required readonly />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="id_pre_defined_problem" class="control-label col-sm-3 required">Pre-defined problem :</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="id_pre_defined_problem" name="pre_defined_problem" type="text" value="[{{exception_problems_id.id}}]" required />
+                                    <span class= "msg-show" id="id_message_pre_defined_problem">This field is required.</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group internal_remark">
+                                <label for="id_internal_remark" class="control-label col-sm-3 required">Internal remark :</label>
+                                <div class="col-sm-6">
+                                <textarea
+                                    class="form-control"
+                                    id="id_internal_remark"
+                                    name="internal_remark"
+                                    type="text"
+                                    required
+                                ></textarea>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group" id="upload_image">
+                                <label for="id_upload_image" class="control-label col-sm-3" id="upload_image_label">Exception file :</label>
+                                <div class="col-sm-6">
+                                    <input type="file" id="id_upload_image" name="upload_image">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group" id="si_file">
+                                <label for="id_si_file" class="control-label col-sm-3" id="si_file_label">SI file :</label>
+                                <div class="col-sm-6">
+                                    <input type="file" id="id_si_file" name="si_file" accept=".zip,">
+                                </div>
+                            </div>
+                            <input class="form-control" id="id_order_id" name="order_id" type="hidden" required />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" ng-click="$dismiss()" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn-primary" id="btnSavePreDefineProblem" ng-click="SavePreDefineProblem($event)">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var data = {'exception_problems_id':'{{exception_problems_id.id}}', 'permissions': {{ permissions| safe}}};
+    ordersInit(data);
+    setAutoLookup("id_operator_resrve_multiple", "/lookups/operators/", "", true, false, false, null, 1);
+</script>

@@ -1,0 +1,244 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% load app_filters %}
+<style type="text/css">
+    #permContainer{
+        padding: 0 15px;
+        margin-bottom: 10px;
+        cursor :pointer;
+    }
+    #permContainer .active a{
+        background: #fff !important;
+    }
+
+    #permContainer li  a:hover{
+        color: #515356 !important;
+    }
+    #permContainer li a{
+        color: #515356 !important;
+    }
+    #permContainer .child_menu  li  a{
+        font-size: 12px;
+        padding: 8px;
+    }
+    .perm,.check-all{
+        display: none;
+        margin-left: 10px;
+    }
+    #permContainer  li  a{
+        margin-bottom: -5px;
+    }
+    .role_menus {
+        list-style-type: none;
+        cursor: pointer;
+        padding: 5px;
+        margin-left: 10px;
+        margin-bottom: -1px;
+    }
+    .perm_section {
+        margin-bottom: -15px;
+    }
+    #permContainer li ul.nav.child_menu li:before{
+        height: 6px !important;
+        width: 6px !important;
+    }
+
+    #permContainer li ul.nav.child_menu li:after {
+        border-left: none !important;
+    }
+    .permission{
+        height: 35px;
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+    }
+    .permCheckbox{
+        margin: 0px;
+        float: right;
+        height: 18px;
+        width: 18px;
+    }
+    .permissionItem{
+        font-weight: bold;
+        height: 35px;
+        display: block;
+        padding: 10px;
+        margin-left: 10px;
+        background-color: antiquewhite;
+    }
+    .selectAll{
+        float: right;
+        margin-right: -80px;
+    }
+    .onActive{
+        font-weight: bold;
+        display: block;
+    }
+   .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #a00d0d;
+    }
+    .rolediv{
+        display: flex;
+        margin-bottom: 20px;
+    }
+    .checkall{
+        float: left;
+        position: absolute;
+        align-items: stretch;
+    }
+    .checkallname{
+        float: left;
+        margin-left: 35px;
+        position: absolute;
+        align-items: stretch;
+        width: 500px;
+    }
+</style>
+
+<div class="modal-body details-body">
+    <span id="loading-image" class="ele-center loader loader-double"></span>
+    <!-- <img id="loading-image" class="ele-center" src="{% static 'base/images/spinner_68.gif' %}?v=2" alt="Loading..." /> -->
+    <form id="frmRole" action="/accounts/role/" method="POST" role="form" name="myForm" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label required for="id_name" class="control-label col-sm-2 required">Role name</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" autocomplete="off" placeholder='Enter role name' id="id_name" style="width:118%;" name="name" type="text" value="{{ group.name }}" required/>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label required for="id_description" class="control-label col-sm-2 ">Description </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" autocomplete="off" placeholder='Enter description' id="id_description" style="width:118%;" name="description" type="text" value="{{ rolegroup.description }}" />
+                    </div>
+                </div>
+                <div class="form-group" style="display:none;">
+                    <label required class="control-label col-sm-2 required">Select Role </label>
+                    <div class="col-sm-10">
+                        <input type="radio" id="id_operator" name="role_opera_user" value="operator" disabled {% if rolegroup.operator == True or not rolegroup.operator %} checked {% endif %} required/>
+                        <label for="id_operator">Operator</label><br>
+                        <input type="radio" id="id_customer_user" name="role_opera_user" value="customer user" disabled {% if rolegroup.user == True %} checked {% endif %}/>
+                        <label for="id_customer_user">Customer user</label><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+                <div class="row col-md-7 col-sm-7" style="margin-left:-3px;" >
+                <div>
+                    <div class="rolediv">
+                        <div class="col-md-5">
+                            <span>Set rights for role:</span>
+                        </div>
+                        <div class="col-md-5">
+                             <span class="operators allcheck"><input type="checkbox" disabled data-id ="selectAll" style="margin-left: 10px;margin-top: 0px;" class="checkall"  class="permCheckbox"  id="selectAllId"></span>
+                             <span class="operators allcheck"><span  class="checkallname"  id="display_msg_id"></span></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="col-md-5 col-sm-5 customer_user" style = "border: 1px solid #ddd;">
+                            {% for list in lists %}
+                                {% if list.content_group in customer_group %}
+                                <div class="perm_section active" id="customer_user">
+                                    <li id="permContainer" class="nav side-menu">
+                                        {% if list.content_name|length > 1 %}
+                                            <a {% for perm_menu in list.content_name %} {% if perm_menu.is_customer_user is True %} ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name}}','{{list.content_group}}')" {% endif %} {% endfor %}
+                                            class="sub-menu" style="font-size: 12px;display: block;padding: 10px 0;color: #000">
+                                            <span class="icon-arrow-1-down" style="float: right;margin-top: 3   px;right: 3px;font-size: 12px;font-weight:bold;"></span>
+                                                {% if list.content_group == "Customer Reports" %} Reports {% else %} {{list.content_group}} {% endif %}
+                                            </a>
+                                            {% for menu_ in all_menu %}
+                                                {% for perm_menu in list.content_name %}
+                                                    {% if menu_.name == perm_menu.content_name and perm_menu.is_customer_user is True %}
+                                                        <ul class="role_menus {{list.content_group}}" id="menu_{{perm_menu.id}}" style="display: none" ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name|get_name_string}}','{{list.content_group}}')">{{perm_menu.content_name}}</ul>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for perm_menu in list.content_name %}
+                                            <div  style="margin-top: 10px;margin-bottom: 10px;display: block;" class="single_menu" id="menu_{{perm_menu.id}}" ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name}}','{{list.content_group}}')">{% if list.content_group == "Customer Reports" %} Reports {% else %} {{list.content_group}} {% endif %}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </li>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                         <div  class="col-md-5 col-sm-5 operators" style = "border: 1px solid #ddd;">
+                            {% for list in lists %}
+                                {% if list.content_group in operator_group %}
+                                <div class="perm_section active" id="operators">
+                                    <li id="permContainer" class="nav side-menu">
+                                        {% if list.content_name|length > 1 %}
+                                            <a {% for perm_menu in list.content_name %} {% if perm_menu.is_operator is True %} ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name}}','{{list.content_group}}')" {% endif %} {% endfor %}
+                                            class="sub-menu" style="font-size: 12px;display: block;padding: 10px 0;color: #000">
+                                            <span class="icon-arrow-1-down" style="float: right;margin-top: 3   px;right: 3px;font-size: 12px;font-weight:bold;"></span>
+                                                {{list.content_group}}
+                                            </a>
+                                                <!-- <a ng-click="permclick({{list.content_name.0.id}},'{{list.content_name.0.content_name|get_name_string}}','{{list.content_group}}')" class="sub-menu" style="font-size: 12px;display: block;padding: 10px 0;color: #000">
+                                                <span class="icon-arrow-1-down" style="float: right;margin-top: 3   px;right: 3px;font-size: 12px;font-weight:bold;"></span>
+                                                    {{list.content_group}}
+                                                </a> -->
+                                            {% for menu_ in all_menu %}
+                                                {% for perm_menu in list.content_name %}
+                                                    {% if menu_.name == perm_menu.content_name and menu_.is_operator is True %}
+                                                        <ul  class="role_menus {{list.content_group}}" id="menu_{{perm_menu.id}}" style="display: none" ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name|get_name_string}}','{{list.content_group}}')">{{perm_menu.content_name}}</ul>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for perm_menu in list.content_name %}
+                                            <div  style="margin-top: 10px;margin-bottom: 10px;display: block;" class="single_menu" id="menu_{{perm_menu.id}}" ng-click="permclick({{perm_menu.id}},'{{perm_menu.content_name}}','{{list.content_group}}')">{{list.content_group}}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </li>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div id = "menu_perm" class="col-md-7 col-sm-7" >
+                            <div style="border-right: 1px solid #ddd;width:415px">
+                                <div class = "head " style="margin-left: 10px;background-color: #d0cfcf5e;"><span id="menu_name"></span><span class="check-all"><input type="checkbox" title="Select all permission(s)" class="select-all permCheckbox" style="margin: 0px; margin-right: 15%;" data-type="all"  id=""></span><span  id="select_id" style="display: none;">Select all</span></div>
+                                {% if permissions|length > 0 %}
+                                    {% for avail_perm in permissions %}
+                                       <div data-id="{{avail_perm.content_id}}" class="perm" >
+                                         {% if avail_perm.content__content_group in customer_group %}
+                                            {% comment %} Remove this condition {% endcomment %}
+                                            <div class="permission customer_user">{{avail_perm.act_name}}<input class="permCheckbox ch" style="margin: 0px; margin-right: 15%;" data-type="{{ avail_perm.act_code }}"  name="checkcustomer" type="checkbox" {% if avail_perm.id in applied_perms %}checked{% endif %} value="{{avail_perm.id}}"
+                                                id="checkboxs"></div>
+                                         {% endif %}
+                                         {% if avail_perm.content__content_group in operator_group %}
+                                            <div class="permission operators">{{avail_perm.act_name}}<input class="permCheckbox ch" style="margin: 0px; margin-right: 15%;" data-type="{{ avail_perm.act_code }}"  name="checkoperator" type="checkbox" {% if avail_perm.id in applied_perms %}checked{% endif %} value="{{avail_perm.id}}"
+                                                data-id="{{avail_perm.content_id}}" id="checkboxs"></div>
+                                         {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </form>
+    <div id="msg"></div>
+</div>
+<div class="modal-footer details-footer tfooter-btn" role="tablist">
+    <button type="button" class="btn"
+        ng-click="onEditLink('/b/iframe_index/#/auditlog/logs/group/{{group.id}}','History - {{group.name}}', null, false, -1)"
+        title="View history"><i class="icon-history"></i></button>
+    <a class="btn"  data-dismiss="modal" aria-hidden="true" href="#/accounts/roles">Close</a>
+    <button class="btn btn-primary" ng-click="SaveRole($event);" ng-disabled="btnDisabled" edit-mode="true">Save</button>
+    <button id="idEditBtn" style="display: none;" class="btn btn-primary pull-right" ng-click="applyEditMode($event);" ng-disabled="btnDisabled" edit-mode="false">Edit</button>
+</div>
+
+<script type="text/javascript">
+</script>

@@ -1,0 +1,155 @@
+<div class="lst-container">
+    <div>
+      <form autocomplete="off">
+        <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1" placeholder="Search..."></nit-advanced-searchbox>
+      </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <input type="button" class="btn btn-primary btn-sm" id="addNew" value="A̲dd new" ng-click="onAdd($event);"></input>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="D̲elete" ng-click="onDelete($event);" ng-disabled="btnModelDeleteDisable"></input>
+                <input type="button" class="btn btn-primary btn-sm" value="E̲dit" id="btnEditMo" ng-click="onEdit($event);" ng-disabled="btnModelEditDisable"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data"></input>
+                <input type="button" class="btn btn-primary btn-sm" id="btnviewPI" value="View PI" ng-disabled="btnviewPI"></input>
+            </li>
+        </ul>
+      </div>
+  </div>
+</script>
+<div id="viewPIModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="viewPITitle" ng-bind="sourcingTitle"></h4>
+      </div>
+      <div class="modal-body">
+        <div id="viewSetPIBody" class="my-custom-scrollbar">
+          <div class="row">
+            <div class="col-md-12 col-sm-12">
+              <table class="table" id="mytable">
+                <thead>
+                  <tr>
+                    <td>Month</td>
+                    <td>Target points</td>
+                    <td>Minimum points</td>
+                    <td>Rejection</td>
+                    <td>Remarks</td>
+                  </tr>
+                </thead>
+                <tbody class="tabel-body-input">
+                  <tr>
+                    <td>January</td>
+                    <td id="id_target_efficiency_jan"></td>
+                    <td id="id_min_efficiency_jan"></td>
+                    <td id="id_rejection_jan"></td>
+                    <td id="id_remark_jan"></td>
+                  </tr>
+                  <tr>
+                    <td>February</td>
+                    <td id="id_target_efficiency_feb"></td>
+                    <td id="id_min_efficiency_feb"></td>
+                    <td id="id_rejection_feb"></td>
+                    <td id="id_remark_feb"></td>
+                  </tr>
+                  <tr>
+                    <td>March</td>
+                    <td id="id_target_efficiency_mar"></td>
+                    <td id="id_min_efficiency_mar"></td>
+                    <td id="id_rejection_mar"></td>
+                    <td id="id_remark_mar"></td>
+                  </tr>
+                  <tr>
+                    <td>April</td>
+                    <td id="id_target_efficiency_apr"></td>
+                    <td id="id_min_efficiency_apr"></td>
+                    <td id="id_rejection_apr"></td>
+                    <td id="id_remark_apr"></td>
+                  </tr>
+                  <tr>
+                    <td>May</td>
+                    <td id="id_target_efficiency_may"></td>
+                    <td id="id_min_efficiency_may"></td>
+                    <td id="id_rejection_may"></td>
+                    <td id="id_remark_may"></td>
+                  </tr>
+                  <tr>
+                    <td>June</td>
+                    <td id="id_target_efficiency_june"></td>
+                    <td id="id_min_efficiency_june"></td>
+                    <td id="id_rejection_june"></td>
+                    <td id="id_remark_june"></td>
+                  </tr>
+                  <tr>
+                    <td>July</td>
+                    <td id="id_target_efficiency_july"></td>
+                    <td id="id_min_efficiency_july"></td>
+                    <td id="id_rejection_july"></td>
+                    <td id="id_remark_july"></td>
+                  </tr>
+                  <tr>
+                    <td>August</td>
+                    <td id="id_target_efficiency_aug"></td>
+                    <td id="id_min_efficiency_aug"></td>
+                    <td id="id_rejection_aug"></td>
+                    <td id="id_remark_aug"></td>
+                  </tr>
+                  <tr>
+                    <td>September</td>
+                    <td id="id_target_efficiency_sep"></td>
+                    <td id="id_min_efficiency_sep"></td>
+                    <td id="id_rejection_sep"></td>
+                    <td id="id_remark_sep"></td>
+                  </tr>
+                  <tr>
+                    <td>Octomber</td>
+                    <td id="id_target_efficiency_oct"></td>
+                    <td id="id_min_efficiency_oct"></td>
+                    <td id="id_rejection_oct"></td>
+                    <td id="id_remark_oct"></td>
+                  </tr>
+                  <tr>
+                    <td>November</td>
+                    <td id="id_target_efficiency_nov"></td>
+                    <td id="id_min_efficiency_nov"></td>
+                    <td id="id_rejection_nov"></td>
+                    <td id="id_remark_nov"></td>
+                  </tr>
+                  <tr>
+                    <td>December</td>
+                    <td id="id_target_efficiency_dec"></td>
+                    <td id="id_min_efficiency_dec"></td>
+                    <td id="id_rejection_dec"></td>
+                    <td id="id_remark_dec"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <h5 id="id_doj" style="float:left;"></h5>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var data = { 'permissions': {{ permissions| safe}}};
+  operatorsInit(data);
+</script>

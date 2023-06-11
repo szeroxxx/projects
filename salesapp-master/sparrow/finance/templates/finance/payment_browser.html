@@ -1,0 +1,49 @@
+<style>
+    .dataTables_scrollBody {
+        max-height: 62vh;
+    }
+
+    .dataTables_paginate {
+        display: none !important;
+    }
+
+</style>
+
+<div class="lst-container">
+    <div>
+        <form autocomplete="off" style="width: 60%;float: right;margin-top: 15px;">
+            <nit-advanced-searchbox
+                    ng-model="searchParams1"
+                    parameters="availableSearchParams1"
+                    index = "1"
+                    placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+    <input type="button" class="btn btn-primary btn-sm" value="Invoice" id = "btnCustInvoice" ng-disabled = "btnCustInvoiceDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Proforma invoice" id = "btnProformaInvoice" ng-disabled = "btnProformaInvoiceDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" id="btnCustomerLogin" value="Customer login" ng-disabled="btnCustomerLoginDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Edit profile" id="btnEditProfile" ng-disabled="btnEditProfileDisable" ></input>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="History" id="btnInvoiceHistory" ng-disabled="btnInvoiceHistoryDisable"></input>
+            </li>
+        </ul>
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript">
+    paymentBrowserInit({ 'permissions': {{ permissions| safe}} });
+</script>

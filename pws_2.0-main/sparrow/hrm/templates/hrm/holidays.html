@@ -1,0 +1,96 @@
+{% load widget_tweaks %}
+<div class="lst-container">
+    <div>
+        <form autocomplete="off">
+            <nit-advanced-searchbox
+                    ng-model="searchParams1"
+                    parameters="availableSearchParams1"
+                    index = "1"
+                    placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>    
+
+<script type="text/ng-template" id="top_action_bar">
+<div class="focus-inner button-bar">
+    <input  id="btnAddHoliday" type="button" class="btn btn-primary btn-sm" value="Add new"></input>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+            <li>
+                <input id="btnEditLeaveType" type="button" class="btn btn-primary btn-sm" value="Edit" ng-disabled="btnModelEditDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Delete" ng-click="onDelete($event);" ng-disabled="btnModelDeleteDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnImport" value="Import"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Export"></input>
+            </li>
+        </ul>
+    </div>   
+</div>     
+</script>
+
+<div id="holidayModel" class="modal fade" tabindex="-1" role="dialog">
+    <form id="holidayForm" action="/hrm/holiday/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">
+    {% csrf_token %}
+        <div style="width:43%;" class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div  class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="id_name" class="control-label col-sm-3 required">Name</label>
+                                <div class="col-sm-9">
+                                    <input  class="form-control" id="id_name" maxlength="200" name="name" type="text"  data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_days" class="control-label col-sm-3 required">Holiday on </label>
+                                <div class="col-sm-9">
+                                    <div class="input-group input-append date datePicker">
+                                        <input type="text" class="form-control" id="id_holiday_date" name="holiday_on" value='{{holiday_on }}' required/>
+                                        <span class="input-group-addon add-on">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" >
+                                <label for="reoccurring" class="control-label col-sm-3"> Reoccurring every year</label>
+                                <div class="col-sm-9">
+                                    <input id="id_reoccurring" class="magic-checkbox" name="reoccurring" type="checkbox" {% if reoccurring %} checked="checked" {% endif%} />
+                                    <label for="id_reoccurring"></label>
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" ng-click="saveHolidayForm($event);"  ng-disabled="btnDisabled">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    (function(){
+        var data = {'type' : '{{type}}','permissions':{{permissions|safe}} };
+        var holidaysJS = holidaysInit(data);       
+    })();    
+</script>

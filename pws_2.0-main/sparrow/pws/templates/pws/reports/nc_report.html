@@ -1,0 +1,281 @@
+{% load app_filters %}
+<style>
+#id_company{
+  cursor: not-allowed;
+}
+#id_order_number{
+  cursor: not-allowed;
+}
+#id_company{
+  cursor: not-allowed;
+}
+#id_order_date{
+  cursor: not-allowed;
+}
+#id_nc_from_{
+  cursor: not-allowed;
+}
+.message{
+    color:#a94442;
+    display: none;
+}
+.label_margin{
+    margin-left: 8%;
+}
+.textarea_input{
+    width: 81%;
+}
+.help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #A00D0D;
+}
+.row-top{
+    margin-top: -9px;
+}
+</style>
+<form id="frmSaveNCReport" action="/pws/save_nc_report/" method="POST" role="form" class="form-horizontal"
+    enctype="multipart/form-data">{% csrf_token %}
+    <input class="form-control" id="id_nc_not" value="{{auditlogs}}" type="hidden">
+    <input class="form-control" id="id_order" name="order" value="{{order.id}}"
+        type="hidden">
+
+    <input class="form-control"  name="company_id" value={{order.company_id}} type="hidden">
+    <input class="form-control"  name="operator_id" value={{order.operator_id}} type="hidden">
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_order_number" class="col-form-label label_margin">Order No</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="id_order_number"  value="{{order.customer_order_nr}}" readonly>
+        </div>
+        <div class="col-md-2">
+            <label for="id_pws" class="col-form-label">PWS ID</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="id_pws" value="{{order.order_number}}" readonly>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_company" class="col-form-label label_margin">Company</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="id_company" name="company" value={{order.company__name}} readonly>
+        </div>
+        <div class="form-group form_order_date">
+            <label required for="id_order_date" class="control-label col-sm-2">Order date</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="id_order_date" name="order_date" required
+                    value='{{ order_date }}' readonly/>
+                </div>
+            </div>
+        </div>
+    </div><br>
+
+    <div class="row row-top">
+        <div class="col-md-2">
+            <label for="id_nc_from" class="col-form-label label_margin">NC from</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="id_nc_from_" class="form-control" value="{{order_process}}" readonly>
+            <input type="hidden" class="form-control" id="id_nc_from" name="nc_from" value="{{order_process_code}}" readonly>
+        </div>
+        <div class="col-md-2">
+            <label for="id_nc_create_by" class="col-form-label required">NC create by</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="id_nc_create_by" name="nc_create_by" class="form-control" value="[{{nc_create_by}}]">
+            <span class="message" id="id_nc_create_by_message">This field is required.</span>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_nc_type" class="col-form-label label_margin required">NC type</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="id_nc_type" name="nc_type">
+            <span class="message" id="id_nc_type_message">This field is required.</span>
+        </div>
+        <div class="col-md-2">
+            <label for="id_nc_create_date" class="col-form-label required">NC create date</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control task-date" name="nc_create_date" id="id_nc_create_date"
+                value="{{nc_create_date}}" required />
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_main_category" class="col-form-label label_margin required">Main category</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control required" style="height: auto;" id="id_main_category" name="main_category"
+                value="[{{main_category}}]" required>
+            <span class="message" id="id_main_category_message">This field is required.</span>
+        </div>
+        <div class="col-md-2">
+            <label for="id_sub_category" class="col-form-label required">Sub category</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" style="height: auto;" id="id_sub_category" name="sub_category" value="[{{sub_category}}]">
+            <span class="message" id="id_select_message">Please first select main category</span>
+            <span class="message" id="id_sub_category_message">This field is required.</span>
+        </div>
+    </div><br>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Sr.No.</th>
+                <th scope="col">Engineer name</th>
+                <th scope="col">Process section</th>
+                <th scope="col">Select</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for auditlog in auditlogs %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{auditlog.operator__user__username}}</td>
+                <td>{{auditlog.descr}}</td>
+                <td><input type="checkbox" name="check" id="id_check" value="{{auditlog.id}}"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_root_cause" class="col-form-label label_margin">Root cause</label>
+        </div>
+            <textarea class="col-md-6 textarea_input" id="id_root_cause" name="root_cause"></textarea>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_problem" class="col-form-label label_margin">Problem </label>
+        </div>
+            <textarea class="col-md-6 textarea_input" id="id_problem" name="problem"></textarea>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_solution" class="col-form-label label_margin">Solution</label>
+        </div>
+            <textarea class="col-md-6 textarea_input" id="id_solution" name="solution"></textarea>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_file" class="col-form-label label_margin">NC Document</label>
+        </div>
+        <div class="col-md-4">
+            <input type="file" class="form-control" id="id_file" name="file" />
+        </div>
+    </div><br>
+
+</form>
+
+<script>
+    $(".datePicker")
+    .datepicker({
+            format: "mm/dd/yyyy",
+            autoclose: true,
+            defaultDate: "date",
+        })
+        .on("show", function (e) {
+            setTimeout(function () {
+                $(".datepicker").css("z-index", 99999999999999);
+            }, 0);
+        });
+    var nc_type = [
+        { id: "rejection", name: "Rejection" },
+        { id: "remark", name: "Remark" },
+        { id: "bad_exc", name: "Bad Exc " },
+        { id: "training", name: "Training" },
+        { id: "remark_internal", name: "Remark-internal" },
+        { id: "not_to_count", name: "Not to count" },
+        { id: "cust_mod", name: "Cust Mod" },
+        { id: "update", name: "Update" },
+    ];
+    setAutoLookup("id_nc_type", nc_type, "");
+    setAutoLookup("id_main_category", "/b/lookups/main_category_nc_report/", "", true, false);
+    setAutoLookup("id_sub_category", "/b/lookups/sub_category_nc_report/", "id_main_category", true, true);
+    setAutoLookup("id_nc_create_by", "/b/lookups/operators/", "", true, false);
+
+    var nc_type = $('#id_nc_type').magicSuggest()
+    nc_type.clear();
+    nc_type.setSelection([{ name: "Rejection", id: "rejection" },])
+
+    var sub_category = $('#id_sub_category').magicSuggest()
+    sub_category.clear();
+    sub_category.setSelection([{ name: "{{sub_name}}", id: {{ sub_category }} },])
+
+    document.getElementById("id_sub_category").addEventListener("click", Sub_category)
+        function Sub_category() {
+            $("#id_sub_category_message").hide();
+            let main_category_id = $("#hid_main_category").val();
+            if (main_category_id == undefined) {
+                $("#id_select_message").show();
+                $("#id_sub_category_message").hide();
+            }
+        }
+    document.getElementById("id_main_category").addEventListener("click", Main_category)
+        function Main_category() {
+            $("#id_main_category_message").hide();
+            $(main_category).on("selectionchange", function (e, m) {
+                sub_category_id = $("#id_sub_category").magicSuggest();
+                sub_category_id.clear();
+            });
+            var main_category = $("#id_main_category").magicSuggest();
+            let main_category_id = $("#hid_main_category").val();
+            if (main_category_id == undefined) {
+                sub_category_id = $("#id_sub_category").magicSuggest();
+                sub_category_id.clear();
+            }
+            if (main_category_id) {
+                $("#id_select_message").hide();
+            }
+            $(main_category).on("selectionchange", function (e, m) {
+                sub_category_id = $("#id_sub_category").magicSuggest();
+                sub_category_id.clear();
+            });
+        }
+    document.getElementById("id_nc_type").addEventListener("click", fun_)
+        function fun_() {
+            $("#id_nc_type_message").hide();
+        };
+    document.getElementById("id_nc_create_by").addEventListener("click", create_by)
+        function create_by() {
+            $("#id_nc_create_by_message").hide();
+        };
+    $(function () {
+        var date = new Date();
+        var currentMonth = date.getMonth();
+        var currentDate = date.getDate();
+        var currentYear = date.getFullYear();
+        var currentHour = date.getHours();
+        var currrentMinute = date.getMinutes();
+        $('.task-date').daterangepicker({
+            maxDate: new Date(currentYear, currentMonth, currentDate, currentHour, currrentMinute),
+            autoUpdateInput: false,
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerIncrement: 1,
+            timePicker24Hour: true,
+            locale: {
+                format: 'DD/MM/YYYY H:mm',
+            }
+        });
+        $('.task-date').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY H:mm'));
+        });
+    });
+</script>

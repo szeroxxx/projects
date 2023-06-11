@@ -1,0 +1,376 @@
+{% load app_filters %}
+<style>
+    .message{
+        color:#a94442;
+        display: none;
+    }
+    .input-txt{
+        cursor: not-allowed;
+    }
+    .scrollit {
+        overflow-y:auto;
+        max-height: 428px;
+    }
+    .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #A00D0D;
+    }
+    .row-top{
+        margin-top: -9px;
+    }
+    {% if car_files %}
+        .save_btn{
+            display: none;
+        }
+        .input{
+            cursor: not-allowed;
+        }
+    {% endif %}
+    .nc-details{
+        min-width: 120px !important;
+        width: auto !important;
+    }
+</style>
+<form id="frmSaveNCReport" action="/qualityapp/modify_nc_save/" method="POST" role="form" class="form-horizontal"
+    enctype="multipart/form-data">{% csrf_token %}
+    <input class="form-control" id="id_nc" value="{{nc_reports.id}}" name="nc_id" type="hidden">
+    <input class="form-control" id="id_nc" value="{{nc_reports.order_id}}" name="order_id" type="hidden">
+    <input type="hidden" class="form-control" id="nc_number" name="nc_number" value="{{nc_reports.nc_number}}">
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_order_number" class="col-form-label model-label-left">Order No</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_order_number" name="order_number"
+                    value="{{nc_reports.order__customer_order_nr}}" readonly>
+            </div>
+            <div class="col-md-2">
+                <label for="id_qualityapp" class="col-form-label">qualityapp ID</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_qualityapp" value="{{nc_reports.order__order_number}}" readonly>
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_company" class="col-form-label model-label-left">Company</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_company" value="{{nc_reports.company__name}}" readonly>
+            </div>
+            <div class="form-group form_order_date">
+                <label required for="id_order_date" class="control-label col-sm-2">Order date</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control input-txt" id="id_order_date" value="{{order__order_date}}" readonly />
+                </div>
+            </div>
+        </div>
+        </div><br>
+
+        <div class="row row-top">
+            <div class="col-md-2">
+                <label for="id_nc_from_view" class="col-form-label model-label-left">NC from</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_nc_from_view" value="{{nc_from}}" readonly>
+            </div>
+        {% if not car_files %}
+            <div class="col-md-2">
+                <label for="id_nc_create_by" class="col-form-label required">NC create by</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" id="id_nc_create_by" name="nc_create_by" class="form-control" style="height: auto;" value="[{{created_by}}]">
+                <span class="message" id="id_nc_create_by_message">This field is required.</span>
+            </div>
+        </div><br>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_nc_type" class="col-form-label model-label-left required">NC type</label>
+            </div>
+            <div class="col-md-4 input">
+                <input type="text" class="form-control" id="id_nc_type" name="nc_type" style="height: auto;" value='["{{nc_reports.nc_type}}"]'>
+                <span class="message" id="id_nc_type_message">This field is required.</span>
+            </div>
+            <div class="col-md-2">
+                <label for="id_nc_create_date" class="col-form-label required">NC create date</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control task-date" name="nc_create_date" id="id_nc_create_date" value="{{nc_date}}"
+                    required />
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_main_category" class="col-form-label model-label-left required">Main category</label>
+            </div>
+            <div class="col-md-4 input">
+                <input type="text" class="form-control" id="id_main_category" name="main_category" style="height: auto;"
+                    value="[{{nc_reports.category}}]">
+                <span class="message" id="id_main_category_message">This field is required.</span>
+            </div>
+            <div class="col-md-2">
+                <label for="id_sub_category" class="col-form-label required">Sub category</label>
+            </div>
+            <div class="col-md-4 input">
+                <input type="text" class="form-control" id="id_sub_category" name="sub_category" style="height: auto;"
+                    value="[{{nc_reports.sub_category}}]">
+                <span class="message" id="id_select_message">Please first select main category</span>
+                <span class="message" id="id_sub_category_message">This field is required.</span>
+            </div>
+        </div><br>
+
+        <div class="scrollit">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Sr.No.</th>
+                        <th scope="col">Engineer name</th>
+                        <th scope="col">Process section</th>
+                        <th scope="col">Select</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                        {% for auditlog in auditlogs %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{auditlog.operator__user__username}}</td>
+                            <td>{{auditlog.descr}}</td>
+                            <td><input type="checkbox" name="check" {% if car_files %} disabled {% endif %} {% if auditlog.id == nc_reports.audit_log %} checked {% endif %} value="{{auditlog.id}}" onclick="MutExChkList(this);"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="col-md-2">
+                <label for="id_nc_create_by" class="col-form-label">NC create by</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" id="id_nc_create_by" name="nc_create_by" class="form-control input-txt" value="{{nc_reports.created_by}}" readonly>
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_nc_type_view" class="col-form-label model-label-left">NC type</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_nc_type_view" value="{{nc_type}}" readonly>
+            </div>
+            <div class="col-md-2">
+                <label for="id_nc_create_date" class="col-form-label">NC create date</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" name="nc_create_date" id="id_nc_create_date"
+                    value="{{nc_date}}" readonly />
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_main_category" class="col-form-label model-label-left">Main category</label>
+            </div>
+            <div class="col-md-4 input">
+                <input type="text" class="form-control input-txt" id="id_main_category" name="main_category" style="height: auto;"
+                    value="{{nc_reports.category__name}}" readonly>
+            </div>
+            <div class="col-md-2">
+                <label for="id_sub_category" class="col-form-label">Sub category</label>
+            </div>
+            <div class="col-md-4 input">
+                <input type="text" class="form-control input-txt" id="id_sub_category" name="sub_category" style="height: auto;"
+                    value="{{nc_reports.sub_category__name}}" readonly>
+            </div>
+        </div><br>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="id_operator_view" class="col-form-label model-label-left">Engineer</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_operator_view" value="{{nc_reports.operator}}"
+                    readonly>
+            </div>
+            <div class="col-md-2">
+                <label for="id_process_view" class="col-form-label">Process</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-txt" id="id_process_view" value="{{nc_reports.process}}" readonly>
+            </div>
+        </div><br>
+        {% endif %}
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_root_cause" class="col-form-label model-label-left nc-details">Root cause</label>
+        </div>
+        <div class="col-md-9">
+            <textarea {% if car_files %} disabled {% endif %} class="col-md-12 input" id="id_root_cause" name="root_cause">{{nc_reports.root_cause}}</textarea>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_problem" class="col-form-label model-label-left nc-details">Problem</label>
+        </div>
+        <div class="col-md-9">
+            <textarea {% if car_files %} disabled {% endif %} class="col-md-12 input" id="id_problem" name="problem">{{nc_reports.problem}}</textarea>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_solution" class="col-form-label model-label-left nc-details">Solution</label>
+        </div>
+        <div class="col-md-9">
+            <textarea {% if car_files %} disabled {% endif %} class="col-md-12 input" id="id_solution" name="solution">{{nc_reports.solution}}</textarea>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_file" class="col-form-label model-label-left nc-details">NC Document</label>
+        </div>
+        {% if not car_files %}
+        <div class="col-md-4">
+            <input type="file" class="form-control" id="id_nc_file" name="nc_file"/>
+        </div>
+        {% endif %}
+        <div class="col-md-4">
+            <input id="id_file_view" {% if nc_files.name %} value="{{nc_files.name}}" {% else %} {% if car_files %} value="No file" {% endif %} {% endif %} style="border: none;" readonly/><a onclick="fileDownload('{{nc_files.uid}}')"> {% if nc_files %}<i class="icon-arrow-2-circle-down down-file" title="File download"></i>{% endif %}</a>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-2">
+            <label for="id_car_file" class="col-form-label model-label-left nc-details">CAR Document</label>
+        </div>
+        {% if not car_files %}
+        <div class="col-md-4">
+            <input type="file" class="form-control" id="id_car_file" name="car_file" accept=".jpg, .pdf,"/>
+        </div>
+        {% endif %}
+        <div class="col-md-4">
+            <input id="id_car_file_view" value="{{car_files.name}}" style="border: none;" readonly /><a onclick="fileDownload('{{car_files.uid}}')"> {% if car_files %}<i class="icon-arrow-2-circle-down down-file" title="File download"></i>{% endif %}</a>
+        </div>
+    </div><br>
+
+</form>
+{% if not car_files %}
+<script>
+    function MutExChkList(chk) {
+        var chkList = chk.parentNode.parentNode.parentNode;
+        var chks = chkList.getElementsByTagName("input");
+        for (var i = 0; i < chks.length; i++) {
+            if (chks[i] != chk && chk.checked) {
+                chks[i].checked = false;
+            }
+        }
+    };
+
+    function fileDownload(uid) {
+        var uid_ = uid;
+        window.open(
+            "/attachment/dwn_attachment/?uid=" +
+            uid_ +
+            "&model=" +
+            "order_attachment" +
+            "&app=" +
+            "qualityapp",
+            "_blank"
+        );
+    };
+    var nc_type = [
+            { id: "rejection", name: "Rejection" },
+            { id: "remark", name: "Remark" },
+            { id: "bad_exc", name: "Bad Exc " },
+            { id: "training", name: "Training" },
+            { id: "remark_internal", name: "Remark-internal" },
+            { id: "not_to_count", name: "Not to count" },
+            { id: "cust_mod", name: "Cust Mod" },
+            { id: "update", name: "Update" },
+        ];
+    setAutoLookup("id_nc_type", nc_type, "");
+    setAutoLookup("id_main_category", "/b/lookups/main_category_nc_report/", "", true, false);
+    setAutoLookup("id_sub_category", "/b/lookups/sub_category_nc_report/", "id_main_category", true, true);
+    setAutoLookup("id_nc_create_by", "/b/lookups/operators/", "", true, false);
+
+    document.getElementById("id_sub_category").addEventListener("click", Sub_category)
+        function Sub_category() {
+            $("#id_sub_category_message").hide();
+            let main_category_id = $("#hid_main_category").val();
+            if (main_category_id == undefined) {
+                $("#id_select_message").show();
+                $("#id_sub_category_message").hide();
+            }
+        }
+    document.getElementById("id_main_category").addEventListener("click", Main_category)
+        function Main_category() {
+            $("#id_main_category_message").hide();
+            $(main_category).on("selectionchange", function (e, m) {
+                sub_category_id = $("#id_sub_category").magicSuggest();
+                sub_category_id.clear();
+            });
+            var main_category = $("#id_main_category").magicSuggest();
+            let main_category_id = $("#hid_main_category").val();
+            if (main_category_id == undefined) {
+                sub_category_id = $("#id_sub_category").magicSuggest();
+                sub_category_id.clear();
+            }
+            if (main_category_id) {
+                $("#id_select_message").hide();
+            }
+            $(main_category).on("selectionchange", function (e, m) {
+                sub_category_id = $("#id_sub_category").magicSuggest();
+                sub_category_id.clear();
+            });
+        }
+    document.getElementById("id_nc_type").addEventListener("click", fun_)
+        function fun_() {
+            $("#id_nc_type_message").hide();
+        };
+    document.getElementById("id_nc_create_by").addEventListener("click", create_by)
+        function create_by() {
+            $("#id_nc_create_by_message").hide();
+        };
+    $(function () {
+        var date = new Date();
+        var currentMonth = date.getMonth();
+        var currentDate = date.getDate();
+        var currentYear = date.getFullYear();
+        var currentHour = date.getHours();
+        var currrentMinute = date.getMinutes();
+        $('.task-date').daterangepicker({
+            maxDate: new Date(currentYear, currentMonth, currentDate, currentHour, currrentMinute),
+            autoUpdateInput: false,
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerIncrement: 1,
+            timePicker24Hour: true,
+            locale: {
+                format: 'DD/MM/YYYY H:mm',
+            }
+        });
+        $('.task-date').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY H:mm'));
+        });
+    });
+</script>
+{% endif %}
+<script>
+    function fileDownload(uid) {
+        var uid_ = uid;
+        window.open(
+            "/attachment/dwn_attachment/?uid=" +
+            uid_ +
+            "&model=" +
+            "order_attachment" +
+            "&app=" +
+            "qualityapp",
+            "_blank"
+        );
+    };
+</script>

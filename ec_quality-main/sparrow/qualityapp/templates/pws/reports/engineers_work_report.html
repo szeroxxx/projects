@@ -1,0 +1,180 @@
+<style>
+    .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #A00D0D;
+    }
+    .ms-sel-ctn{
+        overflow:hidden ;
+    }
+    .ms-ctn .ms-sel-item {
+        width: max-content;
+    }
+    .filter{
+        margin-left: 15px;
+        margin-top: 10px;
+        width: 100%;
+    }
+    .message{
+        color:#a94442;
+        display: none;
+    }
+    .company-label{
+        margin-left: 3%;
+    }
+    .operator-label{
+        display: None;
+        margin-left: 3%;
+    }
+    .service-label{
+        margin-left: 3%;
+    }
+    .transaction-date{
+        margin-left: 3%;
+    }
+    .group-label{
+        margin-left: 3%;
+    }
+    .button-report{
+        text-align:right;
+        margin-right: 3%;
+        margin-top: 2%;
+    }
+    .row-3{
+        height: 20px;
+    }
+    .table-preptime{
+        overflow-x:auto;
+    }
+    .preptime-input{
+        width: 100%;
+        border: none;
+    }
+    .table-user{
+        display: None;
+    }
+    .table-company{
+        display: None;
+    }
+</style>
+<div class="filter">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <div class="row">
+        <div class="form-group col-md-2 required">
+            <label for="id_select" >Select</label>
+            <input ng-click="Select($event)" class="form-control" id="id_select" name="select" type="text" value="[{{1}}]" required />
+            <span class="message" id="id_select_message">This field is required.</span>
+        </div>
+        <div class="form-group company-label col-md-2 required" id="company1">
+            <label for="id_company">Company</label>
+            <input class="form-control" id="id_company" name="company" type="text" value="[{{company_id}}]"/>
+            <span class="message" id="id_company_message">This field is required.</span>
+        </div>
+        <div class="form-group col-md-2 operator-label required" id="operator1">
+            <label for="id_company">Operator</label>
+            <input class="form-control" id="id_operator" name="operator" type="text" {% if planet_engineer == "Yes" %} disabled value="[{{operator_id}}]" {% else %} value="[{{operator_id}}]" {% endif %} />
+        </div>
+        <div class="form-group col-md-2 service-label required" id="service">
+            <label for="id_service">Service:</label>
+            <input class="form-control" id="id_service" name="service" type="text" value="" ng-click="messages($event);"/>
+            <span class="message" id="id_service_message">This field is required.</span>
+            <span class="message" id="id_service_select_message">Please first select the company.</span>
+        </div>
+        <div class="form-group col-md-2 transaction-date required">
+            <label for="id_date" class="col-form-label">Transaction date</label>
+            <input type="date" class="form-control" id="id_date" name="date" value="" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-2">
+            <label for="id_shift">Shift</label>
+            <input class="form-control" id="id_shift" name="shift" type="text"/>
+        </div>
+        <div class="form-group col-md-2 group-label">
+            <label for="id_group">Group</label>
+            <input class="form-control" id="id_group" name="group" type="text" />
+        </div>
+        <div class="button-report">
+            <button type="button" class="btn btn-primary btn-sm" id="generatereport"><u>G</u>enerate report</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btnExport" disabled>E<u>x</u>port</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" disabled>Export all data</button>
+            <button type="button" class="btn btn-primary btn-sm" id="id_saveEfficiency" disabled ng-click="saveEfficiency($event);">Save PrepTime</button>
+        </div>
+    </div>
+    <div class="row-3"></div>
+    </div>
+    <form id="frmSaveEngineersWorkReport" action="/qualityapp/save_engineers_work_report/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+        <div class="table-preptime">
+            <table class="table" id="mytable">
+                <thead>
+                    <tr>
+                        <td>Layer</td>
+                        <td>Schematic</td>
+                        <td>Footprint</td>
+                        <td>Placement</td>
+                        <td>Routing</td>
+                        <td>Gerber release</td>
+                        <td>Analysis</td>
+                        <td>Incoming</td>
+                        <td>BOM incoming</td>
+                        <td>SI</td>
+                        <td>SICC</td>
+                        <td>BOM CC</td>
+                        <td>FQC</td>
+                        <td>Panel</td>
+                        <td>Upload panel</td>
+                    </tr>
+                </thead>
+                <tbody class="tabel-body-input">
+                    <tr>
+                        <td>1/2</td>
+                        <td><input type="number" class="preptime-input" name="schematic" id="id_schematic" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="footprint" id="id_footprint" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="placement" id="id_placement" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="routing" id="id_routing" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="gerber_release" id="id_gerber_release" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="analysis" id="id_analysis" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="incoming" id="id_incoming" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="BOM_incoming" id="id_BOM_incoming" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="SI" id="id_SI" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="SICC" id="id_SICC" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="BOM_CC" id="id_BOM_CC" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="FQC" id="id_FQC" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="panel" id="id_panel" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="upload_panel" id="id_upload_panel" min="0" value=""></td>
+                    </tr>
+                    <tr>
+                        <td>ML</td>
+                        <td><input type="number" class="preptime-input" name="schematic_ML" id="id_schematic_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="footprint_ML" id="id_footprint_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="placement_ML" id="id_placement_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="routing_ML" id="id_routing_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="gerber_release_ML" id="id_gerber_release_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="analysis_ML" id="id_analysis_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="incoming_ML" id="id_incoming_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="BOM_incoming_ML" id="id_BOM_incoming_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="SI_ML" id="id_SI_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="SICC_ML" id="id_SICC_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="BOM_CC_ML" id="id_BOM_CC_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="FQC_ML" id="id_FQC_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="panel_ML" id="id_panel_ML" min="0" value=""></td>
+                        <td><input type="number" class="preptime-input" name="upload_panel_ML" id="id_upload_panel_ML" min="0" value=""></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <div id="gridCon_user" class="table-user">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+    <div id="gridCon_company" class="table-company">
+        <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2" class="row-border hover"></table>
+    </div>
+</div>
+<script>
+    var data = {'permissions': {{ permissions| safe}}};
+    engineers_work_reportInit(data);
+    document.getElementById('id_date').value = moment().format('YYYY-MM-DD');
+</script>

@@ -1,0 +1,40 @@
+{% load widget_tweaks %}
+{% load app_filters %}
+
+<style media="screen">
+.version-header {
+    padding: 10px;
+    padding-left: 0px;
+    font-size: 16px;
+}
+.latest-header-version {
+    font-weight: bold;
+    font-size: 20px;
+}
+.release-body {
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    line-height: 1.5em;
+}
+.latest-release-body {
+    font-size: 14px;
+}
+
+.relasenote-hide{
+    display: none;
+}
+
+</style>
+<div class="modal-body details-body">
+    <div class="tab-content">
+            <div class="version-header {% if latest_version_id == release_note.id %} latest-header-version {% endif %}">
+                What's new in version {{ latest_version_id }}
+                <span class="release-date">[{{ created_on | get_local_time }}]</span>
+            </div>
+            <div class="release-body {% if latest_version_id == release_note.id %} latest-release-body {% endif %}">
+                {{ note | safe}}
+            </div>
+    </div>
+</div>
+
+

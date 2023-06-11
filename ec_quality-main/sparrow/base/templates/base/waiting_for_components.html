@@ -1,0 +1,67 @@
+{% load widget_tweaks %}
+<style>
+    a[ng-click]{
+        cursor: pointer;
+    }
+    .circle {
+        width: 6px;
+        height: 6px;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        margin-left: 5px;
+        margin-top: 3px;
+    }
+    .circle_green{
+        background: red;
+    }
+    .circle_orange{
+        background: orange;
+    }
+    .circle_lightgrey{
+        background: lightgrey;
+    }
+    #id_sourcing_status {
+            cursor: pointer;
+    }
+    #export_sourcing_status {
+        float: right;
+        margin-right: 15px;
+    }
+</style>
+<div class="lst-container">
+    <div>
+        <nit-advanced-searchbox
+                ng-model="searchParams1"
+                parameters="availableSearchParams1"
+                index = "1"
+                placeholder="Search...">
+        </nit-advanced-searchbox>
+    </div>
+
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+
+    <div style="float:right" class="status-info">
+        <div style="display: inline-block" class="circle circle_orange"></div><span style="margin-left: 5px;">Receipt is received partially.</span>
+    </div>
+</div>
+
+<div id="SourcingModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="width: 1100px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <button class="btn btn-primary" id="export_sourcing_status" ng-click="exportSyncData($event);" ng-disabled="btnDisabled">Export</button>
+                <h4 class="modal-title" id="sourcingLable" ng-bind="sourcingTitle"></h4>
+            </div>
+            <div class="modal-body" id="sourcing_model_body" style="overflow-y: auto;">
+                <div id="sourcing_form"></div>
+                <div id="sourcingMsg"></div>
+            </div>
+        </div>
+    </div>
+</div>

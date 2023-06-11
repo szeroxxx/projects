@@ -1,0 +1,432 @@
+<style>
+    {% if customer_user %}
+    .title_left{
+        display: none !important;
+    }
+    #right_col {
+        background-color: {{db_bg_color}};
+      }
+    #app_container{
+         background-color: {{db_bg_color}};
+      }
+    {% endif %}
+    .card_content {
+        width: 40%;
+    }
+
+    .count {
+        padding-left: 10px;
+        font-size: xx-large;
+    }
+
+    .count_top {
+        padding: 5px 10px 0px 10px;
+        font-size:18px;
+    }
+
+    .innerDiv {
+        border: 1px solid #e6e7e9;
+        transition: all 0.2s ease;
+        background-color:white;
+        border-radius: 5px;
+    }
+
+    .innerDiv:hover {
+        box-shadow: 5px 6px 6px 5px #e9ecef;
+        border-radius: 5px;
+    }
+
+    .small_row {
+        margin-top: 20px;
+    }
+
+    .innerDiv table {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .innerDiv td,
+    th {
+        border-top: 1px solid #ccc;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .innerDiv thead>tr {
+        background-color: #f2f5f7;
+    }
+
+    .tableData {
+        height: 200px;
+        overflow-y: auto;
+    }
+
+
+    .rightAlign {
+        text-align: right;
+        margin-left: 10px;
+    }
+
+    @media screen and (max-width:1367px) {
+        .card_content {
+            width: 40%;
+        }
+        td {
+            width: 323px;
+            padding: 7px;
+
+        }
+        .heighttd{
+            height:68px;
+        }
+        .icon {
+            margin: 13px !important;
+        }
+    }
+
+    @media only screen and (max-width: 375px) and (max-height:667px) {
+        .card_content {
+            width: 300px;
+            margin: 10px;
+            display: block;
+            align-items: center;
+        }
+        td {
+            width: 323px;
+            padding: 7px;
+
+        }
+    }
+
+    @media (min-width: 1920px) and (max-width: 2560px) {
+        .card_content {
+            width: 40%;
+        }
+        td {
+            width: 452px;
+            padding: 7px;
+
+        }
+    }
+     @media (min-width: 2560px) and (max-width: 3000px) {
+
+        td {
+            width: 10%;
+            padding: 7px;
+
+        }
+    }
+    @media (min-width: 900px) and (max-width: 1600px) {
+        .icon {
+            margin: 7px !important;
+        }
+        td {
+            width: 323px;
+            padding: 7px;
+            font-size: 10px;
+        }
+
+    }
+    @media (min-width: 1600px) and (max-width: 1800px) {
+
+        td {
+            width: 323px;
+            padding: 7px;
+
+        }
+    }
+
+    @media screen and (min-width:3440px) {
+        .card_content {
+            width: 40%;
+        }
+          td {
+            width: 711px;
+            padding: 7px;
+        }
+    }
+
+    @media screen and (min-width:3840px) {
+        .card_content {
+            width: 40%;
+        }
+        td {
+            width: 5%;
+            padding: 7px;
+
+        }
+    }
+    @media screen and (min-width:7600px) {
+
+        td {
+            width: 3%;
+            padding: 7px;
+
+        }
+    }
+
+.icon{
+    float: left;
+    margin: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    color: #fff;
+}
+.icon2{
+     font-size: 24px;
+}
+.align {
+  margin: 9px;
+  text-align: left;
+  color: black;
+}
+.count{
+     padding: 7px 0px 8px 8px;
+     font-size:24px;
+
+}
+.leftAlign {
+    text-align: left;
+    margin-left: 10px;
+}
+.heighttd{
+    cursor: pointer;
+}
+.colortext{
+    color:gray;
+}
+</style>
+<div class="modal-body details-body">
+    <div class="container" style="margin-left:10px">
+    {% if customer_user %}
+        <h6 style="color:gray"><b>{{greeting}}</b></h6>
+        <h1><b>{{user_full_name}}</b></h1>
+        <div class="row" style="width: 80%;">
+        <table>
+            <tr>
+                <td id="place_order">
+                    <div class="innerDiv heighttd">
+                        <div class="icon" style=" background: #206BC4;">
+                            <i class="icon-tasks-checked icon2"></i>
+                        </div>
+                        <div class="align">
+                            <p><b>Place order</b></p>
+                            <p>Place an Order</p>
+                        </div>
+                    </div>
+                </td>
+                <td id="order_tracking">
+                    <div class="innerDiv heighttd">
+                        <div class="icon" style=" background: #2FB344 ;">
+                         <i class="icon-list-4 icon2"></i>
+                       </div>
+                        <div  class="align">
+                           <p><b>Order tracking</b></p>
+                           <p>A page to track running order(s)</p>
+                        </div>
+                    </div>
+                </td>
+                <td id="exception">
+                    <div class="innerDiv heighttd">
+                        <div class="icon" style=" background: #E4405F ;">
+                         <i class="icon-file-warning icon2" style="padding: 0px 3px;"></i>
+                        </div>
+                        <div class="align">
+                           <p><b>Exception</b></p>
+                           <p>Track exception on order(s)</p>
+                        </div>
+                    </div>
+                </td>
+                <td id="profile">
+                    <div class="innerDiv heighttd ">
+                        <div class="icon" style=" background: #1AB7EA ;">
+                            <i class="icon-user icon2" style="padding: 0px 1.5px;"></i>
+                        </div>
+                        <div class="align">
+                            <p><b>Profile</b></p>
+                            <p>Manage your profile</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </div>
+    {%endif%}
+        <br>
+        <div class="row card_in_row count" style="width: 100%;">
+            <div class="col-sm-3 col-md-6 col-lg-6 tile_stats_count card_content">
+                <div class="innerDiv">
+                    <div class="count_top">
+                        <a href="" id="symbol_pending">&#9650;</a>&nbsp;Total orders
+                    </div>
+                    <div class="count">
+                        <a class="{% if total_orders == 0 %} green {% else %} red {% endif %}"
+                          ><span class="card-count"
+                                id="total_orders">{{total_orders}}</span></a>
+                    </div>
+                    <div id="table_pending" class="tableData">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order number</th>
+                                    <th class="rightAlign">Order date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if orders %}
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td class="leftAlign">{{order.order_number}}</td>
+                                            <td class="rightAlign">{{order.order_date}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="colortext">No records available.</td><td></td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="approved" class="col-sm-3 col-md-6 tile_stats_count card_content" style="padding-right: 8px;">
+                <div class="innerDiv">
+                    <div class="count_top">
+                        <a href="" id="symbol_sourcing">&#9650;</a>&nbsp;Orders in-progress
+                    </div>
+                    <div class="count">
+                        <a class="{% if order_in_process == 0 %} green {% else %} red {% endif %}"><span class="card-count" id="order_in_process">{{order_in_process}}</span></a>
+                    </div>
+                    <div id="table_sourcing" class="tableData">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order number</th>
+                                    <th class="rightAlign">Order date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if process_orders %}
+                                    {% for order in process_orders %}
+                                    <tr>
+                                        <td class="leftAlign">{{order.order_number}}</td>
+                                        <td class="rightAlign">{{order.order_date}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="colortext">No records available.</td><td></td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-md-6 tile_stats_count card_content small_row">
+                <div class="innerDiv">
+                    <div class="count_top">
+                        <a href="" id="symbol_ready_for_prod">&#9650;</a>&nbsp;Orders in-Exception
+                    </div>
+                    <div class="count">
+                        <a class="{% if order_in_exception == 0 %} green {% else %} red {% endif %}"><span class="card-count" id="order_in_exception">{{order_in_exception}}</a>
+                    </div>
+                    <div id="table_sourcing" class="tableData">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order number</th>
+                                    <th class="rightAlign">Exception date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if exception_orders %}
+                                    {% for order in exception_orders %}
+                                        <tr>
+                                            <td class="leftAlign">{{order.order_number}}</td>
+                                            <td class="rightAlign">{{order.order_date}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="colortext">No records available.</td><td></td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-6  tile_stats_count card_content small_row" style="padding-right: 8px;">
+                <div class="innerDiv">
+                    <div class="count_top">
+                        <a href="" id="symbol_ready_for_prod">&#9650;</a>&nbsp;Orders - Finished
+                    </div>
+                    <div class="count">
+                        <a class="{% if order_in_finished == 0 %} green {% else %} red {% endif %}"><span class="card-count" id="order_in_finished">{{order_in_finished}}</a>
+                    </div>
+                    <div id="table_sourcing" class="tableData">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order number</th>
+                                    <th class="rightAlign">Finish date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if finish_orders %}
+                                    {% for order in finish_orders %}
+                                        <tr>
+                                            <td class="leftAlign">{{order.order_number}}</td>
+                                            <td class="rightAlign">{{order.order_date}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="colortext">No records available.</td><td></td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        $("#place_order").click(function(){
+            window.location.href = "#/pws_portal/place_order/";
+            location.reload();
+        });
+        $("#order_tracking").click(function(){
+            window.location.href = "#/order_tracking/0/";
+            location.reload();
+        });
+        $("#exception").click(function(){
+            window.location.href = "#/exception_tracking/";
+            location.reload();
+        });
+        $("#total_orders").click(function(){
+            window.location.href = "#/order_tracking/0/";
+            location.reload();
+        });
+        $("#order_in_process").click(function(){
+            window.location.href = "#/order_tracking/1/";
+        });
+        $("#order_in_exception").click(function(){
+            window.location.href = "#/exception_tracking/";
+            location.reload();
+        });
+        $("#order_in_finished").click(function(){
+            window.location.href = "#/order_tracking/2/";
+        });
+        $("#profile").click(function () {
+            window.location.href = "#/accounts/profile";
+        });
+</script>
+

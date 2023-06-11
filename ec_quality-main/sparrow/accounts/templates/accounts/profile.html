@@ -1,0 +1,691 @@
+{% load widget_tweaks %}
+{% load static %}
+<style>
+    {% comment %} table {
+        width: 100%;
+    }
+
+    th,td {
+        padding: 4px 4px;
+        text-align: center;
+    }
+
+    tr {
+        border-bottom: 1px solid #ccc;
+    } {% endcomment %}
+
+    .row-group {
+        text-align: left;
+        font-weight: 600;
+    }
+
+    #notificatipon_table th,
+    #notificatipon_table td {
+        width: 20%;
+    }
+
+    .cell-event {
+        text-align: left;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    input[type=radio],
+    input.radio {
+        margin-top: 0px;
+        width: 15px;
+        height: 14px;
+    }
+
+    input[type="file"] {
+        display: none !important;
+    }
+
+    .btnImageLabel {
+        color: #266EBB;
+        cursor: pointer;
+    }
+
+    .changes {
+        padding-top: -1px !important;
+    }
+
+    .color-input {
+        width: auto;
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .valid:before {
+        position: relative;
+        content: "✔";
+    }
+
+    .invalid {
+        color: #c66c6c;
+    }
+
+    .invalid:before {
+        position: relative;
+        content: "✖";
+    }
+
+    .nopad {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .image-checkbox {
+        cursor: pointer;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        border: 4px solid transparent;
+        margin-bottom: 0;
+        outline: 0;margin-left:0px;
+    }
+
+    .image-checkbox input[type="checkbox"] {
+        display: none;
+    }
+
+    .image-checkbox-checked {
+        border-color: #4783B0;
+    }
+
+    .image-checkbox .fa {
+        position: absolute;
+        color: #4A79A3;
+        background-color: #fff;
+        /* padding: 10px; */
+        top: 0;
+        right: 0;
+    }
+
+    .image-checkbox-checked .fa {
+        display: block !important;
+    }
+
+    .radio-img>input {
+        display: none;
+    }
+
+    .radio-img .image {
+        border: 2px solid orange;
+    }
+
+    .selection {
+        position: absolute;
+        color: white;
+        border-radius: 50px;
+        align-items: center;
+        z-index: 5;
+        z-index: 3;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        left: 40px;
+        top: 3em;
+    }
+
+    .theme-contain{
+        margin-right: -30px;
+    }
+    .theme_name {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @media only screen and (max-width: 1395px)  {
+        .theme-contain{
+        margin-right: -10px;
+    }}
+    @media only screen and (max-width: 1231px)  {
+        .theme-contain{
+        margin-right: 0;
+    }}
+    @media only screen and (max-width: 990px)  {
+        .theme-contain{
+        margin-right: 60px;
+    }
+    }
+</style>
+
+<div class="modal-body details-body">
+    <form id="frmProfile" action="/accounts/save_profile/" method="POST" role="form" class="form-horizontal">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="form-group">
+                    <label for="id_email" class="control-label col-sm-2 col-md-2">Profile image</label>
+                    <div class="col-sm-3 col-md-3">
+                        <div class="avatar-image">
+                            {% if profile_image %}
+                            <img id="avatar_image" src="{{profile_image}}"
+                                style="display: inline-block;width: 118px; background-color: #e7e7e7;" onerror="this.src='{% static '/base/images/man.png' %}';"/>
+                            {% else %}
+                            <span style="height:90px;"><img src="{% static '/base/images/man.png' %}" alt=""></span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group" style="height: 0px;">
+                            <label for="user_img" class="btnImageLabel col-form-label"
+                                style="padding-left: 50px;">Edit</label>
+                            <input id="user_img" name="profile_image" type="file"  onchange="return fileValidation()"  data-rule-extension="png|jpg|jpeg|bmp|gif" data-msg-extension="Only .png, .jpg, .jpeg, .gif and .bmp extension is allowed.">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_first_name" class="control-label col-sm-2 col-md-2 required col-form-label">First name</label>
+                        <div class="col-sm-3 col-md-3" style="margin-top: 6px; ">
+                            <input type="text" class="form-control" id="id_first_name" name="first_name"
+                                value="{{first_name}}" data-rule-maxlength="200" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_last_name" class="control-label col-sm-2 col-md-2 required">Last name</label>
+                        <div class="col-sm-3 col-md-3" style="margin-top: 6px;">
+                            <input type="text" class="form-control " id="id_last_name" name="last_name"
+                                value="{{last_name}}" maxlength=100 data-rule-required="true">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12">
+                <div class="form-group">
+                    <label for="id_email" class="control-label col-sm-2 col-md-2" >Email</label>
+
+                    <div class="col-sm-3 col-md-3" style="margin-left: -3px;">
+                        <input type="email" class="form-control read-only-mode" id="id_email" name="email"
+                            value="{{email}}" data-rule-email="true" readonly>
+                    </div>
+                </div>
+                <div class="form-group" id="id_change_password_field">
+                    <label class="col-sm-2 col-md-2"></label>
+                    <div class="col-sm-3 col-md-3" style="margin-top: 15px;">
+                        <a id="id_change_password" name="change_password" class="link">Change password</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2 col-md-2">Display row</label>
+
+                    <div class="col-sm-3 col-md-3" style="margin-left: -3px;">
+                        <select name="display_row" value="{{display_row}}" class=" form-control">
+                            <option {% if display_row == 10 %} selected {% endif %} value="10">10</option>
+                            <option {% if display_row == 25 %} selected {% endif %} value="25">25</option>
+                            <option {% if display_row == 50 %} selected {% endif %} value="50">50</option>
+                            <option {% if display_row == 100 %} selected {% endif %} value="100">100</option>
+                            <option {% if display_row == 200 %} selected {% endif %} value="200">200</option>
+                            <option {% if display_row == 300 %} selected {% endif %} value="300">300</option>
+                            <option {% if display_row == 400 %} selected {% endif %} value="400">400</option>
+                            <option {% if display_row == 500 %} selected {% endif %} value="500">500</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div></div>
+                    <label class="control-label col-sm-2 col-md-2">Select your theme</label>
+                    <div  class="col-md-9 col-sm-9" id="thumbnails">
+                        <div class="container" id="thumbnails">
+                          {% if bg_color == "#042853" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_dark_blue_active" src="{% static '/base/images/themes/theme_dark_blue_active.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_dark_blue_active" />
+                                    <img id="theme_dark_blue" src="{% static '/base/images/themes/theme_dark_blue.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_dark_blue_active" />
+                                    <input type="checkbox" name="team[]" value="theme_dark_blue" />
+                                    <div class="theme_name">Dark Blue</div>
+                                </label>
+                            </div>
+
+                            {% else %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox" >
+                                    <img id="theme_dark_blue" src="{% static '/base/images/themes/theme_dark_blue.png' %}" style="width: 100px;height: 100px;" attr="theme_dark_blue_active" />
+                                    <img id="theme_dark_blue_active" src="{% static '/base/images/themes/theme_dark_blue_active.png' %}"  style="width: 100px;height: 100px;display: none;" attr="theme_dark_blue_active" />
+                                    <input type="checkbox" name="team[]" value="theme_dark_blue" />
+                                    <div class="theme_name">Dark Blue</div>
+                                </label>
+                            </div>
+                            {% endif %}
+
+                            {% if bg_color == "#202020" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_black_active" src="{% static '/base/images/themes/theme_black_active.png' %}"
+                                        style="width: 100px;height: 100px" attr="theme_black_active" />
+                                    <img id="theme_black" src="{% static '/base/images/themes/theme_black.png' %}"
+                                        style="width: 100px;height: 100px;;display: none;" attr="theme_black_active" />
+                                    <input class="checkbox" type="checkbox" name="team[]" value="theme_black" />
+                                    <div class="theme_name">Black</div>
+                                </label>
+                            </div>
+
+                            {% else %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_black" src="{% static '/base/images/themes/theme_black.png' %}" style="width: 100px;height: 100px;" attr="theme_black_active"/>
+                                    <img id="theme_black_active" src="{% static '/base/images/themes/theme_black_active.png' %}" style="width: 100px;height: 100px;display: none;" attr="theme_black_active"/>
+                                    <input class="checkbox" type="checkbox" name="team[]" value="theme_black" />
+                                    <div class="theme_name">Black</div>
+                                </label>
+                            </div>
+                            {% endif %}
+
+                            {% if bg_color == "#4169e1" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_royal_blue_active" src="{% static '/base/images/themes/theme_royal_blue_active.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_royal_blue_active" />
+                                    <img id="theme_royal_blue" src="{% static '/base/images/themes/theme_royal_blue.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_royal_blue_active" />
+                                    <input type="checkbox" name="team[]" value="theme_royal_blue" />
+                                    <div class="theme_name">Royal blue</div>
+                                </label>
+                            </div>
+
+                            {% else %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_royal_blue" src="{% static '/base/images/themes/theme_royal_blue.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_royal_blue_active" />
+                                    <img id="theme_royal_blue_active" src="{% static '/base/images/themes/theme_royal_blue_active.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_royal_blue_active" />
+                                    <input type="checkbox" name="team[]" value="theme_royal_blue" />
+                                    <div class="theme_name">Royal blue</div>
+                                </label>
+                            </div>
+
+                            {% endif %}
+
+                            {% if bg_color == "#07a092" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_persian_green_active" src="{% static '/base/images/themes/theme_persian_green_active.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_persian_green_active" />
+                                    <img id="theme_persian_green" src="{% static '/base/images/themes/theme_persian_green.png' %}"
+                                        style="width: 100px;height: 100px; display: none;" attr="theme_persian_green_active" />
+                                    <input type="checkbox" name="team[]" value="theme_persian_green" />
+                                    <div class="theme_name">Persian green</div>
+                                </label>
+                            </div>
+
+                            {% else %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_persian_green" src="{% static '/base/images/themes/theme_persian_green.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_persian_green_active" />
+                                    <img id="theme_persian_green_active" src="{% static '/base/images/themes/theme_persian_green_active.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_persian_green_active" />
+                                    <input type="checkbox" name="team[]" value="theme_persian_green" />
+                                    <div class="theme_name">Persian green</div>
+                                </label>
+                            </div>
+                            {% endif %}
+
+                            {% if bg_color == "#370665" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_violet" src="{% static '/base/images/themes/theme_violet.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_violet_active" />
+                                    <img id="theme_violet_active" src="{% static '/base/images/themes/theme_violet_active.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_violet_active" />
+                                    <input type="checkbox" name="team[]" value="theme_violet" />
+                                    <div class="theme_name">Violet</div>
+                                </label>
+                            </div>
+
+                            {% else %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_violet" src="{% static '/base/images/themes/theme_violet.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_violet_active" />
+                                    <img id="theme_violet_active" src="{% static '/base/images/themes/theme_violet_active.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_violet_active" />
+                                    <input type="checkbox" name="team[]" value="theme_violet" />
+                                    <div class="theme_name">Violet</div>
+                                </label>
+                            </div>
+                            {% endif %}
+
+                            {% comment %} {% if bg_color == "#f8306d" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_radical_red_active" src="{% static '/base/images/themes/theme_radical_red_active.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_radical_red_active" />
+                                    <img id="theme_radical_red" src="{% static '/base/images/themes/theme_radical_red.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_radical_red_active" />
+                                    <input type="checkbox" name="team[]" value="theme_radical_red" />
+                                    <div class="theme_name">Radical red</div>
+                                </label>
+                            </div>
+                            {% else %}
+
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_radical_red" src="{% static '/base/images/themes/theme_radical_red.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_radical_red_active" />
+                                    <img id="theme_radical_red_active" src="{% static '/base/images/themes/theme_radical_red_active.png' %}"
+                                        style="width: 100px;height: 100px;display: none;" attr="theme_radical_red_active" />
+                                    <input type="checkbox" name="team[]" value="theme_radical_red" />
+                                    <div class="theme_name">Radical red</div>
+                                </label>
+                            </div>
+                            {% endif %} {% endcomment %}
+
+
+                            {% comment %} {% if bg_color == "#D80E70" %}
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox">
+                                    <img id="theme_pink_active" src="{% static '/base/images/themes/theme_pink_active.png' %}"
+                                        style="width: 100px;height: 100px;" attr="theme_pink_active" />
+                                    <img id="theme_pink" src="{% static '/base/images/themes/theme_pink.png' %}" style="width: 100px;height: 100px;display: none;"
+                                        attr="theme_pink_active" />
+                                    <input type="checkbox" name="team[]" value="theme_pink" />
+                                    <div class="theme_name">Pink</div>
+                                </label>
+                            </div>
+                            {% else %}
+
+                            <div class="col-sm-1 col-md-2 theme-contain">
+                                <label class="image-checkbox" >
+                                    <img id="theme_pink" src="{% static '/base/images/themes/theme_pink.png' %}" style="width: 100px;height: 100px;" attr="theme_pink_active" />
+                                    <img id="theme_pink_active"  src="{% static '/base/images/themes/theme_pink_active.png' %}" style="width: 100px;height: 100px;display: none;" attr="theme_pink_active" />
+                                    <input type="checkbox" name="team[]" value="theme_pink" />
+                                    <div class="theme_name">Pink</div>
+                                </label>
+                            </div>
+                            {% endif %} {% endcomment %}
+
+                            <div style="display:none;">
+                                <input type="text" name="" id="selected_theme" value="None">
+                            </div>
+                            <div style="display:none;">
+                                <input type="text" name="" id="get_selected_theme" value="{{bg_color}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+<div id="BgImageModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="BgImageLabel" ng-bind="BgImageDialogTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="BgImage_form"></div>
+                <div id="BgImageMsg"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" ng-click="saveBgImage($event);">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="msg"></div>
+</div>
+<div class="modal-footer">
+    <!-- <button class="btn" data-dismiss="modal" aria-hidden="true" ng-click="goBack($event)">Close</button> -->
+    <button class="btn btn-primary" ng-click="saveProfile($event)" ng-disabled="btnDisabled">Save</button>
+</div>
+
+
+<div id="notificationModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="width:60%; margin-left: 200px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" ng-bind="notificationModelTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 50px;" ng-if="notifyEmail">
+                    <label for="id_notfiy_email" class="control-label col-sm-2 required">Email</label>
+                    <div style="width: 83%;float: right;">
+                        <input class="form-control" id="id_notfiy_email" maxlength="200" name="notification_email"
+                            type="text" data-rule-email="true" />
+                    </div>
+                </div>
+                <div style="margin-bottom: 50px;" ng-if="notifyMobile">
+                    <label for="id_notfiy_mobile" class="control-label col-sm-3 required">Mobile number</label>
+                    <div style="width: 75%;float: right;">
+                        <input class="form-control" id="id_notfiy_mobile" maxlength="200" name="notification_email"
+                            type="number" data-rule-number="true" minlength="10" maxlength="12" />
+                    </div>
+
+                </div>
+                <div style="margin-bottom: 105px;" ng-if="verifyOTP">
+                    <div class="col-md-12 col-sm-12">
+                        <p>A OTP(One Time Passcode) has been sent to <b> {[{notifyData}]} </b></p>
+                        <p>Please enter the OTP below to verify your <span ng-if="ForEmail">email address.</span> <span
+                                ng-if="ForMob">phone number.</span></p>
+                        <input class="form-control" id="id_otp" name="notification_email" type="number"
+                            data-rule-number="true" style="margin-bottom: 7px;" />
+                        <label ng-if="timer">OTP will expire after</label><label id="timer" ng-if="timer"
+                            style="margin-left: 10px;">&nbsp;02:00</label>
+                        <label ng-if="timeOut" style="color: red;">OTP is expired.</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button ng-if="notifyEmail || notifyMobile || timeOut" class="btn" data-dismiss="modal"
+                    aria-hidden="true">Close</button>
+                <button ng-if="notifyEmail || notifyMobile" class="btn btn-primary"
+                    ng-click="saveNotificationData($event);">Save</button>
+                <button ng-if="verifyOTP && timeOut==false" class="btn btn-primary"
+                    ng-click="verifyOtp($event);">Validate OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="passwordChangeModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="width: 26%">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 8px 10px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="changepasswordModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="frmchangedpassword" action="" role="form" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="changepassword" id="changepassword_form" class="control-label col-sm-5 required"
+                                style="padding-left: 8px;"></label>
+                            <div class="col-sm-7" style="padding-right: 10px; right: 10px">
+                                <input type="password" class="form-control" id="changepassword"
+                                    ng-click="newPassword($event);" name="changepassword"
+                                    data-rule-equalto="#changepassword" required />
+                                <div id="validate_message" style="margin-top: 10px;">
+                                    <h5>Your Password must meet the following requirements:</h5>
+                                    <p id="validate_character_length" class="invalid">&nbsp;&nbsp;At least 8
+                                        characters</b></p>
+                                    <p id="validate_capital_letter" class="invalid">&nbsp;&nbsp;At least one capital
+                                        letter</p>
+                                    <p id="validate_small_letter" class="invalid">&nbsp;&nbsp;At least one small letter
+                                    </p>
+                                    <p id="validate_digit" class="invalid">&nbsp;&nbsp;At least one digit</p>
+                                    <p id="validate_special_character" class="invalid">&nbsp;&nbsp;At least one special
+                                        character</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmchangepassword" id="confimrchangedpassword_form"
+                                class="control-label col-sm-5 required" style="padding-left: 8px;"></label>
+                            <div class="col-sm-7" style="padding-right: 10px; right: 10px">
+                                <input type="password" class="form-control" id="confirmchangepassword"
+                                    data-rule-equalto="#changepassword" required />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary" id="changePass" ng-click="changePass($event);"
+                    ng-disabled="btnDisabled">Update password</button>
+                <button class="btn btn-primary" id="passwordSave" style="display: none"
+                    ng-disabled="btnDisabled">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function fileValidation() {
+        var fileInput =document.getElementById('user_img');
+            var filePath = fileInput.value;
+            var allowedExtensions =
+                    /(\.jpg|\.png|\.jpeg)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                sparrow.showMessage("appMsg", sparrow.MsgType.Error, "Please upload file having extension .png, .jpg, .jpeg only.", 2);
+                return false;
+            }
+        }
+    $(document).ready(function () {
+            $(document).on("click", "#thumbnails div label img", function () {
+                var value = $(this).attr('attr')
+                $("#"+ value).show();
+                $("#"+ value.replace("_active", "")).hide();
+                if(value=="theme_black_active"){
+                    $("#theme_dark_blue_active").hide();
+                    $("#theme_persian_green_active").hide();
+                    $("#theme_pink_active").hide();
+                    $("#theme_radical_red_active").hide();
+                    $("#theme_violet_active").hide();
+                    $("#theme_royal_blue_active").hide();
+
+                    $("#theme_dark_blue").show();
+                    $("#theme_persian_green").show();
+                    $("#theme_pink").show();
+                    $("#theme_radical_red").show();
+                    $("#theme_violet").show();
+                    $("#theme_royal_blue").show();
+                }
+
+                if (value == "theme_royal_blue_active") {
+                    $("#theme_black_active").hide();
+                    $("#theme_dark_blue_active").hide();
+                    $("#theme_persian_green_active").hide();
+                    $("#theme_pink_active").hide();
+                    $("#theme_radical_red_active").hide();
+                    $("#theme_violet_active").hide();
+
+                    $("#theme_black").show();
+                    $("#theme_dark_blue").show();
+                    $("#theme_persian_green").show();
+                    $("#theme_pink").show();
+                    $("#theme_radical_red").show();
+                    $("#theme_violet").show();
+                }
+
+                if(value=="theme_dark_blue_active"){
+                    $("#theme_black_active").hide();
+                    $("#theme_persian_green_active").hide();
+                    $("#theme_pink_active").hide();
+                    $("#theme_radical_red_active").hide();
+                    $("#theme_violet_active").hide();
+                    $("#theme_royal_blue_active").hide();
+
+                    $("#theme_black").show();
+                    $("#theme_persian_green").show();
+                    $("#theme_pink").show();
+                    $("#theme_radical_red").show();
+                    $("#theme_violet").show();
+                    $("#theme_royal_blue").show();
+                }
+                if(value=="theme_persian_green_active"){
+                    $("#theme_black_active").hide();
+                    $("#theme_dark_blue_active").hide();
+                    $("#theme_pink_active").hide();
+                    $("#theme_radical_red_active").hide();
+                    $("#theme_violet_active").hide();
+                    $("#theme_royal_blue_active").hide();
+
+                    $("#theme_black").show();
+                    $("#theme_dark_blue").show();
+                    $("#theme_pink").show();
+                    $("#theme_radical_red").show();
+                    $("#theme_violet").show();
+                    $("#theme_royal_blue").show();
+                }
+                if(value=="theme_pink_active"){
+                    $("#theme_black_active").hide();
+                    $("#theme_dark_blue_active").hide();
+                    $("#theme_persian_green_active").hide();
+                    $("#theme_radical_red_active").hide();
+                    $("#theme_violet_active").hide();
+                     $("#theme_royal_blue_active").hide();
+
+                    $("#theme_black").show();
+                    $("#theme_dark_blue").show();
+                    $("#theme_persian_green").show();
+                    $("#theme_radical_red").show();
+                    $("#theme_violet").show();
+                     $("#theme_royal_blue").show();
+                }
+                if(value=="theme_radical_red_active"){
+                    $("#theme_black_active").hide();
+                    $("#theme_dark_blue_active").hide();
+                    $("#theme_persian_green_active").hide();
+                    $("#theme_royal_blue_active").hide();
+                    $("#theme_violet_active").hide();
+                    $("#theme_pink_active").hide();
+                    $("#theme_violet_active").hide();
+
+                    $("#theme_black").show();
+                    $("#theme_dark_blue").show();
+                    $("#theme_persian_green").show();
+                    $("#theme_royal_blue").show();
+                    $("#theme_violet").show();
+                    $("#theme_pink").show();
+                    $("#theme_violet").show();
+                }
+
+                if (value == "theme_violet_active") {
+                    $("#theme_black_active").hide();
+                    $("#theme_dark_blue_active").hide();
+                    $("#theme_persian_green_active").hide();
+                    $("#theme_pink_active").hide();
+                    $("#theme_radical_red_active").hide();
+                    $("#theme_royal_blue_active").hide();
+
+                    $("#theme_black").show();
+                    $("#theme_dark_blue").show();
+                    $("#theme_persian_green").show();
+                    $("#theme_pink").show();
+                    $("#theme_radical_red").show();
+                    $("#theme_royal_blue").show();
+                }
+                $("#thumbnails div label img").not($(this)).css("border", "none");
+                $("#selected_theme").val(value)
+            });
+        });
+</script>

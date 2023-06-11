@@ -1,0 +1,17 @@
+<div id="gridCon">
+    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover">
+    </table>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar">
+        <button class="btn btn-primary btn-sm" id="btnRefresh">Refresh</button>
+        <button class="btn btn-primary btn-sm" id="btnExport">Ex̲port</button>
+        <button class="btn btn-primary btn-sm" id="btnAllDataExport">Export all data</button>
+    </div>
+</script>
+
+<script>
+    var data = { 'permissions': {{ permissions| safe}}};
+    orders_in_flowInit(data);
+</script>

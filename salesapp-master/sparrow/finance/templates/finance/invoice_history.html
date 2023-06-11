@@ -1,0 +1,113 @@
+
+<style>
+    .column-rt-pad{
+        padding-right: 30px;
+
+    }
+    .pad-btm{
+        padding-bottom: 10px;
+    }
+    .tab-pane{
+        padding-left: 10px;
+    }
+    .modal-content{
+        width: 150%;
+        right: 25%;
+    }
+
+</style>
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <h4 class="modal-title">Invoice history - {{data.0.Number}}</h4>
+</div>
+
+    <div class="modal-body" style="max-height:80vh;overflow-y: auto;">
+        <table>
+            <tr>
+                <th class="column-rt-pad pad-btm">
+                    Invoice number
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Status
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Action
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Invoice date
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Currency
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Base amount
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Customer amount
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Username
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    IP address
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Created on
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    History ID
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Payment ID
+                </th>
+            </tr>
+        {% if data|length == 0 %}
+        </table>
+        <p style="text-align: center;padding-top:10px;">No data available</p>
+        {% else %}
+        {% for d in data %}
+        <tr>
+            <td class="column-rt-pad pad-btm">
+                {{d.Number}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Status}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Action}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Invoicedate}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Currency}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Base_Amount}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Customer_Amount}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.UserName}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.IPAddress}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.Createdon}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.HistoryId}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{d.PaymentId}}
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="$dismiss()" data-dismiss="modal">Close</button>
+</div>

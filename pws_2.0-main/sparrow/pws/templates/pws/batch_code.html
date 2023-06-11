@@ -1,0 +1,26 @@
+<div class="modal-body details-body">
+    <form id="frmSaveImportOrder" action="/masters/user_master_save/" method="POST" role="form" class="form-horizontal"
+        enctype="multipart/form-data">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12" style="border: 0px solid;">
+                <div class="form-group">
+                    <label required for="id_order_no" class="control-label col-sm-2 ">Order No</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_order_noorder_no" type="text"  value="" />
+                    </div>
+                </div></br>
+
+                <div class="form-group">
+                    <label required for="id_order_no" class="control-label col-sm-2 ">File Upload</label>
+                    <div class="col-sm-4">
+                        <input  id="id_order_no" type="file" name="file"  value="" />
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-dark" style="margin-top: 20px;margin-left: 10px;">Generate Batch code</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+

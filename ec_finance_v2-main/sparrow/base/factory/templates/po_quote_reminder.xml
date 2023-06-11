@@ -1,0 +1,24 @@
+<template>
+    <name>po_quote_reminder</name>
+    <description>PO quotation remainder mail to  supplier</description>
+    <subject>Reminder for quotation (RFQ #{{po_number}})</subject>
+    <html_content>
+        <![CDATA[
+Dear {{supplier_name}},
+<br/>
+<br/>
+We at {{company_name}} would like to ask for the price quote of the attached a list of items.
+
+<br/>
+<br/>
+We are looking forward to hear from you.
+<br/>
+<br/>
+<br/>
+Sincerely,
+
+<br/>
+{{company_name}}
+]]>
+    </html_content>
+</template>

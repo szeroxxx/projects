@@ -1,0 +1,164 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+<style>
+    .msg-show{
+        color:#a94442;
+        display: none;
+    }
+    .customer-logo{
+        display: inline-block;
+        width: 118px;
+        background-color: #e7e7e7;
+    }
+    .customer-logo-add{
+        height: 0px;
+    }
+    .customer-logo-edit-label{
+        padding-left: 50px;
+    }
+    .customer-logo-span-1{
+        margin-top: 5px;
+    }
+    .customer-logo-span-2{
+        margin-top: 5px;
+        color: #ED4337;
+    }
+    .msg-customer-process{
+        color: #e84439;
+        float: left;
+        font-size: 14px;
+        font-weight: bold;
+        display:none;
+    }
+</style>
+<div class="modal-body details-body">
+    <form id="frmSaveCustomer" action="/pws/save_customer/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3 required">Customer name</label>
+                        <div class="col-sm-8">
+                            {{comp_form.name}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="id_label_gen_mail">General email</label>
+                        <div class="col-sm-8 id_mes_gen_mail">
+                            {{form.gen_mail}}
+                            <span class="help-block msg-show" id="id_mes_gen_mail">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="id_label_ord_rec_mail">Order receive mail</label>
+                        <div class="col-sm-8 id_mes_ord_rec_mail">
+                            {{form.ord_rec_mail}}
+                            <span class="help-block msg-show" id="id_mes_ord_rec_mail">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="id_label_ord_exc_gen_mail">Exception mail to leader</label>
+                        <div class="col-sm-8 id_mes_ord_exc_gen_mail">
+                           {{form.ord_exc_gen_mail}}
+                            <span class="help-block msg-show" id="id_mes_ord_exc_gen_mail">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="id_label_ord_exc_rem_mail">Exception mail to customer</label>
+                        <div class="col-sm-8 id_mes_ord_exc_rem_mail">
+                            {{form.ord_exc_rem_mail}}
+                            <span class="help-block msg-show" id="id_mes_ord_exc_rem_mail">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="id_label_ord_comp_mail">Order completion mail</label>
+                        <div class="col-sm-8 id_mes_ord_comp_mail">
+                            {{form.ord_comp_mail}}
+                            <span class="help-block msg-show" id="id_mes_ord_comp_mail">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="id_label_mail_from">Mail from</label>
+                        <div class="col-sm-8 id_mes_mail_from">
+                           {{form.mail_from}}
+                            <span class="help-block msg-show" id="id_mes_mail_from">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-3" id="label_int_exc_from">Internal exception from</label>
+                        <div class="col-sm-8 mes_int_exc_from">
+                           {{form.int_exc_from}}
+                            <span class="help-block msg-show" id="mes_int_exc_from">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                      <div class="form-group">
+                        <label required class="control-label col-sm-3" id="label_int_exc_to">Internal exception to</label>
+                        <div class="col-sm-8 mes_int_exc_to">
+                           {{form.int_exc_to}}
+                            <span class="help-block msg-show" id="mes_int_exc_to">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                      <div class="form-group">
+                        <label required class="control-label col-sm-3" id="label_int_exc_cc">Internal exception cc</label>
+                        <div class="col-sm-8 mes_int_exc_cc">
+                           {{form.int_exc_cc}}
+                            <span class="help-block msg-show" id="mes_int_exc_cc">Please enter a valid email address.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Company logo</label>
+                        <div class="col-sm-8">
+                            <div class="avatar-image">
+                                {% if company %}
+                                        <img id="company_img" src="data:image/png;base64,{{company.company_img}}" class="customer-logo"/>
+                                    {% else %}
+                                        <img id="company_img" src="{% static 'base/images/pp_logo_bl.png' %}" class="customer-logo"/>
+                                {% endif %}
+                            </div>
+                            <div class="form-group customer-logo-add">
+                                <label for="company_img_change" class="btnImageLabel customer-logo-edit-label">Edit</label>
+                                <input id="company_img_change" name="company_img" type="file" data-rule-extension="png|jpg|jpeg|bmp|gif" data-msg-extension="Only .png, .jpg, .jpeg, .gif and .bmp extension is allowed.">
+                                <span id="file_size_value" class="customer-logo-span-1"></span>
+                                <span id="company_img_change_msg" class="customer-logo-span-2"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="form-group">
+                        <label required class="control-label col-sm-4">Active</label>
+                        <div class="col-sm-8">
+                            {{comp_form.is_active}}
+                        </div>
+                    </div><br>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-4">File required</label>
+                        <div class="col-sm-8">
+                            {{form.is_req_files}}
+                        </div>
+                    </div><br>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-4">Send prepared data in attachment</label>
+                        <div class="col-sm-8">
+                            {{form.is_send_attachment}}
+                        </div>
+                    </div><br>
+                    <div class="form-group">
+                        <label required class="control-label col-sm-4">Send Exception file in Attachment</label>
+                        <div class="col-sm-8">
+                            {{form.is_exp_file_attachment}}
+                        </div>
+                    </div><br>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer details-footer tfooter-btn" role="tablist">
+    <span class="msg-customer-process" id="note_efficiency">Note :- Make sure to assign processes and efficiency points after customer creation.</span>
+    <button class="btn" data-dismiss="modal" aria-hidden="true" id="btnClose" ng-click="goBack($event)">Close</button>
+    <button class="btn btn-primary btn-sm" ng-click="saveCustomer($event);" ng-disabled="btnDisabled" edit-mode="true">Save</button>
+</div>
+

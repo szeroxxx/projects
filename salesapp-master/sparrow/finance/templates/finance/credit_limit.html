@@ -1,0 +1,80 @@
+{% load static %}
+{% load staticfiles %}
+<style>
+    .{
+white-space: nowrap
+    }
+</style>
+<div class="modal-header">
+    <button type="button"   class="close" ng-click="$dismiss()" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <h4 class="modal-title" ng-bind="creditLimitModalTitle"></h4>
+</div>
+
+<div class="modal-body details-body" >
+    
+
+    <form id="creditLimitForm"  method="POST" action="" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">
+        <h4 class="modal-title"> Credit limit level - {{data.level}}</h4>
+        <br>
+        <div style="padding-left: 20px;" class="row">
+            <div  class="col-md-12 col-sm-12 width-100">
+                <div  class="form-group">
+                    <label for="id_base_system" class="control-label col-sm-4 required">Base system </label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_base_system" name="base system" type="number" oninput="sparrow.validatePriceDecimalInput(this.value,'{{decimal_place}}','id_base_system')" onkeypress='return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46' min="0" value="{{data.climit}}"/>
+                        <div style="display: none;" id="baseSystem" class="required">Required</div>
+                        <div style="display: none;" id="baseSystemLength" class="required">Max 18 digits are allowed</div>
+                    </div>
+                    <label for="id_base_system" class="control-label col-sm-1 ">EUR</label>
+                </div>
+
+                <div  class="form-group">
+                    <label for="id_base_graydon_cl" class="control-label col-sm-4 required">Base Graydon credit limit</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" id="id_base_graydon_cl" name="base graydon" type="number" oninput="sparrow.validatePriceDecimalInput(this.value,'{{decimal_place}}','id_base_graydon_cl')" onkeypress='return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46' min="0" value="{{data.iclimit}}"/>
+                        <div style="display: none;" id="baseGraydon" class="required">Required</div>
+                        <div style="display: none;" id="baseGraydonLength" class="required">Max 18 digits are allowed</div>
+
+
+                    </div>
+                    <label for="id_base_graydon_cl" class="control-label col-sm-1">EUR</label>
+                </div>
+            </div> 
+        </div>
+        <h4 >Invoice due date</h4>
+        <br>
+        <div style="padding-left: 20px;" class="row">
+            <div  class="col-md-12 col-sm-12 width-100">
+                <div  class="form-group">
+                    <label for="id_days_starting" class="control-label col-sm-3">Days starting</label>
+                    <div class="col-sm-4">
+                        <input class="form-control" oninput="validity.valid||(value='');" min="0" max="255" id="id_days_starting" name="id_days_starting" type="number" value="{{data.cdays}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label><input type="radio" name="invoiceDays" value="1" {% if data.ddtype == 1 %} checked {% endif %}> From invoice date</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label><input type="radio" name="invoiceDays"  value="2" {% if data.ddtype == 2 %} checked {% endif %}>  First day of the month following invoice due date </label>
+                    </div>
+                </div>
+            </div> 
+        </div>
+
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" ng-click="$dismiss()" aria-hidden="true">Close</button>
+    <button class="btn btn-primary" ng-click="saveCreditLimit();showModal=false;" ng-disabled="btnDisabled">Save</button>
+</div>
+
+
+
+<script type="text/javascript">
+    var customer_id = '{{customer_id}}';
+    creditLimitModalInit(customer_id)
+</script>

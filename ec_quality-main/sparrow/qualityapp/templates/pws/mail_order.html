@@ -1,0 +1,213 @@
+<html>
+  <head>
+    <style>
+      .key{
+        vertical-align: top;
+        padding: 5px;
+        border-bottom: solid #eaeaea 1px;
+        text-align: left;
+        white-space: nowrap;
+        font-weight: 600;
+        min-width: 130px;
+
+      }
+      .value{
+        vertical-align: top;
+        padding: 5px;
+        border-bottom: solid #eaeaea 1px;
+        text-align: left;
+        white-space: normal;
+        width: 99%;
+        word-break: break-word;
+      }
+      .table2{
+        width: 100%;
+        border-collapse: collapse !important;
+      }
+      .ordertd{
+          padding: 5px;
+          line-height: 20px;
+          max-width: 544px;
+
+      }
+      .head{
+          line-height: 1.3;
+          letter-spacing: -0.04em;
+          width: 100%;
+          padding: 12px;
+      }
+      .span1{
+        color: #ffffff;
+        font-size: 14px;
+      }
+      .title{
+        padding: 20px 0px 10px 0px;
+        font-family: verdana, sans-serif;
+      }
+      .imgtd{
+        text-align: center;
+        margin: 10px 0px;
+        display: inline-block;
+      }
+      .tablealign{
+        padding: 0px; max-width: 640px; background: #f8f8f8;
+      }
+      .regards{
+        padding: 10px 0px 20px 0px;
+        font-family: verdana, sans-serif;
+      }
+      .maintable{
+        vertical-align: middle;
+        background-color: white;
+        width:100%;
+        border:0;
+      }
+      .tablealign2{
+        width: 50%;
+        margin-left: 25%;
+        margin-right: 25%;
+        border:0;
+      }
+      .fonttype{
+        font-family: verdana, sans-serif;
+      }
+      .int_remark{
+            padding: 0px 0px 0px 0px;
+            font-family: verdana, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <table cellpadding="0" cellspacing="0" style=" border:0;width:100%;">
+      <tbody>
+        <tr>
+          <td width="100%" class="imgtd">
+          <img src="http://beta.pcbplanet.com/wp-content/uploads/2014/11/logo2.gif" alt="pcb planet" height="60"></td>
+        </tr>
+        <tr>
+          <td width="100%" class="tablealign">
+            <table cellpadding="0" cellspacing="0" class="tablealign2">
+              <tbody>
+                <tr>
+                  <td class="title"><font color="#000000"><b>{{title}}{% if mail_type == "place_order" or mail_type == "cancel_order" or mail_type == "internal_exception" %}<br>{{title_}}{%endif%}</b></font></td>
+                </tr>
+                {% if internal_remark %}
+                <tr>
+                  <td class="int_remark"><b>Internal remark : </b>{{internal_remark}}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <td style="padding: 0px; max-width: 592px;">
+                    <table  cellspacing="0" cellpadding="0" class="maintable">
+                      <tbody>
+                        <tr>
+                          <td style="padding: 10px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                              <tbody>
+                                <tr style="background: #001529;">
+                                  <td class="head">
+                                    <span class="gmail_default fonttype">
+                                      <span class="span1">
+                                        <b>{{head}}</b>
+                                      </span>
+                                    </span>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="ordertd">
+                                    <table border="0" cellpadding="0" cellspacing="0" class="table2">
+                                      <tbody>
+                                        {% for key,value in order_detail.items %}
+                                        <tr>
+                                          <td class="key">
+                                            <span class="gmail_default fonttype">
+                                            {% if key == "company__name" %}
+                                              Company Name:
+                                            {% elif key == "customer_order_nr"%}
+                                              {% if mail_type == "finish_order" %}
+                                                Customer Order No:
+                                              {% else %}
+                                                Order nr:
+                                              {%endif%}
+                                            {% elif key == "order_number" %}
+                                              qualityapp ID:
+                                            {% elif key == "remarks"%}
+                                              Customer Remarks:
+                                            {% elif key == "service__name"%}
+                                              {% if mail_type == "finish_order" %}
+                                                Order Type:
+                                              {% else %}
+                                                Service:
+                                              {%endif%}
+                                            {% elif key == "pcb_name"%}
+                                              PCB Name:
+                                            {% elif key == "layer"%}
+                                              {% if mail_type == "finish_order" %}
+                                                Pcb Type:
+                                              {% else %}
+                                                Layer:
+                                              {%endif%}
+                                            {% elif key == "order__company__name" %}
+                                              Company Name:
+                                            {% elif key == "order__company"%}
+                                              Company Email:
+                                            {% elif key == "order__order_number"%}
+                                              qualityapp ID:
+                                            {% elif key == "order__customer_order_nr"%}
+                                              Order Nr:
+                                            {% elif key == "order__pcb_name"%}
+                                              PCB Name:
+                                            {% elif key == "order__layer"%}
+                                              PCB Type:
+                                            {% elif key == "order__delivery_term"%}
+                                              Delivery Term:
+                                            {% elif key == "order__delivery_date"%}
+                                              Expected Delivery Date:
+                                            {% elif key == "pre_define_problem__code"%}
+                                              PreDefine Problem:
+                                            {% elif key == "order_status"%}
+                                              Exception Raised From:
+                                            {% endif %}
+
+                                            </span>
+                                          </td>
+                                          <td class="value">
+                                            {% if key == "layer"%}
+                                                {{layers}}
+                                            {% elif key == "order__company" %}
+                                                {{company_gen_mail.gen_mail}}
+                                            {% elif key == "order__layer"%}
+                                                {{layers}}
+                                            {% elif key == "order__delivery_term"%}
+                                                {{delivery_terms}}
+                                            {% elif key == "order_status"%}
+                                                {{order_status_name}}
+                                            {% else%}
+                                                {{value}}
+                                            {% endif %}
+                                          </td>
+                                        </tr>
+                                        {% endfor %}
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="regards" ><b>Regards,</b><br><b>PCB Planet Team</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<template>
+    <name>so_request_for_quote</name>
+    <description>A template will be used to send quotation to the customer.</description>
+    <subject>Quotation (RFQ #{{so_number}})</subject>
+    <html_content>
+        <![CDATA[
+Dear {{customer_name}},
+<br/>
+<br/>
+Thank you very much for your inquiry. Please find attached quotation. I am happy to discuss your order in detail - if you have any questions, please feel free to contact me.
+<br/>
+<br/>
+To proceed with the order, please fill in the payment information. Email me with a copy of the signed quotation.
+<br/>
+<br/>
+Best regards,
+<br/>
+<br/>
+{{sender_name}}
+<br/>
+{{company_name}}
+]]>
+    </html_content>
+</template>

@@ -1,0 +1,33 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% load app_filters %}
+<div class="modal-body details-body">
+    <form id="frmSaveTag" action="/attachment/tag/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label for="id_name" class="required control-label col-sm-3">Name <span class="required"></label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="id_name" value="{{tag_data.name}}" name="name" required>            
+                    </div>
+                </div>   
+                <div  class="form-group">
+                    <label for="id_parent" class="control-label col-sm-3">Nest label under</label>
+                    <div class="col-sm-9">
+                        <input class="form-control " id="id_parent" maxlength="200" value="[{{ tag_data.parent_id }}]" name="parent" type="text"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer details-footer" role="tablist">
+    {% if tag_data %}
+    <button type="button" id="id_history" class="btn"
+        ng-click="onEditLink('/b/iframe_index/#/auditlog/logs/tag/{{tag_data.id}}?title={{tag_data.name}}','History - {{tag_data.name}}', null, false, -1)"
+        title="View history"><i class="icon-history"></i></button>
+    {% endif %}
+    <button class="btn" data-dismiss="modal" aria-hidden="true"   ng-click="onClose($event)"  id="btnClose">Close</button>
+    <button class="btn btn-primary" ng-click="saveTag($event);" ng-disabled="btnDisabled" edit-mode="true">Save</button>
+    <button id="idEditBtn" style="display: none;" class="btn btn-primary pull-right" ng-click="applyEditMode($event);" ng-disabled="btnDisabled" edit-mode="false">Edit</button>
+</div>

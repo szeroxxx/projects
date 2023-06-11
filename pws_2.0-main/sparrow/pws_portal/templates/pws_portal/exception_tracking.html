@@ -1,0 +1,149 @@
+<style>
+  #id_remarks_type_back{
+  cursor: not-allowed;
+}
+#id_remarks_type_back .ms-trigger{
+  display: none !important;
+}
+</style>
+<div>
+  <form autocomplete="off">
+    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1"
+        placeholder="Search...">
+    </nit-advanced-searchbox>
+  </form>
+</div>
+
+<table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover">
+</table>
+
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar">
+        <input type="button" class="btn btn-primary btn-sm" id="edit" value="Modify order" ng-click="onEdit($event);" ng-disabled="edit"></input>
+        <button class="btn btn-primary btn-sm" id="btnFiles" ng-disabled="btnReserveDisable"><u>F</u>iles</button>
+        <input type="button" class="btn btn-primary btn-sm" value="Reply Exception" id="btnReplyException" ng-disabled="btnReplyException"></input>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+                <li>
+
+                    <input type="button" class="btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistoryDisable"></input>
+                    <input type="button" class="btn-primary btn-sm" id="btnExport" value="Ex̲port"></input>
+                    <input type="button" class="btn-primary btn-sm" id="btnAllDataExport" value="Export all data"></input>
+                    <input type="button" class="btn-primary btn-sm" id="btnCancel" value="Cancel" ng-disabled="btnCancel"></input>
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+
+
+{% comment %}  Reply exception POP-UP {% endcomment %}
+<div id="replyException" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="margin-left: 10%">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+           <h4 class="modal-title" id="viewReplayExceptionTitle" ng-bind="LabelDialogTitle"></h4>
+        <span
+          class="modal-title"
+          id="user_header"
+          style="font-size: 20px"
+        ></span>
+      </div>
+      <div class="modal-body tab-data-content">
+      <div class="modal-body details-body">
+        <form
+            id="frmReplyException"
+            action="/pws_portal/reply_exception_save/"
+            method="POST"
+            role="form"
+            class="form-horizontal"
+            enctype="multipart/form-data"
+        >
+            <div class="container">
+                <div class="form-group">
+                    <label required for="id_remarks_type_back" id="id_message_lable_remarks" class="control-label col-sm-2 required">Remark type</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" disabled id="id_remarks_type_back" name="remarks_type_back" value=""/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_remarks" class="control-label col-sm-2 required">Remarks :</label>
+                    <div class="col-sm-10">
+                    <textarea
+                        class="form-control"
+                        id="id_remarks_back"
+                        name="remarks_back"
+                        type="text"
+                        required
+                    ></textarea>
+                    </div>
+                </div><br>
+                 <div class="form-group">
+                    <label for="id_order_file" class="control-label col-sm-2 ">Order File :</label>
+                    <div class="col-sm-10">
+                        <input type="file" id="id_order_file" name="order_file" multiple>
+                    </div>
+                </div>
+                <input
+                    class="form-control"
+                    id="id_order_exception_id"
+                    name="order_exception_id"
+                    type="hidden"
+                    required
+                />
+                 <input
+                    class="form-control"
+                    id="id_order_id"
+                    name="order_id"
+                    type="hidden"
+                    required
+                />
+                 <input
+                    class="form-control"
+                    id="id_order_status"
+                    name="order_status"
+                    type="hidden"
+                    required
+                />
+            </div>
+        </form>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn"
+          ng-click="$dismiss()"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          id="btnSaveReplyException"
+          ng-click="SaveReplyException($event)"
+        >
+          Save
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var data = {'permissions': {{ permissions| safe}}};
+  exception_trackingInit(data);
+</script>

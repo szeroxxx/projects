@@ -1,0 +1,353 @@
+{% load widget_tweaks %}
+
+
+<div class="lst-container">
+  <div id="gridCon">
+      <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+  </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+     <input type="button" class="btn btn-primary btn-sm" value="Add new" id="btnTaskSCheduler"></input>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" id="btnInsertSysScheduler" value="Insert system scheduler"></input>
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" value="Delete" ng-click="onDelete($event);" ng-disabled="btnModelDeleteDisable"></input>
+          </li>
+            <li>
+            <input type="button" class="btn btn-primary btn-sm" id="btnShowLog" value="History" ng-disabled="btnLinkDisable"></input>
+          </li>
+        </ul>
+    </div>
+  </div>
+</script>
+
+
+<div id="taskScheduleModel" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" >
+  <div style="width:50%;" class="modal-dialog modal-lg" role="document">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+                   <h4 id ="id_modalHeading" class="modal-title" id="compareLable"></h4>
+               </div>
+              <div class="modal-body" id="workerLevelModel_body">
+                 <form id="frmSaveTaskSchedule" action="/base/save_task_schedule/" method="POST" role="form" class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">{% csrf_token %}
+                      <div class="container">
+                          <div class="col-md-12 col-sm-12">
+                              <div class="form-group">
+                                  <label required for="title" class="control-label col-sm-2 required">Name</label>
+                                  <div class="col-sm-10">
+                                      <input class="form-control" id="id_title" name="title" type="text" value="" required/>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label required for="url" class="control-label col-sm-2 required">URL</label>
+                                  <div class="col-sm-10">
+                                      <input class="form-control" id="url" name="url" type="text" value=""  required/>
+                                  </div>
+                              </div>
+
+                              <div class="form-group" id= "id_recur_schedule_module" style="margin-top: 10px;margin-bottom:20px ">
+                                  <label required for="id_recur_schedule" class="control-label col-sm-2 required">Trigger</label>
+                                  <div class="col-sm-10" >
+                                      <div id="id_recur" class="col-sm-3" style="border-right: 2px solid #e5e5e5;">
+                                          <div>
+                                              <input id="id_once" type="radio" class="magic-radio" name="recur" value="once" style="padding: 5px" />
+                                              <label for="id_once">One-time </label>
+                                          </div>
+                                          <div>
+                                              <input id="id_daily" class="magic-radio" type="radio" name="recur" value="daily"/>
+                                              <label for="id_daily">Daily</label>
+                                          </div>
+                                          <div>
+                                              <input id="id_weekly" class="magic-radio" type="radio" name="recur" value="weekly" />
+                                              <label for="id_weekly">Weekly</label>
+                                          </div>
+                                          <div>
+                                              <input id="id_monthly" class="magic-radio" type="radio" name="recur" value="monthly" />
+                                              <label for="id_monthly">Monthly</label>
+                                          </div>
+                                          <div>
+                                              <input id="id_infinity" class="magic-radio" type="radio" name="recur" value="infinity" />
+                                              <label for="id_infinity">Infinity</label>
+                                          </div>
+
+                                      </div>
+
+                                      <div class="col-sm-8" style="padding-left:10px">
+                                          <div class="col-sm-8">
+                                            <label class="control-label col-sm-3">Start</label>
+                                            <div id = "id_start_datepicker" class="input-group input-append date datePicker col-sm-9">
+                                                <input type="text" class="form-control" id="id_start_date" name="start_date" value="" />
+                                                <span class="input-group-addon add-on">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-3">
+                                            <div id = "timepicker" class="input-group input-append time timepicker">
+                                                <input style="line-height: 15px;" type="time" class="form-control" id="id_start_time" name="start_time" value="{{ data.recur_time }}" />
+                                            </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-sm-1" style="padding-left: 5px;padding-top: 7px;"><b>UTC</b></div>
+                                      <div class="col-sm-9" id="recur_end_date" style="margin-top:10px;padding-left:10px">
+                                          <div class="col-sm-8">
+                                              <label class="control-label col-sm-3">End</label>
+                                              <div id = "id_end_datepicker" class="input-group input-append date datePicker">
+                                                  <input type="text" class="form-control" id="id_end_date" name="end_date" value="{{ data.recur_end_date }}"/>
+                                                  <span class="input-group-addon add-on">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-sm-9" id="recur_infinity" style="margin-top:10px;padding-left:10px">
+                                              <div class="col-sm-2" >
+                                                  <label  class="control-label">Time</label>
+                                              </div>
+                                              <div class="col-sm-3" style="margin-left: -5px">
+                                                      <input class="form-control" type="number" min="1" id= "recur_inf_time" name="recur_inf_time" value="{{data.recur_inf_time}}">
+                                                  </div>
+                                              <div class="col-md-4">
+                                                  <select class="form-control" name="infinity_type" id="infinity_type">
+                                                      <option value="hours">Hours</option>
+                                                      <option value="minute">Minute</option>
+                                                  </select>
+                                              </div>
+                                      </div>
+                                      <div class="col-sm-9" id = "recur_daily"  style="padding-top: 10px;padding-left: 10px">
+                                          <div class="col-sm-8">
+                                              <div class="col-sm-3">
+                                                  <label  class="control-label">Every</label>
+                                              </div>
+                                              <div class="col-sm-5">
+                                                  <input class="form-control" type="number" min="1" id= "id_daily_day" name="recur_day" value="{{data.recur_day}}">
+                                              </div>
+                                              <div class="col-sm-4">
+                                                  <label  class="control-label">Days</label>
+                                              </div>
+
+                                          </div>
+                                      </div>
+                                      <div id="recur_weekly" class="col-sm-9" style="padding-left: 10px; padding-top: 10px;">
+                                          <div class="col-sm-2" >
+                                              <label  class="control-label">Days</label>
+                                          </div>
+                                          <div class="col-sm-10" id="id_weekday" style="padding-top: 4px;">
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday1" name="week" value="mon">
+                                                <label for="weekday1">Monday </label>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday2" name="week" value="tue">
+                                                <label for="weekday2">Tuesday </label>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday3" name="week" value="wed">
+                                                <label for="weekday3">Wednesday </label>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday4" name="week" value="thu">
+                                                <label for="weekday4">Thursday </label>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday5" name="week" value="fri">
+                                                <label for="weekday5">Friday </label>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday6" name="week" value="sat">
+                                                <label for="weekday6">Saturday </label>
+                                              </div>
+                                              <div class="col-sm-6">
+                                                <input type='checkbox' class="magic-checkbox" id="weekday7" name="week" value="sun">
+                                                <label for="weekday7">Sunday </label>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div id="recur_monthly" class="col-sm-9" style="padding-left: 10px; padding-top: 10px;">
+                                          <div class="col-sm-2" >
+                                                  <label  class="control-label">Days</label>
+                                          </div>
+                                          <div class="col-sm-10" id="id_days" style="padding-top: 4px;">
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday1" name = "days" value="1">
+                                                <label for="monthday1">1 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday2" name = "days" value="2">
+                                                <label for="monthday2">2 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday3" name = "days" value="3">
+                                                <label for="monthday3">3 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday4" name = "days" value="4">
+                                                <label for="monthday4">4 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday5" name = "days" value="5">
+                                                <label for="monthday5">5 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday6" name = "days" value="6">
+                                                <label for="monthday6">6 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday7" name = "days" value="7">
+                                                <label for="monthday7">7 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday8" name = "days" value="8">
+                                                <label for="monthday8">8 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday9" name = "days" value="9">
+                                                <label for="monthday9">9 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday10" name = "days" value="10">
+                                                <label for="monthday10">10 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday11" name = "days" value="11">
+                                                <label for="monthday11">11 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday12" name = "days" value="12">
+                                                <label for="monthday12">12 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday13" name = "days" value="13">
+                                                <label for="monthday13">13 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday14" name = "days" value="14">
+                                                <label for="monthday14">14 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday15" name = "days" value="15">
+                                                <label for="monthday15">15 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday16" name = "days" value="16">
+                                                <label for="monthday16">16 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday17" name = "days" value="17">
+                                                <label for="monthday17">17 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday18" name = "days" value="18">
+                                                <label for="monthday18">18 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday19" name = "days" value="19">
+                                                <label for="monthday19">19 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday20" name = "days" value="20">
+                                                <label for="monthday20">20 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday21" name = "days" value="21">
+                                                <label for="monthday21">21 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday22" name = "days" value="22">
+                                                <label for="monthday22">22 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday23" name = "days" value="23">
+                                                <label for="monthday23">23 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday24" name = "days" value="24">
+                                                <label for="monthday24">24 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday25" name = "days" value="25">
+                                                <label for="monthday25">25 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday26" name = "days" value="26">
+                                                <label for="monthday26">26 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday27" name = "days" value="27">
+                                                <label for="monthday27">27 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday28" name = "days" value="28">
+                                                <label for="monthday28">28 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday29" name = "days" value="29">
+                                                <label for="monthday29">29 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday30" name = "days" value="30">
+                                                <label for="monthday30">30 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthday31" name = "days" value="31">
+                                                <label for="monthday31">31 </label>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                <input type='checkbox' class="magic-checkbox" id="monthdaylast" name = "days" value="0">
+                                                <label for="monthdaylast">last </label>
+                                              </div>
+                                          </div>
+                                       </div>
+
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label required for="url" class="control-label col-sm-2 required">Send notifcation</label>
+                                  <div class="col-sm-1">
+                                       <input id="has_email" class="magic-checkbox" name="has_email" type="checkbox">
+                                       <label for="has_email"></label>
+                                  </div>
+                                  <div ng-if='hasEmailCheked' class=" col-sm-9">
+                                      <input class="form-control" id="notification_email" name="notification_email" type="email" placeholder="Enter email for notification" value="" required=""/>
+                                  </div>
+                              </div>
+
+                              <div class="form-group">
+                                  <label for="active" class="control-label col-sm-2 required">Enable</label>
+                                  <div class="col-sm-10">
+                                      <input id="is_active" class="magic-checkbox" name="is_active" type="checkbox">
+                                      <label for="is_active"></label>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label for="active" class="control-label col-sm-2 required">IS Running</label>
+                                  <div class="col-sm-10">
+                                      <input id="is_running" class="magic-checkbox" name="is_running" type="checkbox">
+                                      <label for="is_running"></label>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="saveTaskSchedule($event);" ng-disabled="btnDisabled">Save</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+               </div>
+              </div>
+          </div>
+</div>
+
+
+
+

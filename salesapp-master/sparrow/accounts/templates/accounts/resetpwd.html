@@ -1,0 +1,136 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>sparrow</title>
+    
+    <link rel="icon" type="image/png" href="{% static 'base/images/sparrow-logo-b.png' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/custom.css' %}">
+    <script src="{% static 'base/js/jquery-1.11.2.min.js' %}"></script>
+     
+    <style type="text/css">
+        .center_div
+        {
+            margin: 0 auto;
+            width:400px; /* value of your choice which suits your alignment */
+        }
+    </style>  
+
+  </head>
+
+  <body style="background:#F7F7F7;">
+  <img id="loading-image" src="{% static 'base/images/spinner_68.gif' %}?v=2" alt="Loading..." />
+    <div class="center_div" style="padding-bottom:200px;padding-top:100px;">
+    
+        <h1 style="text-align:center;">Reset your password</h1>
+        <br /><br />
+        <label for="message" style="width:100%;text-align: center;"><h3>Your password has been changed.<br/ ><a href="/accounts/signin/">Click here</a> to login.</h3></label>
+        <form id="frmPasswrecovery" action="/accounts/resetpwd/{{uid}}" method="POST" role="form" class="form-horizontal">        
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {% if field.help_text %}
+                <span>{{ field.help_text|safe }}</span>
+                {% endif %}
+                {% if field.field.required == True %}
+                <span class="required"></span>
+                {% endif %}
+                {% if field|field_type != 'booleanfield' %}
+                {{ field|add_class:"form-control" }}
+                {% else %}
+                {{ field }}
+                {% endif %}
+            </div>
+
+            {% endfor %}
+
+        <input type="submit" id="Submit" value="Change Password" class="btn btn-primary form-control">
+        
+        </form>
+
+        <div class="alert-success" style="display:none;margin-top:20px;text-align:center;" id="msg"></div>
+   
+                <div style="text-align:center;padding-top:100px;" >
+                  <h1><img  src= "/static/base/images/{{company_logo}}" style="height:38px;"></h1>
+
+                  <script type="text/javascript">
+                        var dt = new Date();
+                        document.write("<p> ©" +dt.getFullYear()); 
+                      </script> All Rights Reserved.</p>
+                </div>
+    </div>
+    
+    <script>
+          //callback handler for form submit
+          $('label[for="message"]').hide();
+          $("#frmPasswrecovery").submit(function(e)
+          {
+            console.log($('#id_password').val().length);
+            if($('#id_password').val().length < 6){
+
+              $('#msg').removeClass('alert-success').addClass('alert-danger').show().text("password should be at least 6 characters.");
+              return false;
+            }
+            else{
+              if($('#id_password').val() != $('#id_confirm_password').val()){
+                $('#msg').removeClass('alert-success').addClass('alert-danger').show().text("Password and confirm password must be same.");
+                return false;
+              }
+            }
+            $('#id_password').hide();
+            $('#id_confirm_password').hide();
+            $('#Submit').hide();
+            $('label[for="id_confirm_password"]').hide();
+            $('label[for="id_password"]').hide();
+            $('label[for="message"]').show();
+
+              var postData = $(this).serializeArray();
+              var formURL = $(this).attr("action");
+              $.ajax({
+                  dataType: "json",
+                  type: "POST",
+                  url: formURL,
+                  data: postData,
+                  beforeSend: function() {
+                    $('#loading-image').show();
+                  },
+                  complete: function() {
+                    $('#loading-image').hide();
+                  },
+                  success: function (data) {                                             
+                    success = data.code == 0 ? false : true;
+                    if(success == true)
+                    {
+                      // $('#msg').removeClass('alert-danger').addClass("alert-success").show().text(data.msg);
+                    }
+                    else
+                    {
+                      $('#msg').removeClass('alert-success').addClass("alert-danger").show().text(data.msg);
+                    }
+                  },
+                  error: function(data) {
+                    callback({msg:"Error occurred"}, false);            
+                    console.log(data);
+                  }
+            });
+              e.preventDefault();
+          });
+           
+          $("#ajaxform").submit(); //Submit  the FORM
+
+
+    </script>
+  </body>
+</html>

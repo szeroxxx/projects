@@ -1,0 +1,525 @@
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% load static %}
+{% load app_filters %}
+<style type="text/css">
+    .selectOption{
+        display: none;
+    }
+    #id_task_priority .ms-sel-item{
+        background: transparent;
+        border:0;
+    }
+    .modal.right .modal-dialog {
+        position: fixed;
+        margin: auto;
+        width: 52%;
+        height: 100%;
+        -webkit-transform: translate3d(0%, 0, 0);
+            -ms-transform: translate3d(0%, 0, 0);
+             -o-transform: translate3d(0%, 0, 0);
+                transform: translate3d(0%, 0, 0);
+    }
+    .modal.right .modal-content {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal.right .modal-body {
+        padding: 15px 15px 80px;
+    }
+    /*Right*/
+    .modal.right.fade .modal-dialog {
+        right: -320px;
+        -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+           -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+             -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+                transition: opacity 0.3s linear, right 0.3s ease-out;
+    }
+    .modal-content{
+        border: 0px;
+        border-radius: 0px;
+    }
+    .modal.right.fade.in .modal-dialog {
+        right: 0;
+    }
+    .modal-footer{
+        height: 0%;
+    }
+    .note-editable{
+        height: 200px;
+    }
+    .fa-trash-o{
+        color:gray;
+        font-size: 18px;
+        margin-left: 10px;
+    }
+    .fa-trash-o:hover{
+        color:#EF7878;
+    }
+    .divscroll{
+        overflow: auto;
+        max-height:250px;
+    }
+    .msg-show{
+        color:#a94442;
+        display: none;
+    }
+    .oper-name{
+        white-space: nowrap;
+        width: 70%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-left: 5px;
+        cursor: pointer;
+    }
+    .dropdown_oper{
+        float: left;
+        cursor: pointer;
+    }
+    .operator-label{
+        min-width: 108px !important;
+        width: auto !important;
+    }
+    .operator-label2{
+        min-width: 200px !important;
+        width: auto !important;
+    }
+    .down_arrow{
+        float:right;
+        margin-top: 7px;
+        font-size: 12px;
+        font-weight:bold;
+    }
+</style>
+    <div class="row">
+        <div class="col-md-12 col-sm-12" style="padding-left: 15px;">
+            <div class="form-group">
+                <label for="id_task_name" class="control-label col-sm-2 required">Message title</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="id_task_name" name="name" maxlength="200" type="text" value="{{ task.name }}" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_due_date" class="control-label col-sm-2">Show till date</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control task-date" onfocusout="showSelectOption()" name="due_date" id="id_due_date" value="{{ task.due_date|get_local_time:True }}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label required for="id_task_priority" class="control-label col-sm-2">Type</label>
+                <div class="col-sm-10">
+                     <input  class="form-control" id="id_task_priority" name="priority"  type="text" value='[{% if not new_task and task.priority %}"{{ task.priority }}"{%else%}"low"{% endif %}]' >
+                </div>
+            </div>
+                <div class="form-group">
+                    <label for="" class="control-label col-sm-2 required">Send to</label>
+                    <div class="col-sm-3 operator-label">
+                        <input type="checkbox" id="id_check" name="check" value="check" {% if task.general == True %} checked {% endif %}>
+                        <label for="id_check">Select All</label>
+                    </div>
+                    <div class="col-md-5 col-sm-5 divscroll">
+                        <div class="perm_section active select-all-check">
+                            {% if group_b %}
+                                <li id="permContainer" class="nav side-menu group-b">
+                                    <input class="dropdown_oper" type="checkbox" onClick="selectall(this)" id="id_group_b" {% if select_oper_group_b  %} checked {% endif %} {% if task.general == True %} checked {% endif %}
+                                        value="group_b"/>
+                                        <label for="id_group_b" class="oper-name">Group B</label>
+                                    <a class="sub-menu" style="font-size: 14px;display: block;padding: 10px 0;color: #000; display:inline;">
+                                        <span class="icon-arrow-1-down down_arrow"></span>
+                                    </a>
+                                    <ul class="role_menus group id_group_b" id="id_group_b" style="display: none;">
+                                        {% for group_b_operator in group_b %}
+                                            <input class="id-group_b dropdown_oper" type="checkbox" name="id_group_b" id="{{group_b_operator.id}}" value="{{group_b_operator.id}}" {% if group_b_operator.id in select_oper_group_b %} checked {% endif %} />
+                                            <label for="{{group_b_operator.id}}" class="oper-name">{{group_b_operator.username}}</label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if group_fee %}
+                                <li id="permContainer" class="nav side-menu">
+                                    <input class="dropdown_oper" type="checkbox" onClick="selectall(this)" id="id_group_fee" value="group_fee" {% if select_oper_group_fee  %} checked {% endif %} {% if task.general == True %} checked {% endif %}/>
+                                    <label for="id_group_fee" class="oper-name">GROUP FEE</label>
+                                    <a class="sub-menu" style="font-size: 14px;display: block;padding: 10px 0;color: #000; display:inline;">
+                                        <span class="icon-arrow-1-down down_arrow"></span>
+                                    </a>
+                                    <ul class="role_menus" id="id_group_fee_hide" style="display:none;">
+                                        {% for group_fee_operator in group_fee %}
+                                        <input class="id_group_fee dropdown_oper" type="checkbox" name="id_group_fee" id="{{group_fee_operator.id}}" value="{{group_fee_operator.id}}" {% if group_fee_operator.id in select_oper_group_fee %} checked {% endif %} />
+                                        <label for="{{group_fee_operator.id}}" class="oper-name">{{group_fee_operator.username}}</label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if customer %}
+                                <li id="permContainer" class="nav side-menu">
+                                    <input class="dropdown_oper" type="checkbox" onClick="selectall(this)" id="id_customer" value="customer" {% if select_oper_customer  %} checked {% endif %} {% if task.general == True %} checked {% endif %}/>
+                                    <label for="id_customer" class="oper-name">Customer</label>
+                                    <a class="sub-menu" style="font-size: 14px;display: block;padding: 10px 0;color: #000; display:inline;">
+                                        <span class="icon-arrow-1-down down_arrow"></span>
+                                    </a>
+                                    <ul class="role_menus" id="id_customer" style="display: none;" name="customer">
+                                        {% for customer_operator in customer %}
+                                            <input class="id_customer dropdown_oper" type="checkbox" name="id_customer" id="{{customer_operator.id}}" value="{{customer_operator.id}}"
+                                            {% if customer_operator.id in select_oper_customer %} checked {% endif %} />
+                                            <label for="{{customer_operator.id}}" class="oper-name">{{customer_operator.username}}</label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if backoffice_and_oth %}
+                                <li id="permContainer" class="nav side-menu">
+                                    <input class="dropdown_oper" type="checkbox" onClick="selectall(this)" id="id_backoffice_and_oth" {% if select_oper_backoffice  %} checked {% endif %} {% if task.general == True %} checked {% endif %}
+                                        value="backoffice_and_oth" />
+                                    <label for="id_backoffice_and_oth" class="oper-name">Backoffice and others</label>
+                                    <a class="sub-menu" style="font-size: 14px;display: block;padding: 10px 0;color: #000; display:inline;">
+                                        <span class="icon-arrow-1-down down_arrow"></span>
+                                    </a>
+                                    <ul class="role_menus" id="id_backoffice_and_oth" style="display: none;">
+                                        {% for backoffice_and_oth_operator in backoffice_and_oth %}
+                                        <input class="id_backoffice_and_oth dropdown_oper" type="checkbox" name="id_backoffice_and_oth" id="{{backoffice_and_oth_operator.id}}" value="{{backoffice_and_oth_operator.id}}" {% if backoffice_and_oth_operator.id in select_oper_backoffice %} checked {% endif %} />
+                                        <label for="{{backoffice_and_oth_operator.id}}" class="oper-name">{{backoffice_and_oth_operator.username}}</label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if no_group %}
+                                <li id="permContainer" class="nav side-menu">
+                                    <input class="dropdown_oper" type="checkbox" onClick="selectall(this)" id="id_other"
+                                        {% if select_oper_no_group %} checked {% endif %} {% if task.general == True %} checked {% endif %}
+                                        value="other" />
+                                    <label for="id_other" class="oper-name">Others</label>
+                                    <a class="sub-menu" style="font-size: 14px;display: block;padding: 10px 0;color: #000; display:inline;">
+                                        <span class="icon-arrow-1-down down_arrow"></span>
+                                    </a>
+                                    <ul class="role_menus" id="id_other" style="display: none;">
+                                        {% for no_group_operator in no_group %}
+                                        <input class="id_other dropdown_oper" type="checkbox" name="id_other" id="{{no_group_operator.id}}" value="{{no_group_operator.id}}"
+                                            {% if no_group_operator.id in select_oper_no_group %} checked {% endif %} />
+                                        <label for="{{no_group_operator.id}}" class="oper-name">{{no_group_operator.username}}</label><br>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            <div class="form-group">
+                <label required for="id_task_priority" class="control-label col-sm-2"></label>
+                <div class="col-sm-10">
+                    <span class="msg-show" id="id_message_send">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_description" class="col-sm-2 control-label required">Message</label>
+                <div class="col-sm-10" ng-click="MsgDescription()">
+                    <textarea class="form-control richtext" id="id_description" name="description" rows="3" type="text" >{{ task.description }}</textarea>
+                    <span class="msg-show" id="id_message_">This field is required.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_attachment" class="control-label col-sm-2">Attachment</label>
+                <div class="col-sm-8">
+                    <input class="form-control" id="id_attachment" name="file" type="file"/>
+                    {% if file.name %}
+                    <div style="margin-top: 10px;" id="upload_file" title="{{ file.name }}">{{ file.name|truncatechars:55 }}<a ng-click="fileDelete()"><i class="fa fa-trash-o" title="Remove file"></i></a></div>
+                    <input type="hidden" class="form-control" id="id_file_uid" value={{file.uid}}>
+                    {% endif %}
+                </div>
+            </div>
+            <input type="hidden" class="form-control" id="id_private" name="private"  value="{{task.private}}">
+            <input type="hidden" class="form-control" id="id_task" value={{task.id}}>
+
+
+
+
+            <div id="OrderModel" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel" ng-bind="OrderDialogTitle"></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="order_form"></div>
+                    <div id="orderMsg"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" ng-click="saveOrder($event);" ng-disabled="btnDisabled">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+    $(".richtext").summernote({
+        toolbar: [
+            ["style", ["bold", "italic", "underline"]],
+            ["font", ["color"]],
+            ["fontsize", ["fontsize"]],
+            ['insert', ['link', 'picture', 'file']],
+        ]
+    })
+
+    var private_id = $("#id_private").val();
+    if (private_id == "True") {
+        $("#id_save_draft").show();
+    }else{
+        $("#id_save_draft").hide();
+    }
+
+    var task_id = $("#id_task").val();
+    if (task_id == "") {
+        $("#id_save_draft").show();
+    }
+
+    $(function() {
+        $('.task-date').daterangepicker({
+            autoUpdateInput: false,
+            singleDatePicker: true,
+            timePicker: true,
+            timePickerIncrement: 1,
+            timePicker24Hour : true,
+            locale: {
+                format: 'DD/MM/YYYY',
+            }
+        });
+        $('.task-date').on('apply.daterangepicker', function(ev, picker) {
+
+            $(this).val(picker.startDate.format('DD/MM/YYYY H:mm'));
+            showSelectOption();
+        });
+
+    });
+
+    var task_data = {
+          'task_status':{{task_status|safe}},
+          'task_priority':{{task_priority|safe}}
+    }
+    $('#id_due_date').ready(function(){
+        showSelectOption();
+    });
+    function showSelectOption(){
+        due_date = $('#id_due_date').val();
+        if (due_date != '' && due_date != null) {
+            $('.selectOption').css('display', 'block');
+        }else{
+            $('.selectOption').css('display', 'none');
+        }
+    }
+    showSelectOption();
+    $(document).ready(function () {
+        $('input[type="checkbox"]').click(function (e) {
+            $("#id_message_send").hide();
+        })
+    });
+
+    $(document).ready(function () {
+        $('#id_check').click(function (e) {
+            if ($('#id_check').prop('checked')) {
+                $("#id_group_b").prop("checked", true);
+                $("[name='id_group_b']").prop("checked", true);
+                $("#id_group_fee").prop("checked", true);
+                $("[name='id_group_fee']").prop("checked", true);
+                $("#id_customer").prop("checked", true);
+                $("[name='id_customer']").prop("checked", true);
+                $("#id_backoffice_and_oth").prop("checked", true);
+                $("[name='id_backoffice_and_oth']").prop("checked", true);
+                $("#id_other").prop("checked", true);
+                $("[name='id_other']").prop("checked", true);
+            }
+            else {
+                 $("#id_group_b").prop("checked", false);
+                $("[name='id_group_b']").prop("checked", false);
+                $("#id_group_fee").prop("checked", false);
+                $("[name='id_group_fee']").prop("checked", false);
+                $("#id_customer").prop("checked", false);
+                $("[name='id_customer']").prop("checked", false);
+                $("#id_backoffice_and_oth").prop("checked", false);
+                $("[name='id_backoffice_and_oth']").prop("checked", false);
+                $("#id_other").prop("checked", false);
+                $("[name='id_other']").prop("checked", false);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#id_check').click(function (e) {
+            if ($('#id_check').prop('checked')) {
+                $("id_group_b").prop("checked", true);
+                $("#id_group_fee").prop("checked", true);
+                $("#id_customer").prop("checked", true);
+                $("#id_backoffice_and_oth").prop("checked", true);
+            }
+            else {
+                $("#id_group_b").prop("checked", false);
+                $("#id_group_fee").prop("checked", false);
+                $("#id_customer").prop("checked", false);
+                $("#id_backoffice_and_oth").prop("checked", false);
+            }
+        });
+    });
+    $(".id-group_b").on("click", function () {
+        $("#id_check").prop("checked", false);
+    });
+    $(".id_group_fee").on("click", function () {
+        $("#id_check").prop("checked", false);
+    });
+    $(".id_customer").on("click", function () {
+        $("#id_check").prop("checked", false);
+    });
+    $(".id_backoffice_and_oth").on("click", function () {
+        $("#id_check").prop("checked", false);
+    });
+    $(".id_other").on("click", function () {
+        $("#id_check").prop("checked", false);
+    });
+    var all = $(".select-all-check :checkbox").length;
+    var checked = $(".select-all-check :checkbox:checked").length;
+    if (all == checked){
+        $("#id_check").prop("checked", true);
+    }
+    else{
+        $("#id_check").prop("checked", false);
+    }
+    $(document).ready(function () {
+        var all = $(".select-all-check :checkbox").length;
+        var $checkboxes = $(".select-all-check :checkbox");
+        $checkboxes.change(function () {
+            var countCheckedCheckboxes = $checkboxes.filter(':checked').length;
+            if (all == countCheckedCheckboxes) {
+                $("#id_check").prop("checked", true);
+            }
+            else {
+                $("#id_check").prop("checked", false);
+
+            }
+        });
+    });
+    function selectall(source) {
+        if ($('#id_group_b').is(":unchecked")) {
+            $("#id_check").prop("checked", false);
+        }
+        if ($('#id_group_fee').is(":unchecked")) {
+            $("#id_check").prop("checked", false);
+        }
+        if ($('#id_customer').is(":unchecked")) {
+            $("#id_check").prop("checked", false);
+        }
+        if ($('#id_backoffice_and_oth').is(":unchecked")) {
+            $("#id_check").prop("checked", false);
+        }
+        if ($('#id_other').is(":unchecked")) {
+            $("#id_check").prop("checked", false);
+        }
+        checkboxes = document.getElementsByName(source.id);
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    $(document).ready(function () {
+        $(".perm_section").find("li").first().addClass("active");
+        $(".perm_section").find("ul").first().addClass("onActive");
+        $(".perm_section").find("a").first().addClass("onActive");
+        var data = $(".perm_section").find("ul").first().attr("id");
+        var name = $(".perm_section").find("ul").first().text();
+        var parent_name = $(".perm_section").find("a").first().text();
+        var dataId = data.split("_")[1];
+        display_msg =
+            "Select all permissions for " + parent_name.trim() + " module";
+        $("#display_msg_id").text(display_msg);
+        $(".head").addClass("permissionItem");
+        $(".check-all").show();
+        $("#menu_name").text(parent_name + " / " + name);
+        $(".select-all").attr("id", dataId);
+        $('div[data-id="' + dataId + '"]').show();
+        var $li = $(".perm_section").find("li").first();
+        var list = $li.find("ul");
+        list.css("display", "block");
+        var dropDown = $(".perm_section").find("span").first();
+        dropDown.addClass("icon-arrow-1-up");
+        var checked = $('input[data-id="' + dataId + '"]:checked').length;
+        var totalcheck = $('input[data-id="' + dataId + '"]').length;
+        if (checked == totalcheck) {
+            $(".select-all").prop("checked", true);
+        }
+
+        $(".perm_section")
+            .find("a")
+            .on("click", function (ev) {
+                var $li = $(this).parent();
+                $(".sub-menu").removeClass("onActive");
+                $(this).addClass("onActive");
+
+                if ($li.is(".active")) {
+                    $li.removeClass("active");
+                    $("ul", $li).slideUp();
+                    $(".sub-menu").removeClass("onActive");
+                    if (!$li.parent().is(".child_menu")) {
+                        $(".icon-arrow-1-up")
+                            .removeClass("icon-arrow-1-up")
+                            .addClass("icon-arrow-1-down");
+                    }
+                } else {
+                    // prevent closing menu if we are on child menu
+                    if (!$li.parent().is(".child_menu")) {
+                        $(".perm_section").find("li").removeClass("active");
+                        $(".permCheckbox ch").prop("disabled", true);
+                        $(".perm_section").find("li ul").slideUp();
+                        $(".icon-arrow-1-up")
+                            .removeClass("icon-arrow-1-up")
+                            .addClass("icon-arrow-1-down");
+                    } else {
+                        $li
+                            .parent()
+                            .find("li")
+                            .removeClass("active")
+                            .removeClass("current-page");
+                    }
+
+                    $li.addClass("active");
+                    $(this)
+                        .find(".icon-arrow-1-down")
+                        .removeClass("icon-arrow-1-down")
+                        .addClass("icon-arrow-1-up");
+                    $("ul", $li).slideDown();
+                }
+            });
+        });
+    $(".group-b").removeClass("active");
+    $(".icon-arrow-1-up").removeClass("icon-arrow-1-up").addClass("icon-arrow-1-down");
+    $(".id_group_b").hide()
+
+</script>
+
+<!--
+{% if new_task %}
+  <script type="text/javascript">
+    $('#id_email_notification').attr('checked','checked');
+  </script>
+{% endif %} -->
+
+
+
+
+{% if not task.due_date %}
+    <!-- <script type="text/javascript">
+        var date = new Date();
+        var hour = date.getHours();
+        var minutes = date.getMinutes()
+        minutes = 1 * Math.ceil(minutes / 1);
+        $('#id_due_date').click(function(){
+            $('.hourselect').val(hour);
+            $('.minuteselect').val(minutes);
+        })
+
+    </script> -->
+{% endif %}

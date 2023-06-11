@@ -1,0 +1,22 @@
+<template>
+    <name>po_confirm_supplier</name>
+    <description>The template will be used to send purchase order to the supplier.</description>
+    <subject>Confirmation of order ( #{{po_number}})</subject>
+    <html_content>
+        <![CDATA[
+Dear {{supplier_name}},
+<br/>
+<br/>
+We at {{company_name}} confirming the order. Please find list of items in attachment.
+
+<br/>
+<br/>
+Sincerely,
+<br/>
+<br/>
+{{sender_name}}
+<br/>
+{{company_name}}
+]]>
+    </html_content>
+</template>

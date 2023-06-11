@@ -1,0 +1,28 @@
+<style>
+    .dataTables_scrollBody{
+        max-height: 62vh;
+    }
+    .dataTables_paginate {
+        display:none !important;
+    }
+</style>
+
+<div class="lst-container">
+    <div>
+        <form autocomplete="off" >
+            <nit-advanced-searchbox
+                    ng-model="searchParams1"
+                    parameters="availableSearchParams1"
+                    index = "1"
+                    placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    callReportInit({'permissions': {{ permissions| safe}} });
+</script>

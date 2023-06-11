@@ -1,0 +1,236 @@
+.customer_container{
+    max-width: 100%;
+
+}
+.customer_container h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #525252;
+}
+
+.search_customers {
+    max-width: 400px;
+    margin-bottom: 15px;
+  }
+  .search_customers button {
+    border: solid 1px #ced4da;
+    border-left: none;
+  }
+  .search_customers button:hover {
+    border: solid 1px #ced4da;
+    border-left: none;
+  }
+  .search_customers svg {
+    color: #868686;
+  }
+  .search_customers input {
+    border-right: none;
+  }
+
+  .customers_dropdown {
+    text-align: right;
+  }
+  .customers_dropdown button{
+    background-color: white !important;
+    border:none !important;
+    color: #868686 !important;
+  }
+  .customers_dropdown button:hover{
+    background-color: white !important;
+    border:none !important;
+    color: #868686 !important;
+  }
+  .customer_grid{
+    border-bottom: solid 1px #DDDDDD;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    line-height: 1.6rem;
+  }
+  .customer_new_form{
+    margin-bottom: 50px;
+  }
+  .customer_new_form div {
+    margin-bottom: 10px;
+  }
+  .customer_new_form input {
+    max-width: 400px;
+  }
+  .customer_new_form select {
+    max-width: 400px;
+  }
+  .customer_new{
+    text-align: right;
+  }
+  .customer_icon {
+    color: #909090;
+    line-height: 1.9;
+}
+.customer_name{
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-decoration: none;
+  color: #525252;
+}
+.customer_grid b{
+  color: #353535;
+  font-weight: normal;
+}
+.cut_info{
+  font-size: 1rem;
+}
+.customer_email{
+  font-size: 0.9rem;
+}
+.customer_icon_phone {
+  color: #00B050;
+}
+.customer_phone {
+  font-size: 0.9rem;
+}
+.customer_created{
+  font-size: 0.9rem;
+  color: #909090;
+}
+
+.customer_container {
+  max-width: 100%;
+}
+
+.customer_container .nav-link{
+  color: #868686;
+}
+.customer_container .nav-link:hover{
+  color: #868686;
+}
+.address_new_form div {
+  margin-bottom: 10px;
+}
+.address_new_form input {
+  max-width: 400px;
+}
+.address_new_form select {
+  max-width: 400px;
+}
+.address_grid {
+  border-bottom: solid 1px #DDDDDD;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  line-height: 1.6rem;
+}
+.address_grid b {
+  color: #353535;
+  font-weight: normal;
+}
+.address_name{
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-decoration: none;
+  color: #525252;
+}
+.address-created-on{
+  font-size: 0.9rem;
+  color: #909090;
+}
+.address_container {
+  max-width: 100%;
+}
+.address_container h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  color: #525252;
+}
+.address_icon {
+  color: #00B050;
+}
+.address_zip {
+  font-size: 0.9rem;
+}
+.address_city{
+  font-size: 0.9rem;
+}
+.add_address_new {
+  text-align: right;
+}
+.test{
+  float: left;
+}
+.contact_container {
+  max-width: 100%;
+}
+.contact_container h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  color: #525252;
+}
+.contact_grid {
+  border-bottom: solid 1px #DDDDDD;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  line-height: 1.6rem;
+}
+.contact_grid b {
+  color: #353535;
+  font-weight: normal;
+}
+.contact_name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-decoration: none;
+  color: #525252;
+}
+.contact_created{
+  font-size: 0.9rem;
+  color: #909090;
+}
+
+.customer_validation {
+  font-size: 0.9rem;
+  color: #dc3545;
+}
+.contact_validation {
+  font-size: 0.9rem;
+  color: #dc3545;
+}
+.address_validation {
+  font-size: 0.9rem;
+  color: #dc3545;
+}
+.address-grid {
+  margin-top: 50px;
+  text-align: center;
+}
+.contact-grid {
+  margin-top: 50px;
+  text-align: center;
+}
+.customer-loading-spinner {
+  margin-left: 45%;
+  margin-top: 20% !important;
+}
+.address-loading-spinner {
+  margin-left: 45%;
+  margin-top: 25% !important;
+  margin-bottom: 25% !important;
+}
+.contact-loading-spinner {
+  margin-left: 45%;
+  margin-top: 25% !important;
+  margin-bottom: 25% !important;
+}
+.address-grid-line{
+  margin-bottom: 50px;
+}
+.customer-grid-line{
+  margin-bottom: 50px;
+}
+.contact-grid-line{
+  margin-bottom: 50px;
+}

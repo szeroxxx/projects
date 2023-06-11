@@ -1,0 +1,456 @@
+{% load static %}
+{% load staticfiles %}
+<style>
+    .pad-rt {
+        padding-right: 10px;
+
+    }
+
+    .pad-btm {
+        padding-bottom: 20px;
+    }
+
+    .tab-pane {
+        padding-left: 10px;
+    }
+    .modal-lg{
+        width:98% !important;
+    }
+</style>
+
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <h4 class="modal-title" ng-bind="creditReportModalTitle">Credit report</h4>
+</div>
+{% if code == '1' %}
+<div class="modal-body" style="height:80vh;overflow-y: auto;">
+        <!-- <div id="idCreditReport"></div> -->
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+
+{% if key == "CompanySummary" %}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab1">Company summary <span class="tab-count" id="id_tab1"></a>
+    </li>
+</ul>
+
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab1">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+                    <th class="pad-rt">Name</th>
+                    <th class="pad-rt">Country</th>
+                    <th class="pad-rt">Country registration nr</th>
+                    <th class="pad-rt">Activity description</th>
+                    <th class="pad-rt">Latest turnover figure</th>
+                    <th class="pad-rt">Company status</th>
+                    <th class="pad-rt">Latest sharholders equity figure</th>
+                    <th class="pad-rt">Common Value</th>
+                    <th class="pad-rt">Common Description</th>
+                    <th class="pad-rt">Credit limit</th>
+                    <th class="pad-rt">Provider Value</th>
+                    <th class="pad-rt">Provider description</th>
+                </tr>
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{value.BusinessName}} </td>
+                    <td class="pad-rt">{{value.Country}} </td>
+                    <td class="pad-rt">{{value.CompanyRegistrationNumber}} </td>
+                    <td class="pad-rt"> {{ value.MainActivity.ActivityDescription }} </td>
+                    <td class="pad-rt"> {{ value.LatestTurnoverFigure }} </td>
+                    <td class="pad-rt"> {{ value.CompanyStatus }} </td>
+                    <td class="pad-rt"> {{ value.LatestShareholdersEquityFigure }} </td>
+                    <td class="pad-rt">{{value.CreditRating.CommonValue}}</td>
+                    <td class="pad-rt">{{value.CreditRating.CommonDescription}}</td>
+                    <td class="pad-rt">{{value.CreditRating.CreditLimit}}</td>
+                    <td class="pad-rt">{{value.CreditRating.ProviderValue}}</td>
+                    <td class="pad-rt">{{value.CreditRating.ProviderDescription}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{%endif%}
+{% endfor %}
+
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+
+{% if key == "CreditScore" %}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab2">Credit score <span class="tab-count" id="id_tab2"></a>
+    </li>
+</ul>
+
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab2">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+
+                    <th class="pad-rt">Dt of latest rating change</th>
+
+                    <th class="pad-rt">Current credit rating common Value</th>
+                    <th class="pad-rt">Current credit rating common Description</th>
+                    <th class="pad-rt">Current credit rating credit limit</th>
+                    <th class="pad-rt">Current credit rating provider Value</th>
+                    <th class="pad-rt">Current credit rating provider description</th>
+                    <th class="pad-rt">Current credit rating contract limit</th>
+
+                    <th class="pad-rt">Previous credit rating common Value</th>
+                    <th class="pad-rt">Previous credit rating common Description</th>
+                    <th class="pad-rt">Previous credit rating credit limit</th>
+                    <th class="pad-rt">Previous credit rating provider Value</th>
+                    <th class="pad-rt">Previous credit rating provider description</th>
+
+                </tr>
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{ value.DateOfLatestRatingChange }} </td>
+                    <td class="pad-rt">{{value.CurrentCreditRating.CommonValue}}</td>
+                    <td class="pad-rt">{{value.CurrentCreditRating.CommonDescription}}</td>
+                    <td class="pad-rt">{{value.CurrentCreditRating.CreditLimit}}</td>
+                    <td class="pad-rt">{{value.CurrentCreditRating.ProviderValue}}</td>
+                    <td class="pad-rt">{{value.CurrentCreditRating.ProviderDescription}}</td>
+                    <td class="pad-rt">{{value.CurrentCreditRating.CurrentContractLimit}}</td>
+                    <td class="pad-rt">{{value.PreviousCreditRating.CommonValue}}</td>
+                    <td class="pad-rt">{{value.PreviousCreditRating.CommonDescription}}</td>
+                    <td class="pad-rt">{{value.PreviousCreditRating.CreditLimit}}</td>
+                    <td class="pad-rt">{{value.PreviousCreditRating.ProviderValue}}</td>
+                    <td class="pad-rt">{{value.PreviousCreditRating.ProviderDescription}}</td>
+
+
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+{%endif%}
+{%endfor%}
+
+
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+{% if key == "ShareCapitalStructure" %}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab3">Share capital structure <span class="tab-count" id="id_tab3"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab3">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+                    <th class="pad-rt pad-btm">Issued share capital</th>
+                    <th class="pad-rt pad-btm">Shareholders</th>
+
+                </tr>
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{ value.IssuedShareCapital }} </td>
+                    <td class="pad-rt">
+                        <table>
+                        <tr class="pad-rt" style="color: #777;">
+                        <td class="pad-rt">Name</td>
+                        <td class="pad-rt">Address</td>
+                        <td class="pad-rt">Share percent</td>
+                        </tr>
+                        {% for shareholder in value.ShareHolders.ShareHolder %}
+                        <tr class="pad-btm">
+                                <td class="pad-rt">{{ shareholder.Name}}</td>
+                                <td class="pad-rt">{{ shareholder.Address.SimpleValue}} - {{ shareholder.PostalCode }}</td>
+                                <td class="pad-rt">{{ shareholder.SharePercent }}</td>
+                        </tr>
+                        {%endfor%}
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{%endif%}
+{%endfor%}
+
+
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+{% if key == "Directors" %}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab3">Directors<span class="tab-count" id="id_tab3"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab3">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+                    <th class="pad-rt">Name</th>
+                    <th class="pad-rt">Address</th>
+                    <th class="pad-rt">Position</th>
+                    <th class="pad-rt">Date of birth</th>
+                </tr>
+                {% for directors_key, directors_value in value.CurrentDirectors.items %}
+                {% if directors_key == 'Director' %}
+                {% for dir_value in directors_value %}
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{ dir_value.Name }} </td>
+                    <td class="pad-rt"> {{ dir_value.Address.City }} </td>
+                    <td class="pad-rt"> {{ dir_value.Position }} </td>
+                    <td class="pad-rt"> {{ dir_value.DateOfBirth }} </td>
+                </tr>
+                {% endfor %}
+                {%endif%}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{%endif%}
+{%endfor%}
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+{% if key == "FinancialStatements" %}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab4">Financial statements<span class="tab-count" id="id_tab4"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab4">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+                    <th class="pad-rt">Year end date</th>
+                    <th class="pad-rt">Nr of week</th>
+                    <th class="pad-rt">Currency</th>
+                    <th class="pad-rt">Working capital</th>
+                    <th class="pad-rt">Net worth</th>
+                </tr>
+                {% for finstmt in value.FinancialStatement %}
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{ finstmt.YearEndDate }} </td>
+                    <td class="pad-rt"> {{ finstmt.NumberOfWeeks }} </td>
+                    <td class="pad-rt"> {{ finstmt.Currency }} </td>
+                    <td class="pad-rt">{{ finstmt.OtherFinancials.WorkingCapital }}</td>
+                    <td class="pad-rt">{{ finstmt.OtherFinancials.NetWorth }}</td>
+                </tr>
+                {%endfor%}
+
+            </table>
+        </div>
+    </div>
+
+</div>
+{%endif%}
+{%endfor%}
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+{% if key == "FinancialStatements"%}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab4">Profit and Loss<span class="tab-count" id="id_tab4"></a>
+    </li>
+</ul>
+
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab4">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+                    <th class="pad-rt">Revenue</th>
+                    <th class="pad-rt">Operating costs</th>
+                    <th class="pad-rt">Operating profit</th>
+                    <th class="pad-rt">Wages and salaries</th>
+                    <th class="pad-rt">Pension costs</th>
+                    <th class="pad-rt">Depreciation</th>
+                    <th class="pad-rt">Financial income</th>
+                    <th class="pad-rt">Financial expenses</th>
+                    <th class="pad-rt">Profit before tax</th>
+                    <th class="pad-rt">Tax</th>
+                    <th class="pad-rt">Profit after tax</th>
+                    <th class="pad-rt">Dividends</th>
+                    <th class="pad-rt">Other appropriattions</th>
+                    <th class="pad-rt">Retained profit</th>
+                </tr>
+                {% for finstmt in value.FinancialStatement%}
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{ finstmt.ProfitAndLoss.Revenue }} </td>
+                    <td class="pad-rt"> {{ finstmt.ProfitAndLoss.OperatingCosts }} </td>
+                    <td class="pad-rt"> {{ finstmt.ProfitAndLoss.OperatingProfit }} </td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.WagesAndSalaries }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.PensionCosts }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.Depreciation }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.FinancialIncome }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.FinancialExpenses }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.ProfitBeforeTax }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.Tax }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.ProfitAfterTax }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.Dividends }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.OtherAppropriations }}</td>
+                    <td class="pad-rt">{{ finstmt.ProfitAndLoss.RetainedProfit }}</td>
+                </tr>
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+
+</div>
+{%endif%}
+{%endfor%}
+
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+{% if key == "FinancialStatements"%}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab4">Balance sheet<span class="tab-count" id="id_tab4"></a>
+    </li>
+</ul>
+
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab4">
+        <div class="pad-btm">
+            <table>
+                <tr class="pad-btm">
+                    <th class="pad-rt">Land and buildings</th>
+                    <th class="pad-rt">Plant and machinery</th>
+                    <th class="pad-rt">Other tangible assets</th>
+                    <th class="pad-rt">Total tangible assets</th>
+                    <th class="pad-rt">Other intangible assets</th>
+                    <th class="pad-rt">Total intangible assets</th>
+                    <th class="pad-rt">Miscellaneous fixed assets</th>
+                    <th class="pad-rt">Total other fixed assets</th>
+                    <th class="pad-rt">Total fixed assets</th>
+                    <th class="pad-rt">Raw materials</th>
+                    <th class="pad-rt">Work in progress</th>
+                    <th class="pad-rt">Other inventories</th>
+                    <th class="pad-rt">Total inventories</th>
+                    <th class="pad-rt">Trade receivables</th>
+                    <th class="pad-rt">Miscellaneous Receivables</th>
+                </tr>
+                {% for finstmt in value.FinancialStatement%}
+                <tr class="pad-btm">
+                    <td class="pad-rt"> {{ finstmt.BalanceSheet.LandAndBuildings }} </td>
+                    <td class="pad-rt"> {{ finstmt.BalanceSheet.PlantAndMachinery }} </td>
+                    <td class="pad-rt"> {{ finstmt.BalanceSheet.OtherTangibleAssets }} </td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.TotalTangibleAssets }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.OtherIntangibleAssets }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.TotalIntangibleAssets }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.MiscellaneousFixedAssets }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.TotalOtherFixedAssets }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.TotalFixedAssets }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.RawMaterials }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.WorkInProgress }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.OtherInventories }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.TotalInventories }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.TradeReceivables }}</td>
+                    <td class="pad-rt">{{ finstmt.BalanceSheet.MiscellaneousReceivables }}</td>
+                </tr>
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+
+</div>
+{%endif%}
+{%endfor%}
+
+{% for key, value in data.CompanyReportSet.Reports.Report.items %}
+{% if key == "ContactInformation"%}
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab5">Additional information<span class="tab-count" id="id_tab5"></a>
+    </li>
+</ul>
+
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab5">
+        <div class="pad-btm">
+        </div>
+    </div>
+    <div class="pad-btm">
+        <b>Contact information:</b>
+    </div>
+    <div>
+        <b style="color:#777;">Address:</b>
+    </div>
+    <div class="pad-btm">
+        <table>
+            <tr class="pad-btm">
+                <th class="pad-rt">Simple value</th>
+                <th class="pad-rt">Street</th>
+                <th class="pad-rt">House nr</th>
+                <th class="pad-rt">City</th>
+                <th class="pad-rt">Postal code</th>
+                <th class="pad-rt">Country</th>
+                <th class="pad-rt">Telephone</th>
+            </tr>
+                {%for mainaddress in value.MainAddress.Address %}
+            <tr class="pad-btm">
+                <td class="pad-rt">{{mainaddress.SimpleValue}}</td>
+                <td class="pad-rt">{{mainaddress.Street}}</td>
+                <td class="pad-rt">{{mainaddress.HouseNumber}}</td>
+                <td class="pad-rt">{{mainaddress.City}}</td>
+                <td class="pad-rt">{{mainaddress.PostalCode}}</td>
+                <th class="pad-rt">{{value.MainAddress.Country}}</th>
+                <td class="pad-rt">{{value.MainAddress.Telephone}}</td>
+            </tr>
+                {%endfor%}
+
+        </table>
+    </div>
+
+    <div>
+        <b style="color:#777;">Other addresses:</b>
+    </div>
+    <div class="pad-btm">
+        <table>
+            <tr class="pad-btm">
+                <th class="pad-rt">Simple value</th>
+                <th class="pad-rt">Street</th>
+                <th class="pad-rt">House nr</th>
+                <th class="pad-rt">City</th>
+                <th class="pad-rt">Postal code</th>
+                <th class="pad-rt">Country</th>
+                <th class="pad-rt">Telephone</th>
+            </tr>
+            {%for otheraddress in value.OtherAddresses.OtherAddress%}
+                {%for address in otheraddress.Address%}
+                <tr class="pad-btm">
+                    <td class="pad-rt">{% if address|length is not 0 %} {{address.SimpleValue}} {%endif%}</td>
+                    <td class="pad-rt">{% if address|length is not 0 %}{{address.Street}}{%endif%}</td>
+                    <td class="pad-rt">{% if address|length is not 0 %}{{address.HouseNumber}}{%endif%}</td>
+                    <td class="pad-rt">{% if address|length is not 0 %}{{address.City}}{%endif%}</td>
+                    <td class="pad-rt">{% if address|length is not 0 %}{{address.PostalCode}}{%endif%}</td>
+                    <td class="pad-rt">{{otheraddress.Country}}</td>
+                    <td class="pad-rt">{{otheraddress.Telephone}}</td>
+                </tr>
+                {%endfor%}
+            {%endfor%}
+        </table>
+    </div>
+</div>
+{% endif %}
+{%endfor%}
+
+
+{% for key, value in data.CompanyReportSet.Messages.items %}
+{% if key == "Message"%}
+<ul class="nav nav-tabs pad-btm">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab5">Message<span class="tab-count" id="id_tab5"></a>
+    </li>
+</ul>
+<b>{{value}}</b>
+{%endif%}
+{%endfor%}
+
+    <!-- end -->
+</div>
+{% else %}
+<div class="modal-body" style="height:80vh;overflow-y: auto;">
+<p style="text-align: center;">{{msg}}</p>
+</div>
+{%endif%}
+<div class="modal-footer">
+
+</div>
+

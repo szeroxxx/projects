@@ -1,0 +1,319 @@
+<style type="text/css">
+    .btn-markRead{
+        font-size: 11px;
+        margin-top: 2px;
+        padding: 2px 8px;
+    }
+    .user-notificationsTable tr td,
+    .general-notificationsTable tr td {
+        padding: 1px;
+    }
+    .notification td{
+        padding:0px;
+    }
+    .user-notificationsTable,
+    .general-notificationsTable{
+        width: 100%;
+    }
+    .notification {
+        border-bottom: 1px solid #ddd;
+        margin-left: 10px
+    }
+    .notification-subject {
+        float: left;
+    }
+    .notification-created-on, .notification-read-by{
+        float: right;
+        font-weight: normal;
+        font-size: 11px;
+    }
+    .notification-text {
+        float: left;
+        font-weight: normal;
+        font-size: 11px;
+    }
+    .glyphicon-ok {
+        cursor: pointer;
+        font-size:15px;
+        margin-left:10px;
+    }
+    .view-more-btn {
+        text-align: center;
+        font-size: 15px;
+        margin-top: 12px
+    }
+    .user-notifications,
+    .general-notifications{
+        overflow-y: auto;
+        padding: 2px;
+        height: 227px;
+    }
+    .classPanel {
+        font-size: 9px;
+        position: relative;
+        left: 0px;
+        bottom: 2px;
+    }
+    .general{
+        background-color: #2d6987;
+    }
+    .modal-title {
+        margin: 0;
+        line-height: 1.42857143;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        margin-right: 10px !important;
+    }
+    .notification_type{
+        font-size: 14px;
+        padding-left: 5px;
+    }
+    .viewMore{
+        text-decoration: underline;
+        text-align: center;
+        cursor: pointer;
+    }
+    .topbarIcons {
+        color: #7a7979;
+        margin: 0px 5px 0px 5px;
+        font-size: 20px;
+    }
+    .noNotification{
+        display: none;
+        text-align: -webkit-center;
+        padding-top: 50px;
+    }
+    .panel_header{
+        padding: 10px 5px;
+    }
+    .desktop-notification{
+        text-align: center;
+        padding-top: 5px;
+    }
+    .message_priorityCritical{
+        background-color:#fff;
+        color: #EF7878;
+        padding:3px 7px;
+        border-radius: 10px;
+        border: 1px solid #EF7878;
+        font-size:11px
+    }
+    .message_priorityNormal{
+        color: #fff;
+        background-color: transparent;
+        background-image: none;
+        border-color: #fff;
+        font-size:11px
+    }
+    .message_priorityWarning{
+        background-color:#fff;
+        color: #feb739;
+        padding:3px 7px;
+        border-radius: 10px;
+        border: 1px solid #feb739;
+        font-size:11px
+    }
+    .message_priorityUrgent{
+        background-color:#EF7878;
+        color: #fff;
+        padding:3px 7px;
+        border-radius: 10px;
+        font-size:11px
+    }
+    .message_name{
+        font-size:14px;
+        margin-left: 10px;
+
+    }
+    .message_created_on_date{
+        margin-left: 10px;
+        font-size: 12px;
+        color: #555;
+
+    }
+    .message_created_by{
+        margin-left: 10px;
+        font-size: 12px;
+        color: #555;
+    }
+    .message_trTrue{
+        border-bottom:1pt solid #f2f2f2;
+        height: 35px;
+        width: 95%;
+    }
+    .message_trFalse{
+        border-bottom:1pt solid #f2f2f2;
+        height: 35px;
+        width: 100%;
+        font-weight: 700;
+    }
+    .class_priority{
+        float: Right;
+    }
+    .no_message{
+        text-align: center;
+        margin-top: 100px;
+    }
+    .message_row{
+        width: 100%;
+        font-size: 14px;
+    }
+    .pg-selected{
+        font-size: 14px;
+        border-bottom: 2px solid #042853;
+    }
+    .pg-normal{
+        font-size: 14px;
+    }
+    .message_page{
+        padding: .3em 0.8em;;
+        color: #000 !important;
+    }
+    .my-notification-table{
+        margin-bottom: 5px;
+        overflow-y: auto;
+    }
+    .user-notification-table{
+        margin-top:10px;
+        overflow-y: auto;
+    }
+    .img-box{
+        margin-left: 10px;
+    }
+    .user-image{
+        border-radius: 50%;
+        height: 20px;
+        width: 20px;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</link>
+<div class="modal-body">
+    <div>
+        <div class="panel panel-default my-notification-table" id="panel_body">
+            <div class="panel-heading panel_header">
+                <span class="notification_type"><b>My notifications</b></span>
+            </div>
+            <div class="panel-body user-notifications">
+                <table class="user-notificationsTable paginated" id="mytable">
+                    <tbody>
+                        {% if tasks %}
+                            {% for task_ in tasks %}
+                                {% if task_.task_id__general == False %}
+                                    <input type="hidden" id="id_user_message" value="{{task_.id}}" />
+                                    <tr class="message_tr{{task_.is_read}}" class="col-sm-11">
+                                        <td>
+                                            <div class="col-sm-7">
+                                                <a href="" id="id_task_title" class="message_name"  ng-click="viewTask('{{task_.id}}','{{task_.task_id__name}}','{{task_.task_id__priority}}')" value="">{{task_.task_id__name}}</a>
+                                            </div>
+                                            <div class="class_priority">
+                                                {% if task_.task_id__priority != "Normal" %}
+                                                    <span id="id_task_priority" class="message_priority{{task_.task_id__priority}}"
+                                                        value="">{{task_.task_id__priority}}</span>
+                                                {% endif %}
+                                                {% if task_.created_on %}
+                                                    <span id="id_message_created_on_date" class="message_created_on_date" value=""
+                                                        title="{{task_.created_on_}}">{{task_.created_on}}</span>
+                                                {% endif %}
+                                                <!-- <span id="id_task_title" class="message_created_by" value="">{{task_.username}}</span> -->
+                                                <span class="img-box"><img id="taskUserImg" class="user-image" src="{{task_.avatar}}" width="20" title="{{task_.username}}" onerror="this.src='/static/task/js/images/man.png'"></span></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif%}
+                            {% endfor %}
+                        {% endif %}
+                        <div class="no_message" id="no_user_message" style="display: none;">
+                            <div class="message_row">
+                                <i class="icon-notification topbarIcons"></i>
+                                <span>No new notifications.</span>
+                            </div>
+                        </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default user-notification-table" id="panel_body_general">
+            <div class="panel-heading panel_header">
+                <span id = "id_general_cnt" class="label btn-primary classPanel"></span>
+                <span class="notification_type"><b>General notifications</b></span>
+            </div>
+            <div class="panel-body general-notifications">
+                <table class="general-notificationsTable paginated" id="mytable">
+                    <tbody>
+                    {% if tasks %}
+                        {% for task_ in tasks %}
+                            {% if task_.task_id__general == True %}
+                            <input type="hidden" id="id_general_message" value="{{task_.id}}" />
+                            <tr class="message_tr{{task_.is_read}}" class="col-sm-11">
+                                <td>
+                                    <div class="col-sm-7" >
+                                        <a href="" id="id_task_title" class="message_name" ng-click="viewTask('{{task_.id}}','{{task_.task_id__name}}','{{task_.task_id__priority}}')" value="">{{task_.task_id__name}}</a>
+                                    </div>
+                                    <div class="class_priority">
+                                        {% if task_.task_id__priority != "Normal" %}
+                                        <span id="id_task_priority" class="message_priority{{task_.task_id__priority}}"
+                                            value="">{{task_.task_id__priority}}</span>
+                                        {% endif %}
+                                        {% if task_.created_on %}
+                                        <span id="id_message_created_on_date" class="message_created_on_date" value="" title="{{task_.created_on_}}">{{task_.created_on}}</span>
+                                        {% endif %}
+                                        <!-- <span id="id_task_title" class="message_created_by" value="">{{task_.username}}</span> -->
+                                        <span class="img-box"><img id="taskUserImg" class="user-image" src="{{task_.avatar}}" width="20" title="{{task_.username}}" onerror="this.src='/static/task/js/images/man.png'"></span></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <div class="no_message" id="no_general_message" style="display: none;">
+                        <div class="message_row">
+                            <i class="icon-notification topbarIcons"></i>
+                            <span>No new general notifications.</span>
+                        </div>
+                    </div>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="view_message" role="dialog" data-backdrop="static" tabindex="-1" aria-labelledby="title" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:50%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="onClose()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="col-md-6">
+                    <span class="modal-title" id="title" ng-bind="sourcingTitle"></span> <span id="id_priority_view"></span>
+                </div>
+            </div>
+            <div class="modal-body" id="message_detail">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" ng-click="onUnread($event)">Mark as unread</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true" ng-click="onClose()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var date = $("#id_message_created_on_date").text();
+    var user = $("#id_user_message").val()
+    if(user){
+        $("#no_user_message").hide()
+    }else{
+        $("#no_user_message").show()
+    }
+
+    var general = $("#id_general_message").val()
+    if(general){
+        $("#no_general_message").hide()
+    }else{
+        $("#no_general_message").show()
+    }
+</script>

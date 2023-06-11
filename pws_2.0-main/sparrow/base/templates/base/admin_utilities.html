@@ -1,0 +1,47 @@
+{% load widget_tweaks %}
+{% load app_filters %}
+<style>
+    .align-items {
+        margin-bottom: 15px;
+    }
+</style>
+<div class="modal-body">
+    {% if master_menus %}
+    <div class="container" style="border: 1px solid #f1f1f1">
+        {% for master_menu_key,master_menu_values in master_menus.items %}
+        <div class="col-sm-4" style="padding: 20px;">
+            <h4 style="margin-bottom: 18px">{{master_menu_key}}</h4>
+            {% for master_menu_value in master_menu_values %}
+            <div class="align-items"><a href="{{master_menu_value.url}}">{{master_menu_value.name}}</a></div>
+            {% endfor %}
+        </div>
+        {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="container" style="{% if forloop.counter|divisibleby:4 %}  {% endif %}; border: 1px solid #f1f1f1">
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="modal-body details-body" style="text-align:center">
+            <h5 style="color:red;font-size:18px"><b>Access denied - You do not have permission to perform any action<b></h5>
+        </div>
+    {% endif %}
+</div>
+</div>
+<script type="text/javascript">
+    function adminUtilitiesInit() {
+        var admin_utilities = {};
+        sparrow.registerCtrl('adminUtilitiesCtrl', function ($scope, $rootScope, $route, $routeParams, $compile, DTOptionsBuilder, DTColumnBuilder, $templateCache, ModalService) {
+            $scope.addViewButtons('');
+            config = {
+                pageTitle: 'Admin utilities',
+            };
+
+            sparrow.setup($scope, $rootScope, $route, $compile, DTOptionsBuilder, DTColumnBuilder, $templateCache, config, ModalService);
+        });
+
+        return admin_utilities;
+    }
+    Mousetrap.reset()
+    var admin_utilities = adminUtilitiesInit();
+</script>

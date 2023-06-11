@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<html>
+{% load staticfiles %}
+<head>
+	<title>Quadvelo: Unsubscribe</title>
+	<!-- <link rel="icon" type="image/png" href="{% static 'base/images/logo-b.png' %}"> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}?v=2" />
+	<script src="{% static 'base/js/jquery-1.11.2.min.js' %}?v=0.1"></script>
+  	<script src="{% static 'base/js/bootstrap.min.js' %}?v=0.2"></script>
+
+ </head>
+<style>
+.lblHeader {
+    font-size: 40px;
+    font-weight: bold;
+    color: grey;
+    font-family: 'Droid Sans', sans-serif !important;
+}
+.lblHeaderTop {
+	  font-size: 18px;
+	  font-weight: normal;
+    font-family: 'Droid Sans', sans-serif !important;
+}
+.lblHeaderSmall{
+  	font-size: 20px;
+  	font-weight: normal;
+    font-family: 'Droid Sans', sans-serif !important;
+}
+.contentDivUnsub{
+	  font-weight: normal;
+    color: red;
+    font-family: 'Droid Sans', sans-serif !important;
+    padding-top: 5px;
+    margin-top: 5px;
+}
+.form-group{
+  margin-top:20px;
+}
+</style>
+<body>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-offset-3 col-lg-6">
+			<div align="center" style="padding-top: 45px;">
+				<a href="/" class="site_title"><img src="{% if company_img %}data:image/png;base64,{{ company_img }}{% else %}{% static 'base/images/logo-wh.png' %}?v=2{% endif %}" style="max-height: 90px; min-width: 150px; margin-right:25px;"></a>
+			</div>
+      <div class="subMessage" id="subMessage" style="display: none;margin-left: 3px; text-align: center;color:#2a9f00;">
+        <span id="header" class="lblHeaderSmall" style="font-size: 25px; border-radius: 20px;">You have been unsubscribed from all future mailings.</br></span>
+      </div>
+      {% if not is_unsubscribed %}
+      <div class="content" id="content">
+			<div class="panel panel-default" style="margin-top: 20px;">
+				<div class="panel-body" >
+					<div class="contentDiv headerDiv">
+        			<span id="header" class="lblHeader">Unsubscribe Request</span>
+    			</div>
+    				<form id='frmUnsubscribe' class="form-inline" action="/crm/unsubscribed_contact/">
+            				<div class="form-group" style="margin-top: 15px;">
+				                <label class="control-label" name="email" style="font-weight: normal; "> You are requesting to unsubscribe </label><span>
+                        <label class="control-label" id="id_email_value" style="font-weight: bold;">{{email}}</label>
+                        <span class="control-label" style="font-weight: normal;">from receiving future email messages.</span>
+				            </div>
+							<div class="form-group" style="padding-top: 15px; float: right;padding-right: 10px;font-size: 20px;">
+								<input type="submit" id="btnSave" class="btn btn-primary" value="Unsubscribe" style="margin-right: 200px;font-size: 20px;">
+							</div>
+            </form>
+				</div>
+       </div>
+      </div>
+						{% else %}
+							<script type="text/javascript">
+								$('#content').hide()
+							</script>
+              <div class="contentDivUnsub" id="contentDivUnsub" style="margin-left: 3px; text-align: center;">
+                <span id="header" class="lblHeaderSmall" style="font-size: 35px; border-radius: 20px;">Invalid request for unsubscribe.</br></span>
+              </div>
+						{% endif %}
+	</div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+		$("#frmUnsubscribe").submit(function(e) {
+              var data = document.getElementById('id_email_value').textContent;
+              var formURL = $(this).attr("action");
+              var message = document.getElementById('subMessage')
+              var content = document.getElementById('content')
+              if(window.location.hash != '') {
+                url_data = window.location.hash;
+              }
+              var postData = {
+                'data' :data,
+              }
+
+              $.ajax({
+                  dataType: "json",
+                  type: "POST",
+                  url: formURL,
+                  data: postData,
+                  success: function (data) {
+                    var success = data.code == 0 ? false : true;
+                    if(success) {
+                      content.style.display="none";
+                      message.style.display="block";
+                    }
+                  }
+            });
+              e.preventDefault();
+          });
+
+</script>

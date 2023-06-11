@@ -1,0 +1,168 @@
+
+<style>
+    .column-rt-pad{
+        padding-right: 30px;
+
+    }
+    .pad-btm{
+        padding-bottom: 10px;
+    }
+    .tab-pane{
+        padding-left: 10px;
+    }
+
+</style>
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab" href="#tab1">Credit status <span class="tab-count" id="id_tab1"></a>
+    </li>
+</ul>
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab1">
+
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Amounts in
+            </div>
+            <div class="col-md-3 col-sm-3">
+                EUR
+            </div>
+            <div class="col-md-3 col-sm-3">
+                EUR
+            </div>
+        </div>
+
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Credit limit :
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{creditLimit}}
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{creditLimit_cust}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Outstanding invoices :
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{outstandingInvoices}}
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{outstandingInvoices_cust}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Running orders :
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{runningOrders}}
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{runningOrders_cust}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Available credit :
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{availableCredit}}
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{availableCredit_cust}}
+            </div>
+        </div>
+        <div class="row pad-btm">
+            <div class="col-md-3 col-sm-3">
+                Payment tearms :
+            </div>
+            <div class="col-md-3 col-sm-3">
+                {{paymentTerms}}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a class="show-tab hideForClient" href="#tab2">Details of outstanding invoices<span class="tab-count" id="id_tab2"></a>
+    </li>
+</ul>
+
+<div class="tab-content tab-data-content">
+    <div class="tab-pane active" id="tab2">
+        <table>
+            <tr>
+                <th class="column-rt-pad pad-btm">
+                    Invoice no.
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Invoice date
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Invoice due date
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Base invoice amount
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Customer invoice amount
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Base outstanding
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Customer outstanding
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Invoice type id
+                </th>
+                <th class="column-rt-pad pad-btm">
+                    Note
+                </th>
+            </tr>
+        {% if gridData|length == 0 %}
+        </table>
+        <p style="text-align: center;padding-top:10px;">No data available</p>
+        {% else %}
+        {% for grid in gridData %}
+        <tr>
+            <td class="column-rt-pad pad-btm">
+                {{grid.InvoiceNo}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.InvoiceDate}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.InvoiceDueDate}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.Base_Invoiceamount}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.Cust_Invoiceamount}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.Base_Outstanding}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.Cust_Outstanding}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.InvoiceTypeId}}
+            </td>
+            <td class="column-rt-pad pad-btm">
+                {{grid.Note}}
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<style type="text/css">
+    .employee,
+    .workcenter {
+        background-color: #f3f3f3;
+    }
+</style>
+
+<div class="lst-container">
+    <div  style="padding-top: 10px">
+                    <label for="id_year_range" class="control-label col-sm-2" style="margin-left: 10px;" required>Select month and year</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="datepicker" id="datepicker" />
+                    </div>
+                    <button style="text-align:right;margin-top: 5px;" type="button" class="btn btn-primary btn-sm" id="id_load_btn" ng-click="onLoad($event)">Load</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnExport"
+                        style="text-align:right;margin-top: 5px;display: none;" ng-click="onExport($event);">Export</button>
+                </div>
+    </div>
+    <div id="gridCon" >
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" index="1"
+            class="row-border hover"></table>
+    </div>
+</div>
+
+
+<script>$("#datepicker").datepicker({
+        format: "mm-yyyy",
+        startView: "months",
+        minViewMode: "months"
+    });
+</script>
+
+

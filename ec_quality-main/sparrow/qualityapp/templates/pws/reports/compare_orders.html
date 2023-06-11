@@ -1,0 +1,165 @@
+<style>
+    .reOrder1, .reOrder2, .reOrder3, .reOrder4, .reOrder5 {
+        display: none;
+    }
+    #col_order{
+        display: none;
+    }
+    .custom-action-bar{
+        margin-top: 10px;
+        float: right;
+    }
+    .import-btn{
+        margin-left: 100px;
+    }
+    .last-import{
+        margin-top: 10px;
+        display: flex;
+
+    }
+</style>
+<script type="text/ng-template" id="top_action_bar">
+    <div class="custom-action-bar">
+        <div class="import-btn">
+            <input type="button" class="btn btn-primary btn-sm" id="btnImportOrder" value="I̲mport order" ng-disabled="btnImportOrderDisable"/>
+        </div>
+        <div class="last-import" id="paraLastOrder">
+            Last compared on: &nbsp;<b><p id="importedOn"></p></b>
+        </div>
+    </div>
+</script>
+
+<div class="modal-body details-body" id = "">
+    <ul class="nav nav-tabs">
+        <li {% if type == 'ec_pending' %} class="active" {% endif %}>
+            <a class="show-tab" href="#ec_pending" index="1" id="tab1" ng-click="onTabChange('ec_pending',1)"><i id="ec_pending-fav" {% if type == 'ec_pending' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>EC Orders Pending</a>
+        </li>
+        <li {% if type == 'ec_inq_pending' %} class="active" {% endif %}>
+            <a class="show-tab" href="#ec_inq_pending" index="2" id="tab2" ng-click="onTabChange('ec_inq_pending',2)"><i id="ec_inq_pending-fav" {% if type == 'ec_inq_pending' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>EC Inquiry Pending</a>
+        </li>
+        <li {% if type == 'ec_compare' %} class="active" {% endif %}>
+            <a class="show-tab" href="#ec_compare" index="6" id="tab3" ng-click="onTabChange('ec_compare',6)"><i id="ec_compare-fav" {% if type == 'ec_compare' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>EC Compare</a>
+        </li>
+        <li {% if type == 'power_pending' %} class="active" {% endif %}>
+            <a class="show-tab" href="#power_pending" index="3" id="tab4" ng-click="onTabChange('power_pending',3)"><i id="power_pending-fav" {% if type == 'power_pending' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Power Orders Pending</a>
+        </li>
+        <li {% if type == 'power_inq_pending' %} class="active" {% endif %}>
+            <a class="show-tab" href="#power_inq_pending" index="4" id="tab5" ng-click="onTabChange('power_inq_pending',4)"><i id="power_inq_pending-fav" {% if type == 'power_inq_pending' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Power Inquiry Pending</a>
+        </li>
+        <li {% if type == 'power_compare' %} class="active" {% endif %}>
+            <a class="show-tab" href="#power_compare" index="5" id="tab6" ng-click="onTabChange('power_compare',7)"><i id="power_compare-fav" {% if type == 'power_compare' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Power Compare</a>
+        </li>
+        <li {% if type == 'imported' %} class="active" {% endif %}>
+            <a class="show-tab" href="#imported" index="7" id="tab7" ng-click="onTabChange('imported',5)"><i id="imported-fav" {% if type == 'imported' %} class="tab-fav-active tab-fav glyphicon glyphicon-star-empty favourite_icon" {% else %} class="tab-fav glyphicon glyphicon-star-empty favourite_icon" {% endif %} title="Bookmark this page"></i>Imported</a>
+        </li>
+
+        <li class="mn-listing tab-search" style="min-width: 350px !important;width: auto !important;">
+            <div {% if type == 'imported' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %} id="imported-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams5" parameters="availableSearchParams5" index ="5"></nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'ec_pending' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %}
+                id="ec_pending-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1">
+                    </nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'ec_inq_pending' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %}
+                id="ec_inq_pending-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams2" parameters="availableSearchParams2" index="2">
+                    </nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'power_pending' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %}
+                id="power_pending-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams3" parameters="availableSearchParams3" index="3">
+                    </nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'power_inq_pending' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %}
+                id="power_inq_pending-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams4" parameters="availableSearchParams4" index="4">
+                    </nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'ec_compare' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %}
+                id="ec_compare-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams6" parameters="availableSearchParams6" index="6">
+                    </nit-advanced-searchbox>
+                </form>
+            </div>
+            <div {% if type == 'power_compare' %} class="tab-content tab-search-active" {% else %} class="tab-content" {% endif %}
+                id="power_compare-search">
+                <form autocomplete="off">
+                    <nit-advanced-searchbox ng-model="searchParams7" parameters="availableSearchParams7" index="7">
+                    </nit-advanced-searchbox>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div {% if type == 'ec_pending' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="ec_pending">
+            <div class="lst-container ec_pending">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'power_pending' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="power_pending">
+            <div class="lst-container power_pending" >
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions3" dt-columns="dtColumns3" dt-instance="dtInstance3" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+         <div {% if type == 'imported' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="imported">
+            <div class="lst-container imported" >
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions5" dt-columns="dtColumns5" dt-instance="dtInstance5" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'power_inq_pending' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="power_inq_pending">
+            <div class="lst-container power_inq_pending" >
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions4" dt-columns="dtColumns4" dt-instance="dtInstance4" class="row-border hover"></table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'ec_inq_pending' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="ec_inq_pending">
+            <div class="lst-container ec_inq_pending">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions2" dt-columns="dtColumns2" dt-instance="dtInstance2" class="row-border hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'ec_compare' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="ec_compare">
+            <div class="lst-container ec_compare">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions6" dt-columns="dtColumns6" dt-instance="dtInstance6" class="row-border hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div {% if type == 'power_compare' %} class="tab-pane active" {% else %} class="tab-pane" {% endif %} id="power_compare">
+            <div class="lst-container power_compare">
+                <div id="gridCon">
+                    <table datatable dt-options="dtOptions7" dt-columns="dtColumns7" dt-instance="dtInstance7" class="row-border hover">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var data = {'type' : '{{type}}', 'permissions': {{ permissions| safe}}};
+   compare_ordersInit(data);
+</script>

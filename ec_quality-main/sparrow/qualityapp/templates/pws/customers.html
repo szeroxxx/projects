@@ -1,0 +1,169 @@
+
+<style>
+  body.modal-open {
+    overflow: hidden;
+}
+  .submitOrderScreen {
+    float: right;
+    margin-right: 0px;
+  }
+
+  .my-custom-scrollbar_ {
+    height: 500px;
+    overflow: auto;
+  }
+  .bottom{
+    margin-bottom: 50px;
+  }
+  .customer-set-order{
+    width: 60%;
+    margin-top: 15px;
+  }
+  .customer-set-screen-msg{
+    color: #e84439;
+    float: left;
+    font-size: 15px;
+    display:none;
+  }
+  .customer-plce-order-user{
+    margin-left: 25px;
+  }
+  .customer-input{
+    min-width: 280px !important;
+    width: auto !important;
+  }
+  .set-order-refresh{
+    margin-top:5px;
+    margin-left: -15px;
+    min-width: 80px !important;
+    width: auto !important;
+  }
+  .customer-label{
+    margin-left:-50px;
+    margin-top:5px;
+    min-width: 280px !important;
+    width: auto !important;
+  }
+  .customer-checkbox{
+    min-width: 19px !important;
+    width: auto !important;
+  }
+</style>
+
+<div class="lst-container">
+    <div>
+      <form autocomplete="off">
+        <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1" placeholder="Search..."></nit-advanced-searchbox>
+      </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <input type="button" class="btn btn-primary btn-sm" id="addNew" value="A̲dd new" ng-click="onAdd($event);">
+      <input type="button" class="btn btn-primary btn-sm" id="setOrderScreen" value="Set order screen" ng-disabled="setOrderScreen">
+      <input type="button" class="btn btn-primary btn-sm" id="placeOrder" value="Place order" ng-disabled="placeOrder">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+          <li>
+            <input type="button" class="btn btn-primary btn-sm" value="D̲elete" ng-click="onDelete($event);" ng-disabled="btnModelDeleteDisable">
+            <input type="button" class="btn btn-primary btn-sm" value="E̲dit" id="btnEditMo" ng-click="onEdit($event);" ng-disabled="btnModelEditDisable">
+            <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory"></input>
+            <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port">
+            <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data">
+          </li>
+        </ul>
+      </div>
+  </div>
+</script>
+
+<div id="setScreenModel" class="modal" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl customer-set-order" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeSetOrderScreen($event);">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h5 class="modal-title" id="setScreenTitle" ng-bind="sourcingTitle"></h5>
+      </div>
+      <div class="modal-body">
+        <div id="setScreenBody" class="my-custom-scrollbar_"></div>
+      </div>
+      <div class="modal-footer" role="tablist">
+        <div class="col-sm-1 customer-label">
+          <label required for="id_company_set_screen_data" class="control-label col-sm-4 customer-input">Choose existing customer's screen:</label>
+        </div>
+        <div class="col-sm-1 customer-checkbox">
+            <input id="id_customer_checkbox" class="checkbox-margin " name="customer-checkbox" type="checkbox" />
+        </div>
+        <div class="col-sm-1 customer-input">
+          <input class="form-control" id="id_company_set_screen_data" name="company" type="text" disabled/>
+        </div>
+        <div class="col-sm-1 set-order-refresh">
+          <a id="id_customer_refresh" ng-click="setScreenData($event)">Refresh</a>
+        </div>
+        <button class="btn" data-dismiss="modal" aria-hidden="true" id="closesetOrderscreen_id" ng-click="closeSetOrderScreen($event);">Close</button>
+        <button type="submit" class="btn btn btn-primary" ng-click="saveOrderScreenMaster($event);" ng-disabled="btnDisabled">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="setScreenChildModel" class="modal fade" data-backdrop="static" tabindex="-3" role="dialog" data-backdrop="false">
+    <div class="modal-dialog modal-lg customer-set-order" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="setScreenChildTitle" ng-bind="sourcingTitle"></h5>
+            </div>
+            <div class="modal-body">
+                <div id="setScreenChildBody" class="my-custom-scrollbar_"></div>
+            </div>
+            <div class="modal-footer" role="tablist">
+            <span class="customer-set-screen-msg" id="note_efficiency">Note: Service selection is based on customer's order processing flow, to add/remove service use 'Order Process Flow'.</span>
+            <button class="btn btn-default" data-dismiss-modal="modal2">Close</button>
+                <button class="btn btn-primary" ng-click="applyOrderScreeChild($event);"
+                    ng-disabled="btnDisabled">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="order_place" class="modal fade"  role="dialog" data-backdrop="static" aria-labelledby="title" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" role="document" >
+  <div class="modal-content">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closePlaceOrder($event);">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title" id="placeOrderTitle">Place order</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form method="POST" role="form" enctype="multipart/form-data" action="/qualityapp/place_continue/" class="form-horizontal" id="frmPlace">
+            <div class="form-group row ">
+                <label  for="id_customer_user" class="col-sm-2 col-form-label required customer-plce-order-user">Select User :</label>
+                <div class="col-sm-8">
+                  <input id="id_customer_user" class="form-control" type="text" name="customer_user" required>
+
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+        <div class="modal-footer" role="tablist">
+          <button type="submit" class="btn btn btn-primary" ng-click="orderPlace($event);">Continue</button>
+        </div>
+  </div>
+  </div>
+</div>
+<script>
+  var data = {'permissions': {{ permissions| safe}}};
+  customersInit(data);
+  setAutoLookup('id_company_set_screen_data', '/b/lookups/companies/', '', true);
+</script>
+

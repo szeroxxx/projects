@@ -1,0 +1,104 @@
+<form id="idOrderScreenParamsForm" action="/qualityapp/save_order_screen_params/" method="POST" role="form" class="form-horizontal" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" id="parent_id" name="parent">
+    <table class="table table-striped table-hover" id="setDefualtDropdownValue" style="display: none;">
+        <thead>
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Set as default</th>
+                <th scope="col">Name</th>
+                <th scope="col">Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in order_screen_params %}
+            <tr>
+                <th scope="row"><input type="checkbox" class="isComplusory" name="select" value="{{field.id}}"
+                    {% if service_pro_code == "cmb_service" %}
+                        {% if field.name in service_pro %} checked onclick="return false;" {% else %} unchecked disabled{% endif %}
+                    {% else %}
+                        {% if field.id in display_ids %} checked {% endif %}
+                    {% endif %}>
+                </th>
+                <td scope="row">
+                    {% if is_cmb %}
+                    <input type="checkbox" class="DefaultValue" name="default_value1" value="{{field.code}},{{field.name}}"
+                        {% if service_pro_code == "cmb_service" %}
+                            {% if field.name in service_pro %} unabled {% else %} disabled {% endif %}
+                            {% if default_value == field.code %} checked {% endif %}
+                        {% else %}
+                            {% if default_value == field.code %} checked {% endif %}
+                        {% endif %}>
+                    {% endif %}
+                </td>
+                <td scope="row">{{field.name}} <input type="hidden" name="default_valueSelect" value="{{field.name}}"></td>
+                <td scope="row">{{field.code}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% if is_txt %}
+        <div id="setDefualtTXTValue" style="display: none; width: 300px;">
+            <input id="setDefualtValue" name="default_value2" class="form-control" type="text" value="{% if default_value != 'on' %} {{default_value}} {% endif %}">
+        </div>
+        {% endif %}
+        {% if is_chk %}
+        <div id="setDefualtCheckBoxValue" style="display: none;">
+            <label for="setDefualtValueCheckBox" class="form-check-label" id="check_para_name"></label>
+            <input style="margin-left: 10; margin-top: 2;" id="setDefualtValueCheckBox" class="form-check-input" name="default_value3" type="checkbox" {% if default_value == 'Yes' %} checked {% endif %}>
+        </div>
+        {% endif %}
+    </table>
+</form>
+<script type="text/javascript">
+    $(function(){
+        $(".DefaultValue").on("click", function() {
+            var data = [];
+            if ($(this).parent().parent().find('.isComplusory').is(":checked") == false) {
+                $(this).parent().parent().find('.isComplusory').prop('checked',true)
+            }
+        });
+    });
+    $(function(){
+        $(".isComplusory").on("click", function() {
+            var data = [];
+            $("table > tbody > tr").each(function () {
+                var $tr = $(this);
+                if ($tr.find(".isComplusory").is(":checked") == false) {
+                    $tr.find(".DefaultValue").prop('checked',false)
+                    }
+                }
+            );
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.DefaultValue').on('change', function () {
+            $('.DefaultValue').not(this).prop('checked', false);
+            $('#result').html($(this).data("id"));
+            if ($(this).is(":checked")){
+                $('#result').html($(this).data("id"));
+            }
+        });
+    });
+    $(document).ready(function () {
+        var $chkboxes = $('.DefaultValue');
+        var lastChecked = null;
+
+        $chkboxes.click(function (e) {
+            if (!lastChecked) {
+                lastChecked = this;
+                return;
+            }
+
+            if (e.ctrlKey) {
+                var start = $chkboxes.index(this);
+                var end = $chkboxes.index(lastChecked);
+
+                $chkboxes.slice(Math.min(start, end), Math.max(start, end) + 1).prop('checked', lastChecked.checked);
+            }
+
+            lastChecked = this;
+        });
+    });
+</script>

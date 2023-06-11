@@ -1,0 +1,56 @@
+<style>
+    .dataTables_scrollBody {
+        max-height: 62vh;
+    }
+
+    .dataTables_paginate {
+        display: none !important;
+    }
+
+</style>
+
+<div class="lst-container">
+    <div>
+        <form autocomplete="off" style="width: 60%;float: right;margin-top: 15px;">
+            <nit-advanced-searchbox
+                    ng-model="searchParams1"
+                    parameters="availableSearchParams1"
+                    index = "1"
+                    placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+    <input type="button" class="btn btn-primary btn-sm" value="Order receipt" id="btnOrderReceipt" ng-disabled="btnOrderReceiptDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Proforma invoice" id = "btnProformInvoice" ng-disabled="btnProformInvoiceDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Order confirmation" id ="btnorderConfirmation" ng-disabled="btnorderConfirmationDisable"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Edit profile" id="btnEditProfile" ng-disabled="btnEditProfileDisable" ></input>
+    <input type="button" class="btn btn-primary btn-sm" value="Credit report" id="btncreditReport" ng-disabled="btncreditReportDisable"></input>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" value="Credit limit" id="btnCreditLimit" ng-disabled="btnCreditLimitDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnInvoiceHistory" value="History" ng-disabled="btnInvoiceHistoryDisable"></input>
+            </li>
+        </ul>
+    </div>
+  </div>
+</script>
+
+
+
+<script type="text/javascript">
+    proformaInvoicesInit({ 'customer_name': "{{customer_name}}", 'permissions': {{ permissions| safe}} });
+</script>

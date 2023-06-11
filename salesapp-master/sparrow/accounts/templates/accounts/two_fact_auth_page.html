@@ -1,0 +1,549 @@
+{% load staticfiles%}
+{% load static %}
+{% load app_filters %}
+<!--   -->
+
+<style type="text/css">
+    .dropdown-content dl {
+        color: black;
+
+        text-decoration: none;
+        display: block;
+    }
+
+    a {
+        color: #38B50A;
+    }
+
+    .col_width {
+        width: 110px;
+    }
+
+    .nav-tabs>li.active {
+        border-bottom: 3px solid #5364B7;
+    }
+
+    .dropdown-content {
+        line-height: 1;
+        min-width: 160px;
+
+    }
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+</style>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'base/images/sparrow-logo-b.png' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/custom.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+
+    <title>Two-Factor Authentication</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            font-family: ProximaNovaReg, Arial, sans-serif;
+
+        }
+
+        .jumbotron.vertical-center {
+            margin-bottom: 0;
+        }
+
+        .vertical-center {
+            min-height: 100%;
+            min-height: 100vh;
+
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -moz-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+
+            width: 100%;
+
+            -webkit-box-pack: center;
+            -moz-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+        }
+
+        .a {
+            padding: 3px;
+            margin-bottom: 30px;
+        }
+
+        .b {
+            top: 10px;
+            left: 10px;
+            padding: 2px;
+            display: inline-block;
+            font-size: 10%;
+        }
+
+        .otp_error {
+            color: red;
+            margin-bottom: 2rem;
+        }
+
+        div.parent {
+            height: 100px;
+            width: 400px;
+            border: 1px solid black;
+            margin: 0 auto;
+        }
+
+        .input_wrapper {
+            position: relative
+        }
+
+        .plastic_select,
+        input[type=url],
+        input[type=text],
+        input[type=tel],
+        input[type=number],
+        input[type=email],
+        input[type=password],
+        select,
+        textarea {
+            font-size: 1.25rem;
+            line-height: normal;
+            padding: .75rem;
+            border: 1px solid #C5C5C5;
+            border-radius: .25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: 0;
+            color: #555459;
+            width: 100%;
+            max-width: 100%;
+            font-family: Slack-Lato, appleLogo, sans-serif;
+            margin: 0 0 .5rem;
+            -webkit-transition: box-shadow 70ms ease-out, border-color 70ms ease-out;
+            -moz-transition: box-shadow 70ms ease-out, border-color 70ms ease-out;
+            transition: box-shadow 70ms ease-out, border-color 70ms ease-out;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            box-shadow: none;
+            height: auto;
+        }
+
+        .no_touch .plastic_select:hover,
+        .no_touch input:hover,
+        .no_touch select:hover,
+        .no_touch textarea:hover {
+            border-color: #2780f8
+        }
+
+        .focus,
+        .plastic_select:active,
+        .plastic_select:focus,
+        input[type=url]:active,
+        input[type=url]:focus,
+        input[type=text]:active,
+        input[type=text]:focus,
+        input[type=number]:active,
+        input[type=number]:focus,
+        input[type=email]:active,
+        input[type=email]:focus,
+        input[type=password]:active,
+        input[type=password]:focus,
+        select:active,
+        select:focus,
+        textarea:active,
+        textarea:focus {
+            border-color: #2780f8;
+            box-shadow: 0 0 7px rgba(39, 128, 248, .15);
+            outline-offset: 0;
+            outline: 0
+        }
+
+        .large_bottom_margin {
+            margin-bottom: 2rem !important;
+        }
+
+        .split_input {
+            display: table;
+            border-spacing: 0
+        }
+
+        .split_input_item {
+            display: table-cell;
+            border: 1px solid #9e9ea6
+        }
+
+        .split_input_item:not(:first-child) {
+            border-left: none
+        }
+
+        .split_input_item:first-child {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px
+        }
+
+        .split_input_item:last-child {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px
+        }
+
+        .split_input_item.focused {
+            border: 1px double #2780f8;
+            box-shadow: 0 0 7px rgba(39, 128, 248, .3)
+        }
+
+        .split_input_item input {
+            height: 2.5rem;
+            text-align: center;
+            font-size: 2.5rem;
+            border: none;
+            background: 0 0;
+            box-shadow: none
+        }
+
+        .split_input_item input:active,
+        .split_input_item input:focus,
+        .split_input_item input:hover {
+            box-shadow: none
+        }
+
+
+        .fs_split {
+            position: absolute;
+            overflow: hidden;
+            width: 100%;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #e8e8e8;
+            -webkit-transition: background-color .2s ease-out 0s;
+            -moz-transition: background-color .2s ease-out 0s;
+            transition: background-color .2s ease-out 0s
+        }
+
+        .fs_split h1 {
+            font-size: 2.625rem;
+            line-height: 3rem;
+            font-weight: 300;
+            margin-bottom: 2rem
+        }
+
+        .fs_split label {
+            margin-bottom: .5rem
+        }
+
+        .fs_split .desc {
+            font-size: 1.25rem;
+            color: #9e9ea6;
+            margin-bottom: 2rem
+        }
+
+        .fs_split .email {
+            color: #555459;
+            font-weight: 700
+        }
+
+        .fs_split .header_error_message {
+            margin: 0 11%;
+            padding: 1rem 2rem;
+            background: #fff1e1;
+            border: none;
+            border-left: .5rem solid #ffa940;
+            border-radius: .25rem
+        }
+
+        .fs_split .header_error_message h3 {
+            margin: 0
+        }
+
+        .fs_split .error_message {
+            display: none;
+            font-weight: 700;
+            color: #ffa940
+        }
+
+        .fs_split .error input,
+        .fs_split .error textarea {
+            border: 1px solid #ffa940;
+            background: #fff1e1
+        }
+
+        .fs_split .error input:focus,
+        .fs_split .error textarea:focus {
+            border-color: #fff1e1;
+            box-shadow: 0 0 7px rgba(255, 185, 100, .15)
+        }
+
+        .fs_split .error .error_message {
+            display: inline
+        }
+
+        .confirmation_code_span_cell {
+            display: table-cell;
+            font-weight: 700;
+            font-size: 2rem;
+            text-align: center;
+            padding: 0.5rem;
+            width: 1rem
+        }
+
+        .confirmation_code_state_message {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            -webkit-transition: opacity .2s;
+            -moz-transition: opacity .2s;
+            transition: opacity .2s
+        }
+
+        .confirmation_code_state_message.error,
+        .confirmation_code_state_message.processing,
+        .confirmation_code_state_message.ratelimited {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 2rem
+        }
+
+        .confirmation_code_state_message.processing {
+            color: #3aa3e3
+        }
+
+        .confirmation_code_state_message.error,
+        .confirmation_code_state_message.ratelimited {
+            color: #ffa940
+        }
+
+        .confirmation_code_state_message ts-icon:before {
+            font-size: 2.5rem
+        }
+
+        .confirmation_code_state_message svg.ts_icon_spinner {
+            height: 2rem;
+            width: 2rem
+        }
+
+        .confirmation_code_checker {
+            position: relative;
+            height: 12rem;
+            text-align: center
+        }
+
+        .confirmation_code_checker[data-state=unchecked] .confirmation_code_state_message.unchecked,
+        .confirmation_code_checker[data-state=error] .confirmation_code_state_message.error,
+        .confirmation_code_checker[data-state=processing] .confirmation_code_state_message.processing,
+        .confirmation_code_checker[data-state=ratelimited] .confirmation_code_state_message.ratelimited {
+            opacity: 1
+        }
+
+        .large_bottom_margin {
+            margin-bottom: 2rem !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <input type='text' id='relation_id' value="{{relationId}}" style="display:none;">
+    <input type='text' id='url_page' value="{{url_page}}" style="display:none;">
+    <input type='text' id='auth_code' value="{{code}}" style="display:none;">
+    <input type='text' id='device_cookie' value="{{device_id}}" style="display:none;">
+    <input type='text' id='device_key' value="{{device_key}}" style="display:none;">
+    <input type='text' id='email_id' value="{{email_id}}" style="display:none;">
+
+    <div class="jumbotron vertical-center" style="background-color: white">
+        <div class="container"
+            style="width:30%;border:1.5px solid gray;border-radius: 15px;text-align: center;padding-right: 0px;color:grey;border-color:#ddd;">
+            <img src="{% static 'accounts/img/eurocircuits.png' %}" style="width:10%;margin-top: 20px;"
+                class="img-rounded center-block" />
+            <h2 align="center" class="a">Two-Factor Authentication</h1>
+                <div style="text-align: left;">
+                    <p class="b" style="font-size: 120%;--width: max-content;height: auto;margin-left: 58px;" align="left">Verification
+                        code
+                        has been sent to email "<b id="very_email_id"></b>".</p>
+                </div>
+                <form id="frm2FAModel" method="POST" role="form" class="form-horizontal ng-pristine ng-valid"
+                    name="tfa_form">
+                    <div class="form-group" style="text-align: center">
+                        <div class="col-sm-10" style="text-align: left;">
+                            <p style="margin-bottom: 20px;font-size: 120%;margin-left: 61px;width: 100%;">Please enter the code below to verify your identity.</p>
+                        </div>
+
+                        <div class="col" style="margin-left: 27px;display: inline-block;">
+                            <lable for="2FA_name" class="control-label col-sm-3 required"
+                                style="font-size: 2rem;white-space:nowrap;margin-left: -60px;margin-top:7px;">Enter code
+                            </lable>
+                            <!-- class="form-control" -->
+
+                            <div class="confirmation_code split_input large_bottom_margin" data-multi-input-code="true"
+                                style="margin-left: 60px;">
+
+                                <div class="confirmation_code_group">
+                                    <div class="split_input_item input_wrapper"><input type="text" class="inline_input"
+                                            id="id_2FA_name_1" maxlength="1" style="width: 45px;height: 40px;"
+                                            name="first_box" oninput="autotab(this, document.tfa_form.second_box)">
+                                    </div>
+                                </div>
+
+                                <div class="confirmation_code_span_cell"></div>
+
+                                <div class="confirmation_code_group">
+                                    <div class="split_input_item input_wrapper"><input type="text" class="inline_input"
+                                            id="id_2FA_name_2" maxlength="1" style="width: 45px;height: 40px;"
+                                            name="second_box" oninput="autotab(this, document.tfa_form.third_box)">
+                                    </div>
+                                </div>
+
+                                <div class="confirmation_code_span_cell"></div>
+
+                                <div class="confirmation_code_group">
+                                    <div class="split_input_item input_wrapper"><input type="text" class="inline_input"
+                                            id="id_2FA_name_3" maxlength="1" style="width: 45px;height: 40px;"
+                                            name="third_box" oninput="autotab(this, document.tfa_form.fourth_box)">
+                                    </div>
+                                </div>
+
+                                <div class="confirmation_code_span_cell"></div>
+
+                                <div class="confirmation_code_group">
+                                    <div class="split_input_item input_wrapper"><input type="text" class="inline_input"
+                                            id="id_2FA_name_4" maxlength="1" style="width: 45px;height: 40px;"
+                                            name="fourth_box">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div style="margin-right: 100px;">
+                    <button class="btn btn-primary" onclick="verifyOtp();" id="verify_buttion" ng-disabled="btnDisabled"
+                        type="button"
+                        style="width: 125px;margin-bottom: 30px;margin-left:100px;margin-top: -20px;">Verify</button>
+                    <!-- text-align: center -->
+                </div>
+
+                <div id="labDiv" class="otp_error" aria-hidden="true" focusable="false">
+                    <label id="warning_symbol" hidden>&#9888;</label>
+                    <label id="warning_msg">&nbsp;</label>
+                </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        function verifyOtp() {
+            var user_otp = $('#id_2FA_name_1').val() + $('#id_2FA_name_2').val() + $('#id_2FA_name_3').val() + $(
+                '#id_2FA_name_4').val();
+            var relationId = $('#relation_id').val();
+            var url_page = $('#url_page').val();
+            var auth_code = $('#auth_code').val();
+            var device_cookie = $('#device_cookie').val();
+            var device_key = $('#device_key').val();
+
+            $.ajax({
+                dataType: "json",
+                type: "POST",
+                url: '/accounts/two_fact_auth',
+                data: {
+                    'user_otp': user_otp,
+                    'relationId': relationId,
+                    'device_id': device_cookie
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var success = data.code == '0' ? false : true;
+                    if (success) {
+                        var otp_result = data.msg;
+                        if (otp_result == true) {
+                            var success_0 = auth_code == '0' ? false : true;
+                            if (success_0) {
+                                setCookie(device_key, device_cookie, 90);
+                                window.location.href = url_page;
+                            } else {
+                                $('#msg').show().text(url_page);
+                            }
+                        } else {
+                            $('#warning_msg').text('You have entered wrong Verification code. Please try again.')
+                            $('#warning_symbol').show()
+                        }
+                    } else {
+                        $('#msg').show().text(data.msg);
+                    }
+                }
+            });
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function autotab(current, to) {
+            if (current.getAttribute && current.value.length == current.getAttribute("maxlength")) {
+                to.focus()
+            }
+        }
+
+        $(document).ready(function () {
+            var emailId = $('#email_id').val();
+            str_1 = emailId.substring(0, 4)
+            str_3 = emailId.split('@', )[1]
+            str_mid = emailId.replace(str_1, '')
+            str_mid = str_mid.replace(str_3, '')
+            length_mid = str_mid.length - 1
+            str_2 = "*".repeat(length_mid)
+            temp5 = str_1 + str_2 + '@' + str_3
+            $('#very_email_id').text(temp5)
+        });
+    </script>
+
+</body>
+
+</html>

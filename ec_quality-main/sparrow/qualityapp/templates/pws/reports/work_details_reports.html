@@ -1,0 +1,129 @@
+<style>
+.remarks span {
+    width: 225px;
+    max-height: 3.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+}
+.ms-sel-ctn{
+    overflow:hidden ;
+}
+.ms-ctn .ms-sel-item {
+    width: max-content;
+}
+@media only screen and (max-width: 1498px) and (min-width:990px){
+    .date-range-input{
+        width: auto;
+    }
+    .date-range-label{
+        width: 20%;
+    }
+    .operator-label{
+        margin-right: 10px;
+        width: 10%;
+    }
+    .company-label{
+        width: 10%;
+    }
+    .operator-input{
+        width: auto;
+        min-width: 20%;
+    }
+    .company-input{
+        width: auto;
+        min-width: 20%;
+    }
+    .test-btn::before {
+        display: block;
+        float: right;
+    }
+}
+.selection_option{
+    margin-top: 10px;
+}
+.selection_option-2{
+    margin-bottom: 10px;
+}
+.customer-label{
+    margin-left: 10px;
+    min-width: 80px !important;
+    width: auto !important;
+}
+.operator_label, .date-label{
+    min-width: 80px !important;
+    width: auto !important;
+}
+.customer-input, .operator_input, .date-input{
+    margin-right: 25px;
+}
+.btn-all-lhe{
+   text-align:right;
+}
+</style>
+<div class="lst-container">
+    <div class="col-sx-3 selection_option" id="selection_option">
+        <div class="col-md-12 col-sm-12 selection_option-2">
+            <div class="form-group">
+                <label required for="id_company" class="control-label col-sm-1 company-label customer-label">Customer :</label>
+                <div class="col-sm-2 company-input customer-input">
+                  <input class="form-control" id="id_company" name="company" required/>
+                </div>
+                <label required for="id_operator" class="control-label col-sm-1 operator-label operator_label">Operator :</label>
+                <div class="col-sm-2 operator-input operator_input">
+                  <input class="form-control" id="id_operator" name="operator" {% if planet_engineer == "Yes" %} disabled value="[{{operator_id}}]" {% endif %}/>
+                </div>
+                <label required for="id_start_datepicker" class="control-label col-sm-1 date-range-label date-label">Date range :</label>
+                <div id="id_start_datepicker" class="col-sm-2 date-range-input date-input">
+                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp; <span id="dates"></span> <b class="caret"></b>
+                </div>
+                <div class="pull-right btn-all-lhe">
+                    <div class="col-sm-14">
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="load_btn">L<u>o</u>ad</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnExport" disabled ng-click="onExport($event);">Ex̲port</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnAllDataExport" disabled ng-click="onAllDataExport($event);">Export all data</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnHistory" ng-disabled="btnHistory" ng-click="onRoleHistory($event);"><u>H</u>istory</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div id="gridCon" class="onLoad">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover"></table>
+    </div>
+</div>
+<script type="text/javascript">
+    var data = { 'permissions': {{ permissions| safe}}};
+    work_details_reportsInit(data);
+    if($('#id_start_datepicker').length != 0){
+        function cb(start, end) {
+            if(start != '' && end != ''){
+                $('#id_start_datepicker span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            }
+        }
+        var startDate = moment()
+        var endDate = moment()
+        $('#id_start_datepicker').daterangepicker({
+            startDate: startDate,
+            endDate : endDate,
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+               'This Year': [moment().startOf('year'), moment().endOf('year')],
+               "Last Year": [
+                    moment().subtract(1, "year").startOf("year"),
+                    moment().subtract(1, "year").endOf("year"),
+                ],
+            }
+        }, cb);
+        cb(startDate,endDate);
+    }
+</script>

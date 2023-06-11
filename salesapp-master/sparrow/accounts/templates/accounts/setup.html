@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+	<title>Setup</title>
+  <link rel="icon" type="image/png" href="{% static 'base/images/sparrow-logo-b.png' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}?v=2" />
+  	<script src="{% static 'base/js/jquery-1.11.2.min.js' %}?v=0.1"></script>
+  	<script src="{% static 'base/js/bootstrap.min.js' %}?v=0.2"></script>
+  	<script src="{% static 'base/js/angular.js' %}?v=0.9"></script>
+  	<script src="{% static 'base/js/jquery.validate.min.js' %}?v=0.9"></script>
+	<style type="text/css">
+	  .imgThumbnail {
+      	height: 135px;
+      	width: 180px;
+      	-webkit-background-size: contain;
+      	background-size: contain;    
+      	background-position: center;
+      	background-repeat: no-repeat;
+      	cursor: pointer;
+        background-image: url('/resources/product_images/no_img.png');
+        display: none;   
+  	}
+    	
+    input[type="file"] {
+    	display: none !important;
+    }
+
+    .circle:before{
+  		content: '\25CF';
+  		font-size: 20px;
+		}
+
+		label.error{
+			color: red;
+			font-weight: normal;
+		}
+    .header{
+        color: rgb(0, 66, 123);
+        font-size: 24px;
+        padding: 35px 0 5px;
+    }
+	</style>
+</head>
+<body ng-app = "setup">
+	<div class="container">
+		<div class="row" style="padding-top: 90px;">
+			<div class="col-lg-offset-3 col-lg-6">
+				<div class="panel panel-default" style="padding: 30px;">
+					<div class="panel-body">
+							<div ng-controller="SetupWizard">
+								<form id="frmWizard" name="frmWizard" class="form">
+									<div ng-if="currentStep != 4" align="center">
+										<ul class="list-inline">
+											<li ng-repeat="step in steps">
+												<span ng-if="step.step == currentStep"><span class="circle" style="color: steelblue;"></span></span>
+												<span ng-if="step.step != currentStep"><span class="circle" style="color: lightblue;"></span></span>
+											</li>
+										</ul>
+									</div>
+									<ng-include src="getStepTemplate()"></ng-include>
+									<div ng-if="currentStep != 4" class="row" style="padding-top: 55px;">
+										<div class="col-sm-5">
+											<button ng-disabled="currentStep <= 1" class="btn btn-default" name="previous" ng-click="gotoStep(currentStep - 1)">Previous</button>
+										</div>
+										<div class="col-sm-1"></div>
+										<div class="col-sm-1"></div>
+										<div class="col-sm-5">
+											<span ng-if="currentStep != 3">
+												<button style="float: right" class="btn btn-primary" name="next" ng-click="gotoStep(currentStep + 1)">Next</button>
+											</span>
+											<span ng-if="currentStep == 3">
+												<button style="float: right" class="btn btn-primary" id="submitForm" type="submit" name="submit" ng-click="saveForm()">Complete Setup</button>
+											</span>
+										</div>
+									</div>	
+								</div>
+								</form>
+							</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	var app = angular.module('setup', []);
+	app.controller('SetupWizard',  function($scope) {
+
+    	$scope.currentStep = 1;
+    	$scope.steps=[
+    		{
+    			step: 1,
+    			template: '../setup_wizard_view/1'
+    		},
+    		{
+    			step: 2,
+    			template: '../setup_wizard_view/2'
+    		},
+    		{
+    			step: 3,
+    			template: '../setup_wizard_view/3'
+    		},
+            {
+                step: 4,
+                template: '../setup_wizard_view/4'
+            }
+    	]
+    	$scope.setupInfo = {};
+
+    	$scope.gotoStep = function(newStep) {
+        if ($scope.currentStep == 1){
+            $scope.setupInfo.currency_name = $('#idBaseCurrency option:selected').html()
+            $scope.setupInfo.country_name = $('#idCountryName option:selected').html()
+        }
+        if ($scope.currentStep > newStep) {
+    			$scope.currentStep = newStep;
+    		}
+    		else{
+    			if( $('#frmWizard').valid()){
+    				$scope.currentStep = newStep;
+        		}
+    		}
+        }
+        $scope.saveForm = function(){
+            if( $('#frmWizard').valid()){
+              $scope.currentStep = 4;
+              redirect();
+            }
+        }
+
+    	$scope.getStepTemplate = function(){
+    		for (var i = 0; i < $scope.steps.length; i++){
+    			if ($scope.currentStep == $scope.steps[i].step) {
+    				return $scope.steps[i].template;
+    			}
+    		}
+    	}
+
+    	$scope.showInfo = function(){
+    		
+    	}
+
+    	$( "#frmWizard" ).validate({
+  			rules: {
+    			confirmPasswrod: {
+      			equalTo: "#password"
+    		}
+  		}
+		});
+
+		function setImagePreview(input, imgId) {
+          if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              $('#'+imgId+'').css('background-image','url(' + e.target.result + ')');
+            }
+            reader.readAsDataURL(input.files[0]);
+          }
+        }
+
+        $("#frmWizard").on('change', '#companyImage', function(e){
+       		setImagePreview(this, 'companyShowImage');
+        });
+        
+        
+        $("#frmWizard").on('change', '#userImage', function(e){
+        	setImagePreview(this, 'userShowImage');
+        });
+
+        function redirect(){
+            var url_data = ''
+              var data = $scope.setupInfo;
+              var formURL = "/accounts/sparrow_setup/";
+              if(window.location.hash != '') {
+                url_data = window.location.hash;
+              }
+              var postData = {
+                'data' :  JSON.stringify(data),
+                'url_data' : url_data,
+              }
+              $.ajax({
+                  dataType: "json",
+                  type: "POST",
+                  url: formURL,
+                  data: postData,
+                  success: function (data) {                                             
+                    var success = data.code == 0 ? false : true;
+                    if(success) {
+                      var current_domain = window.location.hostname
+                      window.location.replace('http://'+current_domain+':'+data.port+'/');
+                      // window.location = '/accounts/signin/' ;
+
+                    }
+                    else{
+                      $("#id_loading").hide()
+                      $("#id_error_msg").show()
+                    }
+                  },
+                  error: function(data) {
+                    $("#id_loading").hide()
+                    $("#id_error_msg").show()
+                    console.log(data);
+                  }
+            });
+        }
+        
+	});
+</script>
+</html>

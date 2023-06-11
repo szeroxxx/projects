@@ -1,0 +1,61 @@
+{% load widget_tweaks %}
+<div class="lst-container">
+    <div class="col-sx-3" id="selection_option" style="display:flex;">
+        <div class="form-group col-sm-2 ">
+            <h5 style="margin-bottom: 0;">Purchase person</h5>
+            <div style="margin-top: 5px;">
+                <input class="form-control" name="purchase_person" id="id_purchase_person" type="text">
+            </div>
+        </div>
+
+        <div class="col-sx-9">
+            <div class="form-group col-lg-2" style="width:230px;">
+                <h5 style="margin-bottom: 0;">Production date range</h5>
+                <div id="id_start_datepicker" class="form-control"
+                    style="cursor: pointer;border: 1px solid #ccc;margin-top: 5px;     width:210px;">
+                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                    <span id="dates"></span> <b class="caret"></b>
+                </div>
+            </div>
+            <div id="row-theme" class="form-group col-sm-2" style="margin-top: 30px;">
+                <button type="button" class="btn btn-primary btn-sm" id="load_btn">Load</button>
+            </div>
+            <div  class="form-group col-sm-2" style="margin-top: 30px;">
+                <button type="button" class="btn btn-primary btn-sm" id="btnExport" ng-click="onExport($event);"
+                    >Export</button>
+            </div>
+        </div>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+            class="row-border hover"></table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if ($('#id_start_datepicker').length != 0) {
+        function cb(start, end) {
+            if (start != '' && end != '') {
+                $('#id_start_datepicker span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+                $('.date_range').text('From ' + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY'));
+            }
+        }
+        var startDate = moment().startOf('year')
+        var endDate = moment().endOf('year')
+        $('#id_start_datepicker').daterangepicker({
+            startDate: startDate,
+            endDate: endDate,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'This Year': [moment().startOf('year'), moment().endOf('year')],
+                'Last Year': [moment().subtract(1, 'year').add(1, 'day'), moment()]
+            }
+        }, cb);
+        cb(startDate, endDate);
+    }
+</script>

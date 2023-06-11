@@ -1,0 +1,57 @@
+<style>
+    .help-block {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #A00D0D;
+    }
+    .message {
+        color: #a94442;
+        display: none;
+    }
+</style>
+<form id="frmPerformanceIndex" action="/pws/save_performance_index/" method="POST" role="form" class="form-horizontal"
+    enctype="multipart/form-data" autocomplete="off">{% csrf_token %}
+    <input class="form-control" id="id_performance_indexes" name="performance_indexes_id" value="{{performance_indexes.id}}" type="hidden">
+    <div class="row">
+        <div class="form-group">
+            <label for="id_year_of_exp" class="control-label col-sm-4 required">&ensp;Years of experience</label>
+            <div class="col-sm-5">
+                <input class="form-control" id="id_year_of_exp" type="text" name="year_of_exp" {% if performance_indexes.years_of_experience %} value='["{{performance_indexes.years_of_experience}}"]' {% else %} value="" {% endif %} />
+                <span class="message" id="id_message">This field is required.</span>
+            </div>
+        </div>
+    </div><br>
+    <div class="row">
+        <div class="col-md-4">
+            <label for="id_target_efficiency_pt" class="col-form-label">&ensp;Target efficiency points</label>
+        </div>
+        <div class="col-md-5">
+            <input type="number" class="form-control" id="id_target_efficiency_pt" name="target_efficiency_pt" min="0" {% if performance_indexes %} value="{{performance_indexes.target_efficiency}}" {% else %} value="0" {% endif %}>
+        </div>
+    </div><br>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label for="id_min_efficiency_pt" class="col-form-label">&ensp;Minimum efficiency points</label>
+        </div>
+        <div class="col-md-5">
+            <input type="number" class="form-control" id="id_min_efficiency_pt" name="min_efficiency_pt" min="0" {% if performance_indexes %} value="{{performance_indexes.minimum_efficiency}}" {% else %} value="0" {% endif %} >
+        </div>
+    </div><br>
+</form>
+<script>
+    var years_of_experience = [
+        { id: "6_month", name: "< 6 months" },
+        { id: "1_year", name: "more than 6 and < 1 year" },
+        { id: "2_year", name: "more than a year and < 2 years" },
+        { id: "3_years", name: "> 2 years" },
+    ];
+    setAutoLookup("id_year_of_exp", years_of_experience, "");
+    var exp_year = $("#id_year_of_exp").magicSuggest();
+    $(exp_year).on("selectionchange", function (e, m) {
+        $("#id_message").hide();
+        $("#id_year_of_exp").css('border-color', '#ccc');
+    });
+
+</script>

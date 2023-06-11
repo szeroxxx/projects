@@ -1,0 +1,64 @@
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar">
+      <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory"/>
+  </div>
+</script>
+<div>
+  <form autocomplete="off">
+    <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1" placeholder="Search..."></nit-advanced-searchbox>
+  </form>
+</div>
+<table
+  datatable
+  dt-options="dtOptions1"
+  dt-columns="dtColumns1"
+  dt-instance="dtInstance1"
+  class="row-border hover"
+>
+</table>
+
+{% comment %} serviceProcess POP-UP {% endcomment %}
+<div id="serviceProcess" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="margin:1px 70px 1px 70px">
+      <div class="modal-header" style="height: 54px;">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          style="margin-top: 7px;"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="title" ng-bind="LabelDialogTitle"></h4>
+        <span
+          class="modal-title"
+          id="user_header"
+          style="font-size: 20px"
+        ></span>
+      </div>
+      <div class="modal-body tab-data-content" id="editServiceProcess" style="padding-bottom: 0px;"></div>
+
+      <div class="modal-footer">
+        <button
+          class="btn"
+          ng-click="$dismiss()"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          id="btnSaveServiceProcess"
+          ng-click="SaveServiceProcess($event)"
+          ng-disabled="btnSaveServiceProcessDisabled"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <!-- <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>     -->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>sparrow</title>
+  {% load staticfiles %}
+  <script src="{% static 'base/js/bootstrap.min.js' %}?v=0.2"></script>
+  <link rel="icon" type="image/png" href="{% static 'base/images/sparrow-logo-b.png' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'base/css/custom.css' %}">
+  <!-- <script src="{% static 'base/js/jquery-1.11.2.min.js' %}"></script> -->
+  <style>
+    .background-login {
+      background: url({{ bg_image_url }}) no-repeat center center fixed;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    }
+
+      {
+      % if black_wall %
+    }
+
+    .login_content h1 {
+      s text-shadow: none;
+      color: #ffffff;
+    }
+
+    a {
+      color: #ffffff;
+    }
+
+    .login_content h1:before {
+      background: #000000;
+      background: -moz-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: -webkit-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: -o-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: -ms-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      right: 0;
+    }
+
+    .login_content h1:after {
+      background: #ffffff;
+      background: -moz-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: -webkit-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: -o-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: -ms-linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      background: linear-gradient(left, #ffffff 0%, #ffffff 100%);
+      right: 0;
+    }
+
+    .separator {
+      border-top: 1px solid #ffffff;
+    }
+
+    p {
+      color: #ffffff;
+    }
+
+      {
+      % else %
+    }
+
+    .login_content h1 {
+      text-shadow: none;
+      color: white;
+    }
+
+    a {
+      color: #000000;
+    }
+
+    .separator {
+      /* border-top: 1px solid #000000; */
+      border-top: 1px solid white;
+
+    }
+
+    .login_content h1:before {
+      background: white;
+      background: -moz-linear-gradient(left, white 0%, white 100%);
+      background: -webkit-linear-gradient(left, white 0%, white 100%);
+      background: -o-linear-gradient(left, white 0%, white 100%);
+      background: -ms-linear-gradient(left, white 0%, white 100%);
+      background: linear-gradient(left, white 0%, white 100%);
+      right: 0;
+    }
+
+    .login_content h1:after {
+      background: white;
+      background: -moz-linear-gradient(left, white 0%, white 100%);
+      background: -webkit-linear-gradient(left, white 0%, white 100%);
+      background: -o-linear-gradient(left, white 0%, white 100%);
+      background: -ms-linear-gradient(left, white 0%, white 100%);
+      background: linear-gradient(left, white 0%, white 100%);
+      right: 0;
+    }
+
+    p {
+      color: #000000;
+    }
+
+      {
+      % endif %
+    }
+  </style>
+
+</head>
+
+<body class="background-login">
+  <span id="loading-image" class="ele-center loader loader-double"></span>
+  <div class="">
+    <a class="hiddenanchor" id="toregister"></a>
+    <a class="hiddenanchor" id="tologin"></a>
+    <div id="wrapper">
+      <div id="loginform" class=" form">
+        <section class="login_content">
+          <form id="frmsignin" action="/accounts/authcheck" method="POST">
+            {% csrf_token %}
+            <h1 style="color:white;">Signin</h1>
+            <div>
+              <input type="text" class="form-control" name="txt_user" placeholder="Username" required="" />
+            </div>
+            <div>
+              <input type="password" class="form-control" name="txt_pwd" placeholder="Password" required="" />
+            </div>
+            <div>
+              <input type="submit" id="btnSignin" value="Sign in" class="btn btn-default submit">
+              <!--                 <a class="reset_pass" href="/accounts/passwrecv/">Lost your password?</a>-->
+            </div>
+            <div class="clearfix"></div>
+            <div class="separator">
+              <!-- <p class="change_link">New to Sparrow?
+                  <a href="/accounts/signup" class="to_register"> Create Account </a>
+                </p> -->
+              <div>
+                <div class="alert-error" style="display:none;" id="msg"></div>
+              </div>
+              <div class="clearfix"></div>
+              <br />
+              <div>
+                <!-- {% if black_wall %}<img src="/static/base/images/download.png" style="height:82px;">{% else %}<img
+                  src="{% static 'base/images/logo1-b.png' %}" style="height:82px;">{% endif %} -->
+                  <h1>
+                    <img src="/static/base/images/{{company_logo}}" style="height:64px;padding-left: 10px;">
+                  </h1>
+                <script type="text/javascript">
+                  var dt = new Date();
+                  document.write("<p style = 'padding-left: 10px;color:white;'> ©" + dt.getFullYear());
+                </script> All Rights Reserved.</p>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+    <form style="display: hidden" action="/accounts/verify2FactorAuth/" method="POST" id="form">
+      <input type="hidden" id="auth_data" name="auth_data" value="" />
+      <input type="hidden" id="device_id" name="device_id" value="" />
+    </form>
+  </div>
+
+  <script>
+    data_authcheck = '';
+    var device_id = '';
+    $(document).ready(function () {
+      //If signin page is opened inside the app controller, page is reloaded to open signin page indepedantly.
+      if ($('#viewContainer').length == 1) {
+        window.location = '/';
+      }
+    });
+
+    function setStorage(key, value, expires) {
+      if (expires === undefined || expires === null) {
+        expires = (24 * 60 * 60 * 30); // default: for 30 day
+      } else {
+        expires = 24 * 60 * 60 * (Math.abs(expires)); //make sure it's positive
+      }
+      var now = Date.now(); //millisecs since epoch time, lets deal only with integer
+      var schedule = now + expires * 1000;
+      try {
+        localStorage.setItem(key, value);
+        localStorage.setItem(key + '_expiresIn', schedule);
+      } catch (e) {
+        console.log('setStorage: Error setting key [' + key + '] in localStorage: ' + JSON.stringify(e));
+        return false;
+      }
+      return true;
+    };
+
+    function getDomainName() {
+      return window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location
+        .port : '');
+    }
+
+    $("#frmsignin").submit(function (e) {
+      var url_data = ''
+      var data = $(this).serializeArray();
+      var formURL = $(this).attr("action");
+      if (window.location.hash != '') {
+        url_data = window.location.hash;
+      }
+
+      device_id = 'device_' + data[1].value.toLowerCase()
+      device_cookie = getCookie(device_id)
+      data.push({
+        name: 'device_id',
+        value: device_id
+      });
+      var postData = {
+        'data': data,
+        'url_data': url_data,
+      }
+
+      $.ajax({
+        dataType: "json",
+        type: "POST",
+        url: formURL,
+        data: postData,
+        beforeSend: function () {
+          $('#loading-image').show();
+        },
+
+        complete: function () {
+          $('#loading-image').hide();
+        },
+        success: function (data) {
+          if (data.code == 1) {
+            two_fact_auth = data.two_fact_auth
+
+            if (two_fact_auth == false) {
+              var success = data.code == 0 ? false : true;
+              if (success) {
+                setStorage("loc_history", "", 0);
+                window.location.href = data.url_page;
+              } else {
+                $('#msg').show().text(data.url_page);
+              }
+            } else {
+              $("#auth_data").val(JSON.stringify(data));
+              $("#device_id").val(device_id);
+              $("#form").submit();
+              data_authcheck = data
+            }
+          }
+          else {
+            $('#msg').removeClass('alert-success').addClass("alert-danger").show().text(data.msg);
+          }
+
+        },
+        error: function (data) {
+          $('#msg').removeClass('alert-success').addClass("alert-danger").show().text(data.msg);
+        }
+      });
+      e.preventDefault();
+    });
+
+    $("#ajaxform").submit(); //Submit  the FORM
+
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+  </script>
+
+</body>
+
+</html>

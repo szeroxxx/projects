@@ -1,0 +1,29 @@
+<style>
+    .live-report-search{
+        min-width: 80%;
+        width: auto;
+        float: left;
+    }
+    .top_action_bar{
+        margin-top: 5px;
+        float: right;
+    }
+</style>
+<div class="focus-inner button-bar top_action_bar" id="top_action_bar">
+    <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="load_btn">L<u>o</u>ad</button>
+    <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnExport" disabled ng-click="onExport($event);">Ex̲port</button>
+    <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnAllDataExport" disabled ng-click="onAllDataExport($event);">Export all data</button>
+    <button type="button" class="btn btn-primary btn-sm btn-all-lhe" id="btnHistory" ng-disabled="btnHistory" ng-click="onhistory($event);"><u>H</u>istory</button>
+</div>
+<div class="live-report-search">
+    <form autocomplete="off">
+        <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1"></nit-advanced-searchbox>
+    </form>
+</div>
+<table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1" class="row-border hover">
+</table>
+
+<script>
+    var data = { 'permissions': {{ permissions| safe}}};
+    live_prep_tracking_reportInit(data);
+</script>

@@ -1,0 +1,7 @@
+Form:
+- POST_FK_FIELD_RULE
+Field
+    - post_only_if_touched
+- File field
+    - showInlinePreview
+    - limit

@@ -1,0 +1,143 @@
+<style>
+.closeBtn{
+   float: right;
+   margin-left: 18em;
+    }
+</style>
+<div class="lst-container">
+    <div>
+        <form autocomplete="off">
+            <nit-advanced-searchbox ng-model="searchParams1" parameters="availableSearchParams1" index="1" placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+            class="row-border hover"></table>
+    </div>
+</div>
+<div class="modal fade" id="orderPriority" data-backdrop="static" role="dialog" tabindex="-1" aria-labelledby="title" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 30%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="viewPriorityTitle" ng-bind="LabelDialogTitle"></h4>
+                <span
+                    class="modal-title"
+                    id="user_header"
+                    style="font-size: 20px"
+                ></span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form method="POST" role="form" enctype="multipart/form-data" action="/pws_portal/set_order_priority/" class="form-horizontal ng-pristine ng-valid" id="frmSetOrderPriority">
+                        <div class="form-group row ">
+                            <label for="id_due_time" class="col-sm-3 col-form-label required" style="margin-left: 25px; ">Select Option</label>
+                            <div class="col-sm-6">
+                                <input id="id_due_time" class="form-control" name="due_time" type="text">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row" style="margin-top: 20px; margin-left: 20px; ">
+                    <p>Select minimum hours to complete job to increase it's Priority.</p>
+                    <p>Selected Hours applicable from current Date and Time.</p>
+                </div>
+            </div>
+            <div class="modal-footer" role="tablist">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn btn-primary" ng-click="SetOrderPriority($event);"  ng-disabled="btnDisabled">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="acceptPreparation" class="modal fade"  role="dialog" aria-labelledby="title" aria-hidden="true">
+    <div class="modal-dialog" role="document" >
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="preparationTitle"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+        </div>
+        <div class="modal-body">
+            <p style="text-align: center;">Preparation Approved ?</p>
+            <div class="row" style="padding-left: 37%; margin-top: 25px; margin-bottom: 10px;">
+                <div class="col-md-4" >
+                    <button class="btn btn-primary" ng-click="approvePreparation($event);">Yes</button>
+                </div>
+                <div class="col-md-2" >
+                    <button class="btn btn-primary" ng-click="declinePreparation($event);">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<div id="moveToProduction" class="modal fade" role="dialog" aria-labelledby="title" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title" id="declineTitle"></h5>
+                    <button type="button" class="closeBtn close" data-dismiss="modal" aria-label="Close" style="float:right;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align: center;">Please fill Re-Prepration Remark, File</p>
+                    <form method="POST" role="form" enctype="multipart/form-data" action="/pws_portal/accept_preparation/1/"  class="form-horizontal ng-pristine ng-valid" id="frmDeclinePreparation">
+                        <div class="form-group row ">
+                            <label for="re_pre_remark" class="col-sm-4 col-form-label" style="margin-left: 25px; ">Re-prepration Remark</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="re_pre_remark" ></input>
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <label for="file" class="col-sm-4 col-form-label" style="margin-left: 25px; ">Order File</label>
+                            <div class="col-sm-6">
+                                <input type="file" class="form-control" name="file" ></input>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" role="tablist">
+                    <button class="btn btn-primary" ng-click="UploadUnaccepted($event);"  ng-disabled="btnDisabled" >Upload data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="top_action_bar">
+    <div class="focus-inner button-bar">
+        <i class="fa-light fa-bell-on"></i>
+        <input type="button" class="btn btn-primary btn-sm" id="btnModifyOrder" value="Modify order" ng-disabled="btnReserveDisable"></input>
+        <button class="btn btn-primary btn-sm" id="btnFiles" ng-disabled="btnReserveDisable"><u>F</u>iles</button>
+        <input type="button" class="btn btn-primary btn-sm" id="btnOrderPriority" value="Set order priority"  ng-disabled="btnReserveDisable"></input>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+                <li>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistoryDisable"></input>
+                    <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port">
+                    <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data">
+                    <!-- <input type="button" class="btn btn-primary btn-sm" id="btnAcceptPreparation" value="Accept Preparation" ng-disabled="btnReserveDisable"></input> -->
+                </li>
+            </ul>
+        </div>
+    </div>
+</script>
+<script>
+  var data = {'permissions': {{ permissions| safe}}, };
+  var page_id = {'id':{{id|safe}},};
+  orderTrackingInit(data,page_id);
+</script>
+

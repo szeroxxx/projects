@@ -1,0 +1,125 @@
+<style>
+    .bottom {
+        margin-bottom: 50px;
+    }
+    .customer-label{
+        margin-left: 20px;
+        min-width: 80px !important;
+        width: auto !important;
+    }
+    .row-2{
+        margin-top: 5px;
+    }
+    .service-label{
+        margin-left: 20px;
+        margin-top: 5px;
+        min-width: 80px !important;
+        width: auto !important;
+    }
+    .filter{
+        max-width: auto;
+        margin-top: 10px;
+    }.modal-dialog{
+        width: 40%;
+    }
+    .model-label-left{
+        margin-left: 8%;
+    }
+    .down-file{
+        cursor:pointer;
+        color:#2a9f00;
+        font-size: 18px;
+    }
+    .operator-label{
+        margin-left: 20px;
+        min-width: 122px !important;
+        width: auto !important;
+    }
+    .nc-created-date{
+        margin-left: 20px;
+        margin-top: 5px;
+        min-width: 122px !important;
+        width: auto !important;
+    }
+</style>
+<div class="filter">
+    <div class="col-md-12 col-sm-12">
+        <div class="row">
+            <div class="col-md-5 col-sm-4">
+                <label for="id_company" class="col-form-label col-md-3 customer-label">Customer&nbsp;: </label>
+                <div class="col-md-7">
+                    <input type="text" class="form-control" id="id_company" name="company" value="">
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-4">
+                <label for="id_operator" class="col-form-label col-md-3 operator-label">Operator&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :</label>
+                <div class="col-md-7">
+                    <input type="text" class="form-control" id="id_operator" name="operator" value="">
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4">
+            </div>
+        </div>
+        <div class="row row-2">
+            <div class="col-md-5 col-sm-4">
+                <label for="id_service" class="col-form-label col-md-3 service-label">Service&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </label>
+                <div class="col-md-7">
+                    <input type="text" class="form-control" id="id_service" name="service" value="">
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-4">
+                <label for="id_date" class="col-form-label col-md-3 nc-created-date">NC created date&nbsp;&nbsp;:</label>
+                <div class="col-md-7">
+                    <input type="date" class="form-control" id="id_date" name="date" value=" " />
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 pull-right">
+                <div class="col-md-14 pull-right">
+                    <button type="button" class="btn btn-primary btn-sm" id="load_btn">L<u>o</u>ad</button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                          <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right dropdown-content">
+                          <li>
+                              <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Ex̲port">
+                              <input type="button" class="btn btn-primary btn-sm" id="btnAllDataExport" value="Export all data">
+                              <input type="button" class="btn btn-primary btn-sm" id="btnHistory" value="H̲istory" ng-disabled="btnHistory" ng-click="onNCHistory($event);"></input>
+                          </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+    </div>
+</div>
+<div id="gridCon">
+    <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+        class="row-border hover">
+    </table>
+</div>
+<div class="modal fade" id="modifyNCReport"  tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="title" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="label" ng-bind="sourcingTitle"></h4>
+            </div>
+            <div class="modal-body" id="modifyNC">
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn-primary btn-sm save_btn" aria-hidden="true" ng-click="saveNCReport($event);"
+                    ng-disabled="btnDisabled">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    var data = { 'permissions': {{ permissions| safe}}};
+    nc_reportsInit(data);
+</script>

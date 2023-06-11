@@ -1,0 +1,156 @@
+{% load staticfiles %}
+<style type="text/css">
+    .addNewSymbol {
+        font-size: 20px;
+        float: left;
+        cursor: pointer;
+        padding: 3px;
+    }
+
+    .addNewLine {
+        font-weight: 700;
+        float: left;
+        margin-top: 6px;
+        margin-left: 3px;
+        cursor: pointer;
+    }
+
+    .btnImageLabel {
+        color: #266EBB;
+        cursor: pointer;
+    }
+
+    .rowImages {
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+    }
+
+    input[type="file"] {
+        display: none !important;
+    }
+</style>
+<div class="modal-body details-body">
+    <form id="frmCompany" action="/accounts/company/" method="POST" role="form"
+        class="form-horizontal ng-pristine ng-valid" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="col-md-6 col-sm-6 form-group">
+                    <div class="col-sm-3">
+                        <div class="avatar-image">
+                            {% if company.company_img != '' %}
+                            <img id="company_img" src="data:image/png;base64,{{company.company_img}}"
+                                style="display: inline-block;width: 118px;background-color: #e7e7e7;" />
+                            {% else %}
+                            <img id="company_img" src="{% static 'base/images/logo-b.png' %}"
+                                style="display: inline-block;width: 118px;background-color: #e7e7e7;" />
+                            {% endif %}
+                        </div>
+                        <div class="form-group" style="height: 0px;">
+                            <label for="company_img_change" class="btnImageLabel"
+                                style="padding-left: 50px;">Edit</label>
+                            <input id="company_img_change" name="company_img" type="file"
+                                data-rule-extension="png|jpg|jpeg|bmp|gif"
+                                data-msg-extension="Only .png, .jpg, .jpeg, .gif and .bmp extension is allowed.">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_name" class="control-label col-sm-3 required">Name</label>
+                        <div class="col-sm-9" style="margin-top: 6px; ">
+                            <input type="text" class="form-control" id="id_name" value="{{company.name}}" name="name"
+                                data-rule-maxlength="200" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_email" class="control-label col-sm-3 required ">Email</label>
+                            <div class="col-sm-9" style="margin-top: 6px;">
+                                <input type="text" class="form-control " id="id_email"
+                                    value="{% if company.email %}{{company.email}}{% endif %}" name="email"
+                                    maxlength=100 data-rule-required="true" data-rule-email="true">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="form-group">
+                    <label for="id_mobile" class="control-label col-sm-3 ">Mobile</label>
+
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="id_mobile" value="{{company.mobile}}" name="mobile"
+                            maxlength=15 data-msg-number="Please enter a valid mobile number.">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_phone" class="control-label col-sm-3 ">Phone</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="id_phone" value="{{company.phone}}" name="phone"
+                            maxlength=15 data-msg-number="Please enter a valid Phone number.">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_website" class="control-label col-sm-3 ">Website</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="id_website"
+                            value="{% if company.website %}{{companydata.website}}{% endif %}" name="website"
+                            maxlength=100 data-rule-url="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="time_zone" class="control-label col-sm-3">Time zone</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="time_zone" name="time_zone" type="text"
+                            value='[{% if company.timezone_offset %}"{{ company.timezone_offset }}"{% endif %}]'>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a class="show-tab hideForClient" href="#attachments">Documents <span class="tab-count"
+                            id="id_attachments_count"></a>
+                </li>
+                <li>
+                    <a class="show-tab hideForClient" href="#remarks">Comments <span class="tab-count"
+                            id="id_remarks_count"></span></a>
+                </li>
+                <li>
+                    <a class="show-tab hideForClient" href="#tasks">Task<span class="tab-count" id="id_tasks_count"></a>
+                </li>
+            </ul>
+            <div class="tab-content tab-data-content">
+                <div class="tab-pane active" id="attachments">
+                    <ang-attachments app-name="accounts" model-name="company_attachment" entity-id="{{company.id}}"
+                        count-id="id_attachments_count"> </ang-attachments>
+                </div>
+                <div class="tab-pane" id="remarks">
+                    <ang-comments app-name="accounts" model-name="Company" entity-id="{{company.id}}"
+                        count-id="id_remarks_count"></ang-comments>
+                </div>
+                <div class="tab-pane" id="tasks">
+                    <ang-tasks app-name="accounts" model-name="Company" entity-id="{{company.id}}"
+                        related_to="{{company.name}}" count-id="id_tasks_count"> </ang-tasks>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="msg"></div>
+</div>
+<div class="modal-footer details-footer" role="tablist">
+    <div class="tab-content" style="float: left;">
+        <div class="tab-pane" id="tasks">
+            <a id="addTask" ng-click="addTask($event);" class="icon-plus-circle addNewSymbol" title="Add new task"></a>
+            <a  id="addTask" ng-click="addTask($event);" class="edit-enabled addNewLine"  >Create task</a>
+        </div>
+    </div>
+    <button class="btn btn-primary" ng-click="saveCompany($event);" ng-disabled="btnDisabled">Save</button>
+</div>
+
+<!-- <script type="text/javascript">
+var partner = {
+    id: {{companydata.id}}    
+}
+</script> -->

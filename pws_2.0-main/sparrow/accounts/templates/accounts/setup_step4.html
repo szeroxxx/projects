@@ -1,0 +1,14 @@
+{% load staticfiles %}
+<div align="center"><img src="{% static 'base/images/favicon_pp.ico' %}" style="height:38px;"></div>
+<div id="id_loading">
+	<div align="center" class="header">
+	    <img src="{% static 'base/images/loading_round.gif' %}" style="height: 24px; vertical-align: middle;">
+	    <span style="padding-left: 10px;">Finalizing your setup...</span>
+	</div>
+	<div align="center">
+		<span style="color: rgb(0, 46, 123); font-size: 14px; padding-left: 10px;">This may take a few minutes</span>
+	</div>
+</div>
+<div align="center" id= "id_error_msg" style="display: none;">
+		<span style="color: red; font-size: 20px; padding-left: 10px;">Something went wrong</span>
+</div>

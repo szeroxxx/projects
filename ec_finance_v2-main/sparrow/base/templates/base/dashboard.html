@@ -1,0 +1,45 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+
+<script>
+	$(function () {
+		sparrow.setTitle("qualityapp")
+		$('.favourite_icon').hide();
+		$('#basePageTitle').text("");
+		$('.button-bar').hide();
+	});
+
+</script>
+<div class="container-fluid" style="--border:1px solid red;">
+	<div class="col-md-12 dashboard">
+		{% for menu in menus %}
+
+
+		<div class='col-md-3 first-three-div'>
+			<p style='height:50px;' class='customer'>{{menu.title}}</p>
+			<a href='{{ menu.url }}'>
+				<div class='app_icons'>
+					<img src='/static/base/images/shortcut-icons/{{ menu.menu_code }}.svg' height='93px'>
+				</div>
+			</a>
+			<div class='icons'>
+				{% if menu.launcher_add_url %}
+				<a href='{{ menu.launcher_add_url }}'>
+					<span class='icon-plus-circle addNewPlusSymbols'>
+					</span>
+				</a>
+				{% endif %}
+				<a href='{{ menu.url }}'>
+					<span class='icon-hamburger-menu-1 addNewhamburgerSymbols'>
+					</span>
+				</a>
+			</div>
+		</div>
+
+
+		{%endfor%}
+
+	</div>
+</div>
+
+</html>

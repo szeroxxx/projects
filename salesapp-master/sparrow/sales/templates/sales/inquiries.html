@@ -1,0 +1,48 @@
+<style>
+    #iframe_model0 .modal-header, #iframe_model0  .modal-body{
+        padding:3px 10px 0 10px;
+    }
+    #iframe_model0 .modal-body{
+        padding:3px;
+    }
+    .dataTables_paginate {
+        display:none !important;
+    }
+</style>
+<div class="lst-container">
+    <div>
+        <form autocomplete="off" style="width: 60%;float: right;margin-top: 15px;">
+            <nit-advanced-searchbox
+                    ng-model="searchParams1"
+                    parameters="availableSearchParams1"
+                    index = "1"
+                    placeholder="Search...">
+            </nit-advanced-searchbox>
+        </form>
+    </div>
+    <div id="gridCon">
+        <table datatable dt-options="dtOptions1" dt-columns="dtColumns1" dt-instance="dtInstance1"
+               class="row-border hover"></table>
+    </div>
+</div>
+
+<script type="text/ng-template" id="top_action_bar">
+  <div class="focus-inner button-bar" style="float:right;margin-top: 10px;">
+    <input type="button" class="btn btn-primary btn-sm" value="PCB Visualizer" ng-click="onbtnPCBVis($event);" id="btnPCBVis"></input>
+    <input type="button" class="btn btn-primary btn-sm" value="PCBA Visualizer" ng-click="onbtnPCBAVis($event);" id="btnPCBAVis"></input>
+    <!-- <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+            <i class="icon-hamburger-menu-1" aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-org dropdown-menu-right">
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnUserHistory" value="History" ng-click="onUserHistory($event);" ng-disabled="btnUserHistoryDisable"></input>
+            </li>
+            <li>
+                <input type="button" class="btn btn-primary btn-sm" id="btnExport" value="Export"></input>
+            </li>
+        </ul>
+    </div> -->
+  </div>
+</script>
+
